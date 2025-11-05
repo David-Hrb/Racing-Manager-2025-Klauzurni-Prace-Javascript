@@ -209,7 +209,13 @@
           </select>
     
           <h3>Datum Narození</h3>
-          <input type="Date" v-model="date" required>
+          <input
+            type="date"
+            v-model="date"
+            min="1945-01-01"
+            max="2007-12-31"
+            required
+          >
           <h3>Bývalé Zaměstnání</h3>
           <select id="lastwork" v-model="lastwork" name="lastwork" required>
               <option value="nothing">-- Vyberte zkušenosti --</option>
@@ -315,10 +321,13 @@ onMounted(() => {
 
 const switchToTeams = () => { 
   
-  console.log(name, surname, nationality, date, lastwork, selectedGender, avatar);
+  if(name.value === '' || surname.value === '' || nationality.value === '' || date.value === '' || lastwork.value === '' || selectedGender.value === 'nothing' || avatar.value === '') {
+    alert('Vyplňte prosím všechna pole!')
+    return;
+  }
   
-  $fetch("/api/addManager", {
-    method: "POST",
+  $fetch("/api/manager/fullman", {
+    method: "PATCH",
     body: {
       name: name.value,
       surname: surname.value,

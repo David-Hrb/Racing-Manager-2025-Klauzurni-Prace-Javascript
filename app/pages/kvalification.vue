@@ -193,16 +193,20 @@ const { getRandomInteger } = UseInteger();
 const { getRandomFloat } = UseFloat();
 const { calculateLapTime } = useLapTime();
 
-let currentteam = 1;
-let currentcircuit = 1;
+
 
 let drivers = ref([]);
 let teams = ref([]);
 let circuits = ref([]); 
+let manager = ref([]);
 
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 circuits.value = await $fetch("/api/listCircuit");
+manager.value = await $fetch("/api/manager/listManager");
+
+let currentteam = manager.value[0].team;;
+let currentcircuit = 1;
 
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
   drivers: drivers.value,

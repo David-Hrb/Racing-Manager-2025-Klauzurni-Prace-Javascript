@@ -61,15 +61,14 @@ const { setupRace } = useRaceSetup();
 let drivers = ref([]);
 let teams = ref([]);
 const circuits = ref([]);
+const manager = ref([]);
 
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 circuits.value = await $fetch("/api/listCircuit");
+manager.value = await $fetch("/api/manager/listManager");
 
-
-
-
-let currentteam = 1;
+let currentteam = manager.value[0].team;
 let currentcircuit = 1;
 
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
@@ -79,6 +78,35 @@ const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace(
   teamId: currentteam,
   circuitId: currentcircuit
 });
+
+const { updateTeam  } = useTeamsApi();
+const loading = ref(false);
+const message = ref('');
+
+const updateCurrentTeam = async (newData) => {
+  loading.value = true;
+  try {
+    await updateTeam(currentteam, newData);
+    // Obnov seznam týmů
+    teams.value = await $fetch("/api/listTeam");
+    message.value = 'Tým byl aktualizován!';
+  } catch (error) {
+    message.value = 'Chyba při aktualizaci';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const editTeam = async () => {
+  /*
+  const newData = {
+    ...currentTeamInfo.value,
+    name: "Another Distance", 
+  };
+  */
+  await updateCurrentTeam(newData);
+};
+
 
 function giveavatar(num) {
   return avatars[num.toString()] 

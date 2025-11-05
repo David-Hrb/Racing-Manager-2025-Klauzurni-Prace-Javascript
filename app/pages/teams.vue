@@ -356,7 +356,25 @@ function rightclick() {
 }
 
 
+//API
 
+const { updateManager  } = useManagerApi();
+const message = ref('');
+
+const updateCurrentManager = async (newData) => {
+  try {
+    await updateManager(newData);
+  } catch (error) {
+  } finally {
+  }
+};
+
+const editManager = async () => {
+  const newData = {
+    team: currentteamindex.value + 1, 
+  };
+  await updateCurrentManager(newData);
+};
 //layout 
 
 const switchLayout = inject('switchLayout')
@@ -365,7 +383,11 @@ onMounted(() => {
   switchLayout('teams') 
 })
 
+
+
+
 const switchToDefaut = () => {
+  editManager()
   navigateTo('menu/menu')
 }
 
