@@ -18,13 +18,13 @@
       </NuxtLink>
     </div>
     
-    <div class="right">
+    <div class="right" >
       <div class="stats-section">
         <div class="stat-item">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path fill="currentColor" d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15c0-1.09 1.01-1.85 2.7-1.85c1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61c0 2.31 1.91 3.46 4.7 4.13c2.5.6 3 1.48 3 2.41c0 .69-.49 1.79-2.7 1.79c-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55c0-2.84-2.43-3.81-4.7-4.4z"/>
           </svg>
-          <span>15,000</span>
+          <span >{{money}}</span>
         </div>
         
         <div class="divider-vertical"></div>
@@ -40,9 +40,9 @@
       <div class="divider-vertical"></div>
       
       <div class="user-info">
-        <div class="user-details">
-          <span class="username">Mistr Volantu</span>
-          <span class="user-subtitle">Pro závodník</span>
+        <div class="user-details" v-for="(manager) in manager">
+          <span class="username">{{manager.name}} {{manager.surname}}</span>
+          <span class="user-subtitle">{{manager.lastwork}}</span>
         </div>
         
       </div>
@@ -59,7 +59,29 @@
 </template>
 
 <script setup>
+const manager = ref([]);
+const teams = ref([]);
+const currentteam = ref(0);
+const { getTeam } = useTeamsApi();
 
+const updateCurrentTeam = async () => {
+  try {
+    teams.value = await getTeam(currentteam.value); 
+  } catch (error) {
+    console.error('Chyba při načítání týmu:', error);
+  }
+};
+
+
+manager.value = await $fetch("/api/manager/listManager");
+if (manager.value.length > 0) {
+  currentteam.value = manager.value[0].team;
+  console.log(currentteam.value);
+  await updateCurrentTeam(); 
+  console.log(teams.value); 
+}
+
+console.log(teams.value);
 definePageMeta({
   layout: 'menu',
 })

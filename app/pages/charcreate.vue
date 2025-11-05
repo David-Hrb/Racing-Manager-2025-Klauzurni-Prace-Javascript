@@ -5,9 +5,21 @@
       <div class="inputs">
         <div class="inputsleft">
           <h3>Jméno</h3>
-          <input type="text" v-model="name" required>
+          <input
+            type="text"
+            v-model="name"
+            @input="filterLettersOnly('name')"
+            title="Jméno musí obsahovat pouze písmena a mezery"
+            required
+          >
           <h3>Příjmení</h3>
-          <input type="text" v-model="surname" required>
+          <input
+            type="text"
+            v-model="surname"
+            @input="filterLettersOnly('surname')"
+            title="Příjmení musí obsahovat pouze písmena a mezery"
+            required
+          >
           <h3>Národnost</h3>
           <select id="nationality" v-model="nationality" name="nationality" required>
               <option value="nothing">-- Vyberte národnost --</option>
@@ -270,15 +282,22 @@
 
 const name = ref('');
 const surname = ref('');
-const nationality = ref('');
+const nationality = ref('nothing');
 const date = ref('');
 
-const lastwork = ref('');
+const lastwork = ref('nothing');
 const avatar = ref('');
 
 const selectedGender = ref('nothing')
 const selectedAvatar = ref('')
 
+const filterLettersOnly = (field) => {
+  if (field === 'name') {
+    name.value = name.value.replace(/[^A-Za-zÁ-Žá-žůŮ ]/g, '')
+  } else if (field === 'surname') {
+    surname.value = surname.value.replace(/[^A-Za-zÁ-Žá-žůŮ ]/g, '')
+  }
+}
 
 const men = ref([
   {road: "/images/icons/men/01.svg", type: 1},
@@ -321,7 +340,7 @@ onMounted(() => {
 
 const switchToTeams = () => { 
   
-  if(name.value === '' || surname.value === '' || nationality.value === '' || date.value === '' || lastwork.value === '' || selectedGender.value === 'nothing' || avatar.value === '') {
+  if(name.value === '' || surname.value === '' || nationality.value === 'nothing' || date.value === '' ||  lastwork.value === 'nothing' || selectedGender.value === 'nothing' || avatar.value === '') {
     alert('Vyplňte prosím všechna pole!')
     return;
   }

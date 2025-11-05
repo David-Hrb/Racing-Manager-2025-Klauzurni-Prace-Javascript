@@ -1,3 +1,4 @@
+
 // composables/useTeamsApi.js
 export const useTeamsApi = () => {
   const getTeam = async (id) => {
