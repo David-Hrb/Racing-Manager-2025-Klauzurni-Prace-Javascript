@@ -17,7 +17,9 @@
       </div>
     </div>
 
-    <div class="div2"></div>
+    <div class="div2">
+      
+    </div>
 
     <div class="div3">
       <h2>Trať:</h2> 
@@ -56,6 +58,31 @@
 <script setup>
 import avatars from '~/assets/json/avatars.json'
 const { setupRace } = useRaceSetup();
+const { calendar } = useCreateCalendar();
+console.log(calendar.value, calendar.value[0].date, calendar.value[0].i);
+
+function submit() {
+  console.log("database");
+  for(let i = 0; i < calendar.value.length; i++) { 
+    $fetch("/api/calendar/createCalendar", {
+      method: "POST",
+      body: {
+        track: calendar.value[i].i,
+        date: calendar.value[i].date,
+        raced: 0,
+        poleposition: 0,
+        polepositionteam: 0,
+        winner: 0,
+        winnerteam: 0,
+        secondplace: 0,
+        secondteam: 0,
+        thirdplace:0,
+        thirdteam : 0
+      }
+    });
+  }
+}
+
 
 // Načítání dat z databáze
 let drivers = ref([]);

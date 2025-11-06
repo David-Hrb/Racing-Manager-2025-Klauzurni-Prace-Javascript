@@ -25,7 +25,8 @@ export default defineNuxtConfig({
 
   modules: [
     //'@nuxthub/core',
-    '@nuxt/icon'
+    '@nuxt/icon',
+    '@pinia/nuxt'
   ],
 
   future: {
