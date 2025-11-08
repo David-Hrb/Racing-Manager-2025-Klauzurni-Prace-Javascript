@@ -9,7 +9,7 @@
 <script setup>
 const game = useGameStore();
 const { manteam } = await useManager()
-const { logoroad } = await useLogos(manteam)
+const { logoroad } = await useLogos(manteam - 1)
 
 console.log(manteam, logoroad)
 const managerfire = computed(() => {

@@ -2,10 +2,11 @@ export const useGameStore = defineStore('game', () => {
   const currentDay = ref(1)
   const season = ref(1)
   const managerhappines = ref(100)
+  const calendarrangefirst = ref(1)      
+  const calendarrangesecond = ref(18)    
   
   function nextDay() {
     currentDay.value++
-
   }
   
   function nextSeason() {
@@ -13,5 +14,13 @@ export const useGameStore = defineStore('game', () => {
     currentDay.value = 1
   }
   
-  return { currentDay, season, managerhappines, nextDay, nextSeason }
+  return { 
+    currentDay, 
+    season, 
+    managerhappines, 
+    nextDay, 
+    nextSeason, 
+    calendarrangefirst,   
+    calendarrangesecond 
+  }
 })

@@ -1,13 +1,7 @@
 <template>
   <footer class="main-footer">
-    <NuxtLink to="/menu/menu" class="footer-link">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z"/>
-      </svg>
-      <span>Přehled</span>
-    </NuxtLink>
-    
-    <div class="divider"></div>
+
+
     
     <NuxtLink to="/menu/upgrade" class="footer-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
