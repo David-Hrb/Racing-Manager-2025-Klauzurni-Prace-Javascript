@@ -6,6 +6,11 @@
 
 <script setup>
 definePageMeta({ layout: 'menu' }) 
+const switchLayout = inject('switchLayout')
+
+onMounted(() => {
+  switchLayout('menu') 
+})
 </script>
 
 <style>

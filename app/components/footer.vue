@@ -43,25 +43,22 @@
       <span>Jezdci</span>
     </NuxtLink>
     
+    <div class="divider"></div>
     
-
+    <NuxtLink to="/menu/chef" class="footer-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"/>
+      </svg>
+      <span>Šéf</span>
+    </NuxtLink>
     
     <div class="divider"></div>
     
     <NuxtLink to="/menu/career" class="footer-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"/>
-      </svg>
-      <span>Kariéra</span>
-    </NuxtLink>
-    
-    <div class="divider"></div>
-    
-    <NuxtLink to="/menu/achievements" class="footer-link">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fill="currentColor" d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1Z"/>
       </svg>
-      <span>Úspěchy</span>
+      <span>Kariéra</span>
     </NuxtLink>
     
     <div class="divider"></div>

@@ -4,8 +4,12 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
+const switchLayout = inject('switchLayout')
 
+onMounted(() => {
+  switchLayout('menu') 
+})
 </script>
 
 <style>

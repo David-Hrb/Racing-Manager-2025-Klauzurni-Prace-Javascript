@@ -1,4 +1,3 @@
-// server/api/teams/[id].ts
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id');
     const method = event.method;
@@ -7,25 +6,23 @@ export default defineEventHandler(async (event) => {
     
     const db = useDatabase("myDB");
 
-    // GET - získej tým
+    // GET 
     if (method === 'GET') {
         const result = await db.sql`SELECT * FROM teams WHERE ID = ${id}`;
         return result;
     }
 
-    // PUT nebo PATCH - aktualizuj tým (oboje funguje stejně)
+    // PUT nebo PATCH 
     if (method === 'PUT' || method === 'PATCH') {
         try {
             const requestBody = await readBody(event);
             
             console.log('Request body:', requestBody);
             
-            // Načti aktuální data
             const current = await db.sql`SELECT * FROM manager WHERE ID = ${id}`;
             
             console.log('Current data:', current);
             
-            // Zjisti správný formát dat
             let currentData;
             if (Array.isArray(current) && current.length > 0) {
                 currentData = current[0];
@@ -44,7 +41,6 @@ export default defineEventHandler(async (event) => {
                 });
             }
 
-            // Mergni data
             const updated = { ...currentData, ...requestBody };
             
             console.log('Updated data:', updated);
@@ -92,7 +88,7 @@ export default defineEventHandler(async (event) => {
         }
     }
 
-    // DELETE - smaž tým
+    // DELETE 
     if (method === 'DELETE') {
         const result = await db.sql`
             DELETE FROM teams WHERE ID = ${id} RETURNING *

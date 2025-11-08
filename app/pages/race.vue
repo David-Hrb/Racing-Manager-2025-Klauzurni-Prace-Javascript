@@ -303,7 +303,7 @@ const { setupRace } = useRaceSetup();
 const { getRandomInteger } = UseInteger();
 const { getRandomFloat } = UseFloat();
 const { calculateLapTime } = useLapTime();
- const { createEvent } = useRaceEvents();
+const { createEvent } = useRaceEvents();
 
 
 
