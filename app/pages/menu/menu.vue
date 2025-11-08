@@ -1,89 +1,179 @@
 <template>
   <div class="parent">
     <div class="drivers">
-       <div 
-        v-for="(driver, index) in teamDrivers" 
-        :key="index" 
-        :class="`drivers-${driver.name.replace(/\s+/g, '-').toLowerCase()}`"
-        class="drivers"
-        >
-        <img :src="`/images/avatars/${giveavatar(driver.avatar)}.svg`" class="avatar" alt="avatar">
-        <div class="person">
-          <span class="fi" :class="`fi-${driver.nationality}`" aria-hidden="true"></span>
-          <div class="name">{{ driver.name }}</div>
+      <h2 class="section-title">Vaši jezdci</h2>
+      <div 
+      v-for="(driver, index) in teamDrivers" 
+      :key="index" 
+      :class="`driver-item driver-${driver.name.replace(/\s+/g, '-').toLowerCase()}`"
+      >
+        <div class="driver-maininfo">
+          <img :src="`/images/avatars/${giveavatar(driver.avatar)}.svg`" class="avatar" alt="avatar">
+          <div class="person">
+              <span class="fi" :class="`fi-${driver.nationality}`" aria-hidden="true"></span>
+              <div class="name">{{ driver.name }}</div>
+          </div>
+        </div>   
+        <div class="driver-content">  
+          <div class="driver-stats">
+            <div class="stat-row">
+              <span class="label">Narozen:</span>
+              <span class="value">{{ driver.bornyear }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">Pořadí:</span>
+              <span class="value">{{ driver.championshipplace }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">Popularity:</span>
+              <span class="value">{{ driver.popularity }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">Ego:</span>
+              <span class="value">{{ driver.ego }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">Kontrakt do:</span>
+              <span class="value">{{ driver.contractexp }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">Pr Management:</span>
+              <span class="value">{{ driver.prmanagement }}</span>
+            </div>
+          </div>
         </div>
-        <div class="bornyear drivertext">narozen: {{ driver.bornyear }}</div>
-        <div class="championshipplace drivertext">pořadí: {{ driver.championshipplace }}</div>
       </div>
     </div>
 
     <div class="div2">
-      
+      <h2 class="section-title">Váš tým</h2>  
+        <div 
+        v-if="currentTeamInfo"
+        :class="`team-content team-${currentTeamInfo.name.replace(/\s+/g, '-').toLowerCase()}`"
+        >
+          <div class="team-header">
+            <img class="logo" :src="logoroad" alt="Team Logo">
+            <div class="team-identity">
+              <div class="person">
+                <span class="fi" :class="`fi-${currentTeamInfo.nationality}`" aria-hidden="true"></span>
+                <div class="name">{{ currentTeamInfo.name }}</div>
+              </div>
+              <div class="team-meta">
+                <span>Založeno: {{ currentTeamInfo.creationyear }}</span>
+                <span>Pořadí: {{ currentTeamInfo.championshipplace }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="team-details">
+            <div class="colors-section">
+              <span class="label">Barvy týmu:</span>
+              <div class="colors">
+                <div class="circlecolor" :style="`background-color:${currentTeamInfo.color1}`"></div>
+                <div class="circlecolor" :style="`background-color:${currentTeamInfo.color2}`"></div>
+                <div class="circlecolor" :style="`background-color:${currentTeamInfo.color3}`"></div>
+              </div>
+            </div>
+
+            <div class="sponsors-section">
+              <span class="label">Sponzoři:</span>
+              <div class="sponzors">
+                <div class="sponzor">
+                  <span class="fi" :class="`fi-${sponsornationality1}`" aria-hidden="true"></span> 
+                  <span class="sponsor-name">{{ sponsor1 }}</span>
+                  <span class="sponsor-money">{{ sponsormoney1 }} €</span>
+                </div>
+                <div class="sponzor">
+                  <span class="fi" :class="`fi-${sponsornationality2}`" aria-hidden="true"></span> 
+                  <span class="sponsor-name">{{ sponsor2 }}</span>
+                  <span class="sponsor-money">{{ sponsormoney2 }} €</span>
+                </div>
+                <div class="sponzor">
+                  <span class="fi" :class="`fi-${sponsornationality3}`" aria-hidden="true"></span> 
+                  <span class="sponsor-name">{{ sponsor3 }}</span>
+                  <span class="sponsor-money">{{ sponsormoney3 }} €</span>
+                </div>      
+              </div>
+            </div>
+
+            <div class="fans-section">
+              <span class="label">Počet fanoušků:</span>
+              <span class="fans-value">{{ currentTeamInfo.fanspopularity }}</span>
+            </div>
+          </div>
+        </div>
     </div>
 
     <div class="div3">
-      <h2>Trať:</h2> 
+      <h2 class="section-title">Další trať</h2> 
       <div v-if="currentCircuitInfo" class="circuitinfo">
-        <span class="fi" :class="`fi-${currentCircuitInfo.nationality.toLowerCase()}`" aria-hidden="true"></span>
-        <h3>{{ currentCircuitInfo.name }}</h3>
-        <h3>{{ currentCircuitInfo.town }}</h3>
-        <h3>{{ cirtype(currentCircuitInfo.type) }}</h3>
-        <h3>{{ currentCircuitInfo.length }} km</h3>
-        <h3>{{ currentCircuitInfo.lapslength }} kol</h3>
-        <h3>{{ currentCircuitInfo.numberofturns }} zatáček</h3>
+        <div class="circuit-header">
+          <span class="fi fi-large" :class="`fi-${currentCircuitInfo.nationality.toLowerCase()}`" aria-hidden="true"></span>
+          <div class="circuit-names">
+            <h3>{{ currentCircuitInfo.name }}</h3>
+            <span class="town">{{ currentCircuitInfo.town }}</span>
+          </div>
+        </div>
+        <div class="circuit-specs">
+          <div class="spec-item">
+            <span class="label">Typ:</span>
+            <span class="value">{{ cirtype(currentCircuitInfo.type) }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="label">Délka:</span>
+            <span class="value">{{ currentCircuitInfo.length }} km</span>
+          </div>
+          <div class="spec-item">
+            <span class="label">Kola:</span>
+            <span class="value">{{ currentCircuitInfo.lapslength }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="label">Zatáčky:</span>
+            <span class="value">{{ currentCircuitInfo.numberofturns }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="div4">
-      <div 
-        v-if="currentTeamInfo"
-        :class="`teams-${currentTeamInfo.name.replace(/\s+/g, '-').toLowerCase()}`"
-        class="teams"
-        >
-        <div class="person">
-          <span class="fi" :class="`fi-${currentTeamInfo.nationality}`" aria-hidden="true"></span>
-          <div class="name">{{ currentTeamInfo.name }}</div>
+      <div class="manager-wrapper" v-for="(manager) in manager" :key="manager.name">
+        <h2 class="section-title">Manažer</h2>
+        <div class="managerinfo">
+          <img :src="`/images/icons/men/0${manager.selectedAvatar}.svg`" class="manager-avatar" alt="Manager">
+          <div class="manager-details">
+            <div class="manager-name">{{ manager.name }} {{ manager.surname }}</div>
+            <div class="manager-char">Váš charakter</div>
+            <div class="manager-stats">
+              <div class="stat-row">
+                <span class="fi" :class="`fi-${manager.nationality.toLowerCase()}`" aria-hidden="true"></span>
+                <span>{{ ManagerNationality }}</span>
+              </div>
+              <div class="stat-row">
+                <span class="label">Narození:</span>
+                <span>{{ manager.date }}</span>
+              </div>
+              <div class="stat-row">
+                <span class="label">Pohlaví:</span>
+                <span>{{ manager.SelectedGender }}</span>
+              </div>
+              <div class="stat-row">
+                <span class="label">Poslední práce:</span>
+                <span>{{ manager.lastwork }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="bornyear drivertext">Vytvoření týmu: {{ currentTeamInfo.creationyear }}</div>
-        <div class="championshipplace drivertext">pořadí: {{ currentTeamInfo.championshipplace }}</div>
       </div>
     </div>
-
+  </div>
+</template>
+<!--
     <button @click="switchToDefaut" class="menu-button next">
       Spustit aplikaci
     </button>
-  </div>
-</template>
-
+    -->
 <script setup>
 import avatars from '~/assets/json/avatars.json'
-const { setupRace } = useRaceSetup();
-const { calendar } = useCreateCalendar();
-console.log(calendar.value, calendar.value[0].date, calendar.value[0].i);
-
-function submit() {
-  console.log("database");
-  for(let i = 0; i < calendar.value.length; i++) { 
-    $fetch("/api/calendar/createCalendar", {
-      method: "POST",
-      body: {
-        track: calendar.value[i].i,
-        date: calendar.value[i].date,
-        raced: 0,
-        poleposition: 0,
-        polepositionteam: 0,
-        winner: 0,
-        winnerteam: 0,
-        secondplace: 0,
-        secondteam: 0,
-        thirdplace:0,
-        thirdteam : 0
-      }
-    });
-  }
-}
-
-
 // Načítání dat z databáze
 let drivers = ref([]);
 let teams = ref([]);
@@ -98,6 +188,7 @@ manager.value = await $fetch("/api/manager/listManager");
 let currentteam = manager.value[0].team;
 let currentcircuit = 1;
 
+const { setupRace } = useRaceSetup();
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
   drivers: drivers.value,
   teams: teams.value,
@@ -106,20 +197,34 @@ const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace(
   circuitId: currentcircuit
 });
 
+// COMPOSABLES
+const { calendar } = useCreateCalendar();
+const { getSponsor } = useSponsors();
+const { manteam } = await useManager();
+const { logoroad } = await useLogos(manteam - 1);
+const ManagerNationality = useNationality(manager.value[0].nationality);
+console.log(ManagerNationality)
+
+
+
+
+
+// Zíksání sponzorů
+const { sponsorsname: sponsor1, sponsormoney: sponsormoney1, sponsornationality: sponsornationality1 } = getSponsor(currentTeamInfo.sponzor1);
+const { sponsorsname: sponsor2, sponsormoney: sponsormoney2, sponsornationality: sponsornationality2 } = getSponsor(currentTeamInfo.sponzor2);
+const { sponsorsname: sponsor3, sponsormoney: sponsormoney3, sponsornationality: sponsornationality3 } = getSponsor(currentTeamInfo.sponzor3);
+
+// API
 const { updateTeam  } = useTeamsApi();
 const loading = ref(false);
-const message = ref('');
 
 const updateCurrentTeam = async (newData) => {
   loading.value = true;
   try {
     await updateTeam(currentteam, newData);
-    // Obnov seznam týmů
     teams.value = await $fetch("/api/listTeam");
-    message.value = 'Tým byl aktualizován!';
-  } catch (error) {
-    message.value = 'Chyba při aktualizaci';
-  } finally {
+  } 
+  finally {
     loading.value = false;
   }
 };
@@ -149,6 +254,28 @@ function cirtype(num) {
       return "ovál"
     default:
       return "error"
+  }
+}
+
+function submit() {
+  console.log("database");
+  for(let i = 0; i < calendar.value.length; i++) { 
+    $fetch("/api/calendar/createCalendar", {
+      method: "POST",
+      body: {
+        track: calendar.value[i].i,
+        date: calendar.value[i].date,
+        raced: 0,
+        poleposition: 0,
+        polepositionteam: 0,
+        winner: 0,
+        winnerteam: 0,
+        secondplace: 0,
+        secondteam: 0,
+        thirdplace:0,
+        thirdteam : 0
+      }
+    });
   }
 }
 

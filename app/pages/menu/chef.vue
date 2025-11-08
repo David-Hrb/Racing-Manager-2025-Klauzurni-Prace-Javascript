@@ -2,11 +2,16 @@
   <div class="parent">
    Manager Happines {{ game.managerhappines }}
    Fire change {{ managerfire }}
+   <img :src="logoroad">
   </div>
 </template>
 
 <script setup>
 const game = useGameStore();
+const { manteam } = await useManager()
+const { logoroad } = await useLogos(manteam)
+
+console.log(manteam, logoroad)
 const managerfire = computed(() => {
   let danger = Math.floor(game.managerhappines / 10)
   switch(danger) {

@@ -325,6 +325,21 @@ $deep-purple-950: #281582;
   justify-content: flex-end;
   align-items: flex-end;
 }
+@mixin normaltext-smaller {
+  font-size: clamp(0.5rem, 0.3rem + 0.3125vw, 0.8rem);
+}
+
+@mixin normaltext {
+  font-size: clamp(0.7rem, 0.5rem + 0.3125vw, 1rem);
+}
+
+@mixin normaltext-bigger {
+  font-size: clamp(1rem, 0.7333rem + 0.4167vw, 1.4rem);
+}
+
+@mixin normaltext-biggest {
+  font-size: clamp(1.3rem, 0.9667rem + 0.5208vw, 1.8rem);
+}
 
 
 * {
@@ -362,59 +377,346 @@ template {
     height: 100vh;
 }
 
+.section-title {
+  margin-bottom: 15px;
+  @include normaltext-biggest;
+  color: $amber-900;
+  font-weight: 600;
+}
+
 .parent {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 8px;
-    width: 100%;
-    height: 86vh;
-    background-color: $gray-600;
-}
-    
-.drivers {
-    grid-row: span 5 / span 5;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 8px;
+  padding: 1vh;
+  height: 84vh;
+  background-color: $gray-800;
+
+  // Společné styly pro všechny sekce
+  > div {
     @include flex-column;
-    .drivers {
-        width: 100%;
-        height: 50%;
-        @include flex-column;
-        @include full-center;
-        gap: 10px;
-        .avatar {
-            width: 60%;
-            border: 2px $gray-200 solid;
-            background-color: $gray-950;
-        }
-        .person {
-            @include flex-row;
-            gap: 20px;
-            font-size: 2rem;
-        }
-        .drivertext {
-             font-size: 1.5rem;
-        }
-    }   
-}
+    min-height: 0;
+  }
 
+  // Společný styl pro všechny content boxy
+  .driver-item,
+  .team-content,
+  .circuitinfo,
+  .managerinfo {
+    padding: 20px;
+    background: $gray-900;
+    border: $amber-900 solid 3px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
-.div2 {
+  .drivers {
     grid-column: span 3 / span 3;
     grid-row: span 5 / span 5;
-    @include flex-column;
-    
-}
+    .driver-item:nth-child(3){
+      margin-top: 2%;
+    }
+    .driver-item {
+      display: flex;
+      gap: 1rem;
+      .driver-maininfo {
+        @include flex-row;
+        gap: 1rem;
+        
+        .avatar {
+          width: 6rem;
+          height: 6rem;
+          border-radius: 0%;
+          object-fit: cover;
+        }
+        
+        .person {
+          @include flex-row;
+          align-items: center;
+          gap: 10px;
 
-.div3 {
+          .fi {
+            width: 2rem;
+            height: 2rem;
+          }
+
+          .name {
+            @include normaltext-bigger;
+            color: $amber-500;
+            font-weight: 600;
+          }
+        }
+      }
+      
+      .driver-content {
+        flex: 1;
+
+        .driver-stats {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+
+          .stat-row {
+            display: flex;
+            justify-content: space-between;
+            @include normaltext;
+
+            .label {
+              color: $amber-500;
+            }
+
+            .value {
+              font-weight: 500;
+              color: $amber-500;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+  .div2 {
+    grid-column: span 3 / span 3;
+    grid-row: span 5 / span 5;
+    grid-column-start: 4;
+
+    .team-content {
+      .team-header {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 20px;
+
+        .logo {
+          width: 8rem;
+          height: 8rem;
+          object-fit: contain;
+        }
+
+        .team-identity {
+          flex: 1;
+          @include flex-column;
+          justify-content: center;
+          align-items: flex-start;
+
+          .person {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+
+            .fi {
+              width: 2.5rem;
+              height: 2.5rem;
+            }
+
+            .name {
+              @include normaltext-biggest;
+              color: $amber-500;
+              font-weight: 600;
+            }
+          }
+
+          .team-meta {
+            display: flex;
+            gap: 15px;
+            @include normaltext-bigger;
+            color: $amber-900;
+          }
+        }
+      }
+
+      .team-details {
+        @include flex-column;
+        gap: 15px;
+
+        .label {
+          font-weight: 500;
+          margin-bottom: 8px;
+          display: block;
+          @include normaltext-bigger;
+          color: $amber-500;
+        }
+
+        .colors-section {
+          .colors {
+            display: flex;
+            gap: 10px;
+
+            .circlecolor {
+              width: 2rem;
+              height: 2rem;
+              border-radius: 50%;
+              border: 3px solid $gray-700;
+            }
+          }
+        }
+
+        .sponsors-section {
+          .sponzors {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: $amber-500;
+            
+            .sponzor {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              @include normaltext;
+
+              .fi {
+                width: 1.5rem;
+                height: 1.5rem;
+              }
+
+              .sponsor-name {
+                flex: 1;
+              }
+
+              .sponsor-money {
+                font-weight: 600;
+                color: $amber-500;
+              }
+            }
+          }
+        }
+
+        .fans-section {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .fans-value {
+            @include normaltext;
+            font-weight: 600;
+            color: $amber-500;
+          }
+        }
+      }
+    }
+  }
+
+  .div3 {
+    grid-column: span 3 / span 3;
     grid-row: span 2 / span 2;
-    grid-column-start: 5;
-}
+    grid-column-start: 4;
+    grid-row-start: 6;
 
-.div4 {
-    grid-row: span 3 / span 3;
-    grid-column-start: 5;
-    grid-row-start: 3;
-}
+    .circuitinfo {
+      .circuit-header {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 15px;
+
+        .fi-large {
+          width: 4rem;
+          height: 4rem;
+        }
+
+        .circuit-names {
+          h3 {
+            @include normaltext-bigger;
+            color: $amber-500;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+          }
+
+          .town {
+            @include normaltext;
+            color: $amber-900;
+          }
+        }
+      }
+
+      .circuit-specs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+
+        .spec-item {
+          display: flex;
+          justify-content: space-between;
+          @include normaltext;
+          color: $amber-500;
+
+          .value {
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+
+  .div4 {
+    grid-column: span 3 / span 3;
+    grid-row: span 2 / span 2;
+    grid-row-start: 6;
+
+    .manager-wrapper {
+      height: 100%;
+      @include flex-column;
+      .managerinfo {
+        @include flex-row;
+        align-items: center;
+        gap: 20px;
+
+        .manager-avatar {
+          width: 6rem;
+          height: 6rem;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .manager-details {
+          flex: 1;
+
+          .manager-name {
+            @include normaltext-bigger;
+            color: $amber-500;
+            font-weight: 600;
+            margin-bottom: 15px;
+          }
+          .manager-char {
+            @include normaltext;
+            color: $amber-900;
+            font-weight: 600;
+            margin-bottom: 15px;
+          }
+
+          .manager-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+
+            .stat-row {
+              display: flex;
+              justify-content: space-between;
+              @include normaltext;
+              color: $amber-500;
+
+              .label {
+                color: $amber-500;
+              }
+
+              .value {
+                font-weight: 500;
+                color: $amber-500;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+
+
 .background {
     position: absolute;
     background: $gray-950;
