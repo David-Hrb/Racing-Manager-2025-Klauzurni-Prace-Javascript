@@ -6,13 +6,11 @@ export default defineEventHandler(async (event) => {
     
     const db = useDatabase("myDB");
 
-    // GET 
     if (method === 'GET') {
         const result = await db.sql`SELECT * FROM teams WHERE ID = ${id}`;
         return result;
     }
 
-    // PUT nebo PATCH 
     if (method === 'PUT' || method === 'PATCH') {
         try {
             const requestBody = await readBody(event);
@@ -81,28 +79,7 @@ export default defineEventHandler(async (event) => {
             return result;
         } catch (error) {
             console.error('Update error:', error);
-            throw createError({
-                statusCode: 500,
-                message: error instanceof Error ? error.message : 'Chyba při aktualizaci'
-            });
         }
     }
 
-    // DELETE 
-    if (method === 'DELETE') {
-        const result = await db.sql`
-            DELETE FROM teams WHERE ID = ${id} RETURNING *
-        `;
-
-        return {
-            success: true,
-            message: 'Tým byl smazán',
-            data: result
-        };
-    }
-
-    throw createError({
-        statusCode: 405,
-        message: `Metoda ${method} není podporována`
-    });
 });

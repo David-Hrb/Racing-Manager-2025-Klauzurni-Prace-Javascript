@@ -2114,53 +2114,6 @@ template {
   }
 }
 
-@media (max-width: 1200px) {
-  .main-footer {
-    .footer-link {
-      font-size: 0.8rem;
-      
-      span {
-        font-size: 0.75rem;
-      }
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .main-footer {
-    overflow-x: auto;
-    justify-content: flex-start;
-    
-    .footer-link {
-      min-width: 100px;
-      flex: 0 0 auto;
-    }
-  }
-}
-
-@media (max-width: 1200px) {
-  .main-footer {
-    .footer-link {
-      padding: 0.5rem 0.8rem;
-      font-size: 0.8rem;
-      
-      span {
-        font-size: 0.75rem;
-      }
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
-    }
-  }
-}
-
 
 .main-header {
   height: 6vh;
@@ -2373,26 +2326,12 @@ template {
   }
 }
 
-@media (max-width: 1200px) {
-  .main-header {
-    .logo-text .main-title {
-      font-size: 1.2rem;
-    }
-    
-    .header-link {
-      padding: 0 0.8rem;
-      font-size: 1rem;
-    }
-  }
-}
-/* === Calendar Container === */
+
 .maincont {
   display: flex;
   @include full-center;
   width: 100%;
   height: 86vh;
-
-
   background-color: $gray-800;
 }
 

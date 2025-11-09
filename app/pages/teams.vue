@@ -222,6 +222,7 @@
 
 <script  setup>
 //variables
+const sound = useClickSound(); 
 let teams = ref([]);
 let drivers = ref([]);
 let logos = ref([]);
@@ -387,6 +388,7 @@ onMounted(() => {
 
 
 const switchToDefaut = () => {
+  sound.play()
   editManager()
   navigateTo('menu/menu')
 }

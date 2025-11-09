@@ -13,6 +13,11 @@ export const useGameStore = defineStore('game', () => {
     season.value++
     currentDay.value = 1
   }
+
+  function calendar(calendarrangefirst, calendarrangesecond) {
+    calendarrangefirst.value = calendarrangefirst
+    calendarrangesecond.value = calendarrangesecond
+  }
   
   return { 
     currentDay, 
@@ -20,6 +25,7 @@ export const useGameStore = defineStore('game', () => {
     managerhappines, 
     nextDay, 
     nextSeason, 
+    calendar,
     calendarrangefirst,   
     calendarrangesecond 
   }

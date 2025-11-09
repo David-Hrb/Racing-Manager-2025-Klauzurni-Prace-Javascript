@@ -37,6 +37,7 @@
     "@vueuse/nuxt": "^13.9.0",
     "better-sqlite3": "^12.2.0",
     "flag-icons": "^7.5.0",
+    "howler": "^2.2.4",
     "pinia": "^3.0.4",
     "vue": "^3.4.0",
     "vue-router": "^4.4.0"

@@ -279,7 +279,7 @@
 </template>
 
 <script setup>
-
+const sound = useClickSound(); 
 const name = ref('');
 const surname = ref('');
 const nationality = ref('nothing');
@@ -339,7 +339,7 @@ onMounted(() => {
 })
 
 const switchToTeams = () => { 
-  
+  sound.play()
   if(name.value === '' || surname.value === '' || nationality.value === 'nothing' || date.value === '' ||  lastwork.value === 'nothing' || selectedGender.value === 'nothing' || avatar.value === '') {
     alert('Vyplňte prosím všechna pole!')
     return;

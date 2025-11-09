@@ -17,9 +17,11 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           api: 'modern-compiler',
-          //additionalData: '@use "~/assets/css/variables.scss" as *;'
         }
       }
+    },
+    optimizeDeps: {
+      include: ['howler']
     }
   },
 

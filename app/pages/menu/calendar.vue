@@ -10,7 +10,7 @@
               <th>#</th>
               <th>Datum</th>
               <th>Okruh</th>
-              <th>Národnost</th>
+              <th>Stát</th>
               <th>Město</th>
               <th>Délka</th>
               <th>Kola</th>
@@ -30,7 +30,7 @@
               class="table-row"
             >
               <td class="race-number">{{ index + 1 }}</td>
-              <td>{{ calendar.date }}</td>
+              <td>{{ daycount(calendar.date) }}</td>
               <td class="circuit-name">{{ getCircuit(calendar.track)?.name }}</td>
               <td><span class="fi" :class="`fi-${getCircuit(calendar.track)?.nationality.toLowerCase()}`" aria-hidden="true"></span> {{ getCircuit(calendar.track)?.nationality }}</td>
               <td>{{ getCircuit(calendar.track)?.town }}</td>
@@ -86,10 +86,10 @@
 const circuits = ref([]);
 circuits.value = await $fetch("/api/listCircuit");
 const { calendarreturn } = await useCalendarRange()
+const { daycount } = useDayCount()
 console.log(circuits)
 
 const getCircuit = (trackId) => {
-  
   return circuits.value.find(circuit => circuit.ID === trackId)
 }
 

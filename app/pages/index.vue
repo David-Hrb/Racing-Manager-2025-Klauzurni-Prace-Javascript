@@ -12,22 +12,24 @@
       <button @click="newgame" class="menu-button primary">
         New Game
       </button>
-      <button @click="settings" class="menu-button primary">
+      <button @click="setting" class="menu-button primary">
         Settings
       </button>
       <button @click="author" class="menu-button primary">
         Author Notes
       </button>
-      <button @click="submit" class="menu-button primary">
+      <!--
+      <button @click="submit sound.play()" class="menu-button primary">
         Submit (del)
       </button>
+      -->
     </div>
   </div>
 </template>
 
 <script setup>
 
-
+const sound = useClickSound(); 
 const switchLayout = inject('switchLayout')
 
 onMounted(() => {
@@ -35,6 +37,7 @@ onMounted(() => {
 })
 
 const newgame = () => {
+  sound.play()
   navigateTo('charcreate')
 }
 

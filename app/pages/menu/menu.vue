@@ -145,8 +145,11 @@
             <div class="manager-char">Váš charakter</div>
             <div class="manager-stats">
               <div class="stat-row">
-                <span class="fi" :class="`fi-${manager.nationality.toLowerCase()}`" aria-hidden="true"></span>
-                <span>{{ ManagerNationality }}</span>
+                <span class="label">Národnost:</span>
+                <span>
+                  <span class="fi" :class="`fi-${manager.nationality.toLowerCase()}`" aria-hidden="true"></span>
+                  {{ ManagerNationality }}
+                </span>
               </div>
               <div class="stat-row">
                 <span class="label">Narození:</span>
@@ -184,9 +187,9 @@ drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 circuits.value = await $fetch("/api/listCircuit");
 manager.value = await $fetch("/api/manager/listManager");
-
+const { currentcircuit } = await useGetNextRace()
+console.log(currentcircuit)
 let currentteam = manager.value[0].team;
-let currentcircuit = 1;
 
 const { setupRace } = useRaceSetup();
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({

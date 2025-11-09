@@ -1,6 +1,6 @@
 // server/api/manager/profile.ts
 export default defineEventHandler(async (event) => {
-    const id = 1; // nebo získej z parametru/session
+    const id = 1; 
     const method = event.method;
     
     console.log('Method:', method, 'ID:', id);
@@ -11,7 +11,6 @@ export default defineEventHandler(async (event) => {
         try {
             const requestBody = await readBody(event);
             
-            // Aktualizuj profil manažera
             const result = await db.sql`
                 UPDATE Manager SET 
                     name = ${requestBody.name},
