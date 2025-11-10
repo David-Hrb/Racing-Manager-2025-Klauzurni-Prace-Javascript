@@ -1,41 +1,56 @@
 <template>
   <div class="settings">
-    <button @click="settingsbutton" class="settings-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1c0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66z"/>
+    <div class="settings-cont">
+      <button @click="settingsbutton" class="settings-btn settings-close-btn">
+      <svg width="2rem" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 460.775 460.775" xml:space="preserve">
+        <path fill="currentcolor" d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55
+          c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55
+          c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505
+          c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55
+          l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719
+          c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/>
       </svg>
-    </button>
+      </button>
+      <h2>Nastavení</h2>
+      <h3>Volume</h3>
+      <div class="volume">
+        <h4>Main volume: {{ audiostore.volume }} %</h4>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          v-model="audiostore.volume"
+          @input="handleVolumeChange"
+        />
+      </div>
+      
+    </div>
+
   </div>
 </template>
 
 <script setup>
 const sound = useClickSound();
+const audiostore = useSettings();
+const { soundsettings } = useSoundSettings();
+
 const { settingsval, toggle } = useSettingsValue();
+
 function settingsbutton() {
   sound.play()
   console.log("Toogle")
   toggle()
 }
+
+function handleVolumeChange() {
+  soundsettings(audiostore.volume / 100);
+}
+
+onMounted(() => {
+  soundsettings(audiostore.volume / 100);
+});
 </script>
 
 <style>
-.settings {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1000;
-  background-color: black;
-  animation: fadeIn 0.3s ease-in-out;
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-}
 </style>

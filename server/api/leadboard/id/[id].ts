@@ -1,17 +1,15 @@
 export default defineEventHandler(async (event) => {
-    const id = 1;
+    const id = getRouterParam(event, 'id');
     const method = event.method;
-    
-    console.log('Method:', method, 'ID:', id);
-    
     const db = useDatabase("myDB");
+
     if (method === 'PUT' || method === 'PATCH') {
         try {
             const requestBody = await readBody(event);
             
             const result = await db.sql`
-                UPDATE Manager SET team = ${requestBody.team}
-                WHERE id = ${id}
+                UPDATE leadboard SET points = ${requestBody.points}
+                WHERE driverID = ${id}
                 RETURNING *;
             `;
             
@@ -23,4 +21,10 @@ export default defineEventHandler(async (event) => {
             });
         }
     }
+
+    throw createError({
+        statusCode: 405,
+        message: `Metoda ${method} není podporována`
+    });
+
 });

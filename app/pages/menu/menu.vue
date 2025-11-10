@@ -219,16 +219,14 @@ const { sponsorsname: sponsor3, sponsormoney: sponsormoney3, sponsornationality:
 
 // API
 const { updateTeam  } = useTeamsApi();
-const loading = ref(false);
+
 
 const updateCurrentTeam = async (newData) => {
-  loading.value = true;
   try {
     await updateTeam(currentteam, newData);
     teams.value = await $fetch("/api/listTeam");
-  } 
-  finally {
-    loading.value = false;
+  } catch (error) {
+    console.error("Error updating team:", error);
   }
 };
 

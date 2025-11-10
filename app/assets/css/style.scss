@@ -351,6 +351,10 @@ $spacing-xl: 2rem;
   font-size: clamp(2rem, 1.3333rem + 1.0417vw, 3rem);
 }
 
+@mixin maintext {
+  font-size: clamp(4rem, 3.3333rem + 1.0417vw, 5rem);
+}
+
 
 * {
     padding: 0;
@@ -2296,37 +2300,43 @@ template {
     }
   }
 
-  .settings-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
-    border: 2px solid $amber-900;
-    background: transparent;
-    color: $amber-500;
-    cursor: pointer;
+  
+}
+
+.settings-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  border: 2px solid $amber-900;
+  background: transparent;
+  color: $amber-500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    fill: $amber-500;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  }
 
+  &:hover {
+    background: rgba($orange-500, 0.1);
+    border-color: $orange-500;
+    
     svg {
-      fill: $amber-500;
-      transition: all 0.3s ease;
-    }
-
-    &:hover {
-      background: rgba($orange-500, 0.1);
-      border-color: $orange-500;
-      
-      svg {
-        fill: $orange-500;
-        transform: rotate(90deg);
-      }
+      fill: $orange-500;
+      transform: rotate(90deg);
     }
   }
 }
-
-
+.settings-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  
+}
 .maincont {
   display: flex;
   @include full-center;
@@ -2335,7 +2345,7 @@ template {
   background-color: $gray-800;
 }
 
-.container-calendar {
+.container-calendar, .container-leaderboard {
   border: 4px solid $gray-950;
   border-radius: 10px;
   width: 90%;
@@ -2357,7 +2367,7 @@ template {
     background-color: $gray-900;
     overflow: auto;
     
-    .calendar-table {
+    .calendar-table, .leaderboard-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
@@ -2404,4 +2414,146 @@ template {
 
     }
   }
+}
+
+.settings {
+  position: absolute;
+  display: flex;
+  @include full-center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.95);
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .settings-cont {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    background-color: $gray-950;
+    border: 5px solid $amber-900;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 0px 30px rgba(255, 111, 0, 0.5);
+    overflow-y: auto;
+    @include flex-column;
+    gap: 2rem;
+    justify-content: flex-start;
+    align-items: left;
+
+    h2 {
+      color: $amber-500;
+      @include maintext;
+      font-weight: bolder;
+      text-align: center;
+    }
+
+    h3 {
+      color: $amber-700;
+      @include titletext;
+      font-weight: bold;
+      text-align: left;
+      width: 100%;
+    }
+
+    h4 {
+      color: $amber-900;
+      @include normaltext-bigger;
+      margin-bottom: 1rem;
+      text-align: left;
+      width: 100%;
+    }
+    .volume {
+      @include flex-column;
+      gap: 1rem;
+
+     
+      input[type="range"] {
+          width: 300px;
+          height: 8px;
+          border-radius: 5px;
+          background: $gray-700;
+          outline: none;
+          -webkit-appearance: none;
+          cursor: pointer;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: $amber-500;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+          background: $amber-950;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: $amber-900;
+          cursor: pointer;
+          border: none;
+          transition: all 0.2s;
+          box-shadow: 0 2px 8px rgba(255, 111, 0, 0.4);
+      }
+
+      input[type="range"]::-moz-range-thumb:hover {
+          transform: scale(1.2);
+          background: $amber-950;
+      }
+    }
+   
+  }
+
+}
+
+.toggle-buttons {
+  margin-bottom: 20px;
+  display: flex;
+  @include full-center;
+  gap: 10px;
+}
+
+.toggle-buttons button {
+  padding: 10px 15px;
+  border: 1px solid $amber-950;
+  background-color: $gray-800;
+  color: $amber-950;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.toggle-buttons button:hover {
+  background-color: $gray-950;
+}
+
+.toggle-buttons button.active {
+  background-color: $gray-900; 
+  color: $amber-500;
+  border-color: $amber-950;
+  font-weight: bold;
+}
+.toggle-buttons button.active:hover {
+  background-color: $gray-950;
 }

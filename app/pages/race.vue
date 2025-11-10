@@ -140,6 +140,36 @@
       </div>   
     </div>
   </div>
+  <div class="pos-absolute" v-if="raceEnded">
+    <div class="pos-absolute-inside">
+      <h1>VÝSLEDKY ZÁVODU</h1>
+       <div class="results-container">
+        <div 
+          v-for="(driver, index) in displayedLaptimes" 
+          :key="driver.num"
+          class="result-row"
+        >
+          <img :src="`/images/avatars/${giveavatar(driver.avatar)}.svg`" class="kvalimg" alt="avatar">
+            
+          <span class="position">{{ index + 1 }}.</span>
+          <div class="driver-info">
+            <div class="driver-line">
+              <span class="fi" :class="`fi-${driver.nationality}`" aria-hidden="true"></span>
+              <span class="driver-name">{{ driver.name }}</span>
+            </div>
+            <div class="team-line">
+              <span class="fi" :class="`fi-${driver.teamnationality}`" aria-hidden="true"></span>
+              <span class="team-name">{{ driver.teamname }}</span>
+            </div>
+          </div>
+          <div class="laptime-info">
+            <span class="bestlap"></span>       
+          </div>
+        </div>
+        <button @click="switchToMenu" class="close-button">POKRAČOVAT</button>
+      </div>
+    </div>
+  </div>
   <!-- RACE -->
   <div class="container">
     <div class="parentrace">
@@ -166,7 +196,7 @@
               <span class="bestlap" v-if="index == 0">
                 {{ laptimereturn(Number(driver.time).toFixed(4)) }}               
                 <span class="text" :style="`color: ${gettyrescolor(driver.currenttyre)}`">
-                  {{gettyres(driver.currenttyre, false)}} 
+                {{gettyres(driver.currenttyre, false)}} 
                 </span>
               {{ driver.driverdeg.toString().padEnd(7, '0') }}%
 
@@ -320,6 +350,7 @@ manager.value = await $fetch("/api/manager/listManager");
 
 let currentteam = manager.value[0].team;;
 let currentcircuit = 1;
+const raceEnded = ref(false);
 
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
   drivers: drivers.value,
@@ -673,6 +704,8 @@ function processLap() {
   } else {
     clearInterval(timer);
     isRunning.value = false;
+    raceEnded.value = true;
+    raceEnd();
     console.log('Race finished!');
   }
 }
@@ -866,7 +899,40 @@ function everyLap() {
 
   
 }
+// AFTER RACE
+const { updateLeadboard  } = useLeadBoardsApi();
+const leadboard = ref([])
+leadboard.value = await $fetch('/api/leadboard/listLeadboard')
 
+const updateCurrentLeadboard = async (id, newData) => {
+  try {
+    await updateLeadboard(id, newData);
+    leadboard.value = await $fetch("/api/leadboard/listLeadboard");
+  } catch (error) {
+    console.error("Error updating team:", error);
+  }
+};
+
+const editLeadboard = async (id, points) => {
+  const newData = {
+    ...leadboard.value[id],
+    points: points 
+  };
+  await updateCurrentLeadboard(id, newData);
+};
+
+
+function raceEnd() {
+  const pointsDistribution = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+  displayedLaptimes.value.forEach((driver, i) => {
+    if (!driver.dnf && i < 10) {
+      const pointsEarned = pointsDistribution[i];
+      const driverId = driver.id;
+      editLeadboard(driverId, leadboard.value[driverId - 1].points + pointsEarned);
+      console.log(`${driver.name} získal ${pointsEarned} bodů za pozici ${i + 1}, celkem bodů: ${leadboard.value[driverId].points + pointsEarned}, body před: ${leadboard.value[driverId].points}, id bodů ${leadboard.value[driverId].driverID}, id: ${driverId}`);
+    }
+  });
+}
 
 
 onUnmounted(() => {
@@ -876,6 +942,9 @@ onUnmounted(() => {
 
 const switchLayout = inject('switchLayout')
 
+const switchToMenu = () => {
+  navigateTo('menu/menu')
+} 
 onMounted(() => {
   switchLayout('race') 
 })

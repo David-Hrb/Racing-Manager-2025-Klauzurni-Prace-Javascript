@@ -29,21 +29,37 @@ nuxtApp.hook("page:finish", () => { loading.value = false })
 </script>
 
 <style scoped>
+/* HTML: <div class="loader"></div> */
 .loader {
-  width: 45px;
+  width: 200px;
   aspect-ratio: 1;
-  --c: conic-gradient(from -90deg,#e65100 90deg,#ffc107 0);
-  background: var(--c), var(--c);
-  background-size: 40% 40%;
-  animation: l19 1s infinite alternate;
+  display:grid;
+  -webkit-mask: conic-gradient(from 15deg,#0000,#000);
+  animation: l26 1s infinite steps(12);
 }
-@keyframes l19 {
- 0%,
- 10%  {background-position: 0 0,0            calc(100%/3)}
- 50%  {background-position: 0 0,calc(100%/3) calc(100%/3)}
- 90%,
- 100% {background-position: 0 0,calc(100%/3) 0}
+.loader,
+.loader:before,
+.loader:after{
+  background:
+    radial-gradient(closest-side at 50% 12.5%,
+     #e65100 96%,#0000) 50% 0/20% 80% repeat-y,
+    radial-gradient(closest-side at 12.5% 50%,
+     #e65100 96%,#0000) 0 50%/80% 20% repeat-x;
 }
+.loader:before,
+.loader:after {
+  content: "";
+  grid-area: 1/1;
+  transform: rotate(30deg);
+}
+.loader:after {
+  transform: rotate(60deg);
+}
+
+@keyframes l26 {
+  100% {transform:rotate(1turn)}
+}
+
 .loading-overlay {
   position: fixed;
   top: 0;
