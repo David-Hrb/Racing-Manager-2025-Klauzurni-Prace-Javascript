@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
             
             console.log('Request body:', requestBody);
             
-            const current = await db.sql`SELECT * FROM manager WHERE ID = ${id}`;
+            const current = await db.sql`SELECT * FROM teams WHERE ID = ${id}`;
             
             console.log('Current data:', current);
             

@@ -27,30 +27,29 @@ const teams = ref([]);
 manager.value = await $fetch("/api/manager/listManager");
 teams.value = await $fetch("/api/listTeam");
 
+
 const { getTeam } = useTeamsApi();
 const { limit }= useSettings();
-console.log(limit)
 let teamValue = await getTeam(manager.value[0].team);
 let team = ref(teamValue.rows[0]);
-console.log(team.value.gearbox);
 const { updateTeam } = useTeamsApi();
+const currentTeamId = manager.value[0].team;
 
 const updateCurrentTeam = async (newData) => {
   try {
-    await updateTeam(manager.value[0].team, newData);
+    await updateTeam(currentTeamId, newData);
+
     teamValue = await getTeam(manager.value[0].team);
-    team = ref(teamValue.rows[0]);
+    team.value = teamValue.rows[0];
   } catch (error) {
     console.error("Error updating team:", error);
   }
 };
 
 const aerodynamics = async () => {
-  const newData = {
-    ...team.value,
-    aerodynamics: team.value.aerodynamics + 1, 
-  };
-  await updateCurrentTeam(newData);
+  team.value.aerodynamics = team.value.aerodynamics + 1;
+  console.log(team.value);
+  await updateCurrentTeam(team.value);
 };
 
 const gearbox = async () => {
