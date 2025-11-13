@@ -223,6 +223,7 @@
 <script  setup>
 //variables
 const sound = useClickSound(); 
+const sound2 = useClickSoundNext();
 let teams = ref([]);
 let drivers = ref([]);
 let logos = ref([]);
@@ -341,6 +342,7 @@ function driverpol(num) {
 
 
 function leftclick() {
+  sound2.play()
   if(currentteamindex.value <= 0) {
     currentteamindex.value = 10 - 1;
   } else {
@@ -349,6 +351,7 @@ function leftclick() {
 }
 
 function rightclick() {
+  sound2.play()
   if(currentteamindex.value >= 10- 1) {
     currentteamindex.value = 0;
   } else {

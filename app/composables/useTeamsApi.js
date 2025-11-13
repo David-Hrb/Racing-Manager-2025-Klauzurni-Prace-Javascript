@@ -9,6 +9,7 @@ export const useTeamsApi = () => {
   };
 
   const updateTeam = async (id, data) => {
+    console.log('Updating team with id:', id, 'and data:', data);
     try {
       return await $fetch(`/api/teams/${id}`, {
         method: 'PATCH',

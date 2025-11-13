@@ -248,8 +248,8 @@
           <h3>Avatar</h3>
            <select id="gender" name="gender" v-model="selectedGender" required>
             <option value="nothing">-- Vyberte pohlaví --</option>
-            <option value="male">Muž</option>
-            <option value="female">Žena</option>
+            <option value="men">Muž</option>
+            <option value="women">Žena</option>
           </select>
           <h3>Vyberte avatara</h3>
           <div class="avatarchooser">
@@ -308,17 +308,17 @@ const men = ref([
 ])
 
 const women = ref([
-  {road: "/images/icons/women/01w.svg", type: 6},
-  {road: "/images/icons/women/02w.svg", type: 7},
-  {road: "/images/icons/women/03w.svg", type: 8},
-  {road: "/images/icons/women/04w.svg", type: 9},
-  {road: "/images/icons/women/05w.svg", type: 10},
+  {road: "/images/icons/women/06.svg", type: 6},
+  {road: "/images/icons/women/07.svg", type: 7},
+  {road: "/images/icons/women/08.svg", type: 8},
+  {road: "/images/icons/women/09.svg", type: 9},
+  {road: "/images/icons/women/10.svg", type: 10},
 ])
 
 const righticon = computed(() => {
-  if (selectedGender.value === 'male') {
+  if (selectedGender.value === 'men') {
     return men.value  
-  } else if (selectedGender.value === 'female') {
+  } else if (selectedGender.value === 'women') {
     return women.value 
   }
   return [] 

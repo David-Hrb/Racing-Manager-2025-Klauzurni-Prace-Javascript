@@ -2338,7 +2338,7 @@ template {
   
 }
 .maincont {
-  display: flex;
+  @include flex-column;
   @include full-center;
   width: 100%;
   height: 86vh;

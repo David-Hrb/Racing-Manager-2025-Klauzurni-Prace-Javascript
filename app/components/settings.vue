@@ -14,12 +14,12 @@
       <h2>Nastavení</h2>
       <h3>Volume</h3>
       <div class="volume">
-        <h4>Main volume: {{ audiostore.volume }} %</h4>
+        <h4>Main volume: {{volume }} %</h4>
         <input
           type="range"
           min="0"
           max="100"
-          v-model="audiostore.volume"
+          v-model="volume"
           @input="handleVolumeChange"
         />
       </div>
@@ -31,7 +31,7 @@
 
 <script setup>
 const sound = useClickSound();
-const audiostore = useSettings();
+const { volume }= useSettings();
 const { soundsettings } = useSoundSettings();
 
 const { settingsval, toggle } = useSettingsValue();
@@ -43,11 +43,11 @@ function settingsbutton() {
 }
 
 function handleVolumeChange() {
-  soundsettings(audiostore.volume / 100);
+  soundsettings(volume.value / 100);
 }
 
 onMounted(() => {
-  soundsettings(audiostore.volume / 100);
+  soundsettings(volume.value / 100);
 });
 </script>
 

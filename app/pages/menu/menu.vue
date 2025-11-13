@@ -139,7 +139,7 @@
       <div class="manager-wrapper" v-for="(manager) in manager" :key="manager.name">
         <h2 class="section-title">Manažer</h2>
         <div class="managerinfo">
-          <img :src="`/images/icons/men/0${manager.selectedAvatar}.svg`" class="manager-avatar" alt="Manager">
+          <img :src="`/images/icons/${manager.SelectedGender}/${String(manager.selectedAvatar).padStart(2, 0)}.svg`" class="manager-avatar" alt="Manager">
           <div class="manager-details">
             <div class="manager-name">{{ manager.name }} {{ manager.surname }}</div>
             <div class="manager-char">Váš charakter</div>
@@ -182,11 +182,13 @@ let drivers = ref([]);
 let teams = ref([]);
 const circuits = ref([]);
 const manager = ref([]);
+ 
 
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 circuits.value = await $fetch("/api/listCircuit");
 manager.value = await $fetch("/api/manager/listManager");
+const gender = ref(manager.value[0].SelectedGender);
 const { currentcircuit } = await useGetNextRace()
 console.log(currentcircuit)
 let currentteam = manager.value[0].team;

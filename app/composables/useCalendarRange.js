@@ -2,9 +2,8 @@ export const useCalendarRange = async () => {
     const calendar = ref([])
     calendar.value = await $fetch("/api/calendar/listCalendar");
     
-    const game = useGameStore();
-    const calendarrangefirst = game.calendarrangefirst
-    const calendarrangesecond = game.calendarrangesecond
+    const calendarrangefirst = 1
+    const calendarrangesecond = 18
     
     console.log(calendarrangefirst, calendarrangesecond)
     
