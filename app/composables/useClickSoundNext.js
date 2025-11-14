@@ -1,7 +1,7 @@
 import { Howl } from 'howler';
 let clickSound = null;
 export const useClickSoundNext = () => {
-  let volume = useState('settings-volume', () => 0.5);
+  //const volume = useState('settings-volume', () => 0.5);
   if (!clickSound) {
     clickSound = new Howl({
       src: ['/music/clicksound/pluck_002.ogg'],

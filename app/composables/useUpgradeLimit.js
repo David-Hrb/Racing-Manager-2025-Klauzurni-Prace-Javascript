@@ -3,7 +3,7 @@ const STORAGE_KEY = 'upgrade-limit';
 const limit = ref(1);
 let initialized = false;
 
-export function useSettings() {
+export function useUpgradeSettings () {
   if (process.client && !initialized) {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);

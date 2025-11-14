@@ -38,6 +38,7 @@ onMounted(() => {
 
 const newgame = () => {
   sound.play()
+  
   navigateTo('charcreate')
 }
 

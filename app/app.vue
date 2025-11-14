@@ -1,13 +1,13 @@
 <template >
-
   <NuxtLayout :name="currentLayout">
     <NuxtPage />
   </NuxtLayout>
-   <Transition name="fade">
-      <div v-if="loading" class="loading-overlay">
-        <div class="loader"></div>
-      </div>
-    </Transition>
+  <Transition name="fade">
+    <div v-if="loading" class="loading-overlay">
+      <div class="loader"></div>
+    </div>
+  </Transition>
+
 </template>
 
 <script setup>
@@ -26,10 +26,11 @@ const nuxtApp = useNuxtApp()
 const loading = ref(false)
 nuxtApp.hook("page:start", () => { loading.value = true })
 nuxtApp.hook("page:finish", () => { loading.value = false })
+
 </script>
 
 <style scoped>
-/* HTML: <div class="loader"></div> */
+
 .loader {
   width: 200px;
   aspect-ratio: 1;
@@ -84,4 +85,6 @@ nuxtApp.hook("page:finish", () => { loading.value = false })
 .fade-leave-to {
   opacity: 0;
 }
+
+
 </style>

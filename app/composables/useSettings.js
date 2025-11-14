@@ -4,6 +4,7 @@ const volume = ref(100);
 let initialized = false;
 
 export function useSettings() {
+  
   if (process.client && !initialized) {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);

@@ -23,6 +23,10 @@
           @input="handleVolumeChange"
         />
       </div>
+      <div class="music-settings">
+        <h4>Zapnou hudbu do potadí:</h4>
+        <musicOnlyButton style="font-size: 1rem;"/>
+      </div> 
       
     </div>
 
@@ -30,6 +34,7 @@
 </template>
 
 <script setup>
+import musicButton from '~/components/musicOnlyButton.vue'
 const sound = useClickSound();
 const { volume }= useSettings();
 const { soundsettings } = useSoundSettings();
