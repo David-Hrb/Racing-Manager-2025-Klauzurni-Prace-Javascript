@@ -1,3 +1,4 @@
+/*
 const STORAGE_KEY = 'upgrade-limit';
 
 const limit = ref(1);
@@ -15,6 +16,9 @@ export function useUpgradeSettings () {
       console.error('Chyba při načítání nastavení:', error);
     }
     
+    initialized = true;
+  }
+  if (process.client) {
     watch(limit, (newVolume) => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ limit: newVolume }));
@@ -22,11 +26,10 @@ export function useUpgradeSettings () {
         console.error('Chyba při ukládání nastavení:', error);
       }
     });
-    
-    initialized = true;
   }
 
   return {
     limit
   };
 }
+  */

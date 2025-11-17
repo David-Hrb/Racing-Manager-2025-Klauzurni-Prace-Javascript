@@ -69,7 +69,8 @@ export default defineEventHandler(async (event) => {
                     historytitles = ${updated.historytitles},
                     historywins = ${updated.historywins},
                     historypodiums = ${updated.historypodiums},
-                    fanspopularity = ${updated.fanspopularity}
+                    fanspopularity = ${updated.fanspopularity},
+                    money = ${updated.money}
                 WHERE ID = ${id}
                 RETURNING *
             `;

@@ -60,7 +60,7 @@
             <div 
               class="choose-card" 
               :class="{ 'active': risklevel === 0 }"
-              @click="risklevel = 0"
+              @click="risklevel = 0; sound2.play()"
             >
               <div class="card-header low-risk">
                 <h4>Malý Risk</h4>
@@ -84,7 +84,7 @@
             <div 
               class="choose-card" 
               :class="{ 'active': risklevel === 1 }"
-              @click="risklevel = 1"
+              @click="risklevel = 1; sound2.play()"
             >
               <div class="card-header medium-risk">
                 <h4>Střední Risk</h4>
@@ -108,7 +108,7 @@
             <div 
               class="choose-card" 
               :class="{ 'active': risklevel === 2 }"
-              @click="risklevel = 2"
+              @click="risklevel = 2; sound2.play()"
             >
               <div class="card-header high-risk">
                 <h4>Vysoký Risk</h4>
@@ -145,17 +145,59 @@
             </div>
           </div>
 
-          <button class="confirm-upgrade-btn" @click="upgradeCentral(upgradenum, risklevel)">
+          <button class="confirm-upgrade-btn" @click="upgradeCentral(upgradenum, risklevel, priceUpgrade + (risklevel === 1 ? 500000 : risklevel === 2 ? 1000000 : 0))">
             Potvrdit vylepšení
           </button>
         </div>
       </div> 
+    </div>
+    <div v-if="upgradeSuccess" class="upgrade-choose">
+      <div class="upgrade-choose-cont">
+        <div class="upgrade-limit">
+          <h2 class="upgrade-title">Upgrade vyšel</h2>
+          <div class="upgrade-subtitle-info">
+            <p>Zaplatili jste: <strong>{{ (String(finalprice).split(/(?=(?:\d{3})+(?!\d))/)).join(' ')}} €</strong></p>
+            <p>Počet povolených vylepšení: <strong>{{ limit }}</strong></p>
+            <h3>Nové statistiky</h3>
+            <div class="upgrade-levels">
+              <p>Aerodynamika: {{ team.aerodynamics }}</p>
+              <p>Převodovka: {{ team.gearbox }}</p>
+              <p>Brzdy: {{ team.brakes }}</p>
+              <p>Přední křídlo: {{ team.frontwing }}</p>
+              <p>Zadní křídlo: {{ team.rearwing }}</p>
+              <p>Spolehlivost: {{ team.reliability }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <button class="confirm-upgrade-btn" @click="upgradeSuccess = false">
+            Pokračovat
+        </button>
+        
+            
+      </div>
+    </div>
+    <div v-if="upgradeFail" class="upgrade-choose">
+      <div class="upgrade-choose-cont">
+        <div class="upgrade-limit">
+          <h2 class="upgrade-title">Upgrade nevyšel</h2>
+          <div class="upgrade-subtitle-info">
+            <p>Zaplatili jste: <strong>{{ (String(finalprice).split(/(?=(?:\d{3})+(?!\d))/)).join(' ')}} €</strong></p>
+            <p>Počet povolených vylepšení: <strong>{{ limit }}</strong></p>
+          </div>
+        </div>   
+        <button class="confirm-upgrade-btn" @click="upgradeFail = false">
+            Pokračovat
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import price from '~/assets/json/upgrademoney.json'
+const sound = useClickSound(); 
+const sound2 = useClickSoundNext();
 const manager = ref([]);
 const teams = ref([]);
 
@@ -164,7 +206,7 @@ teams.value = await $fetch("/api/listTeam");
 
 const { getRandomInteger } = UseInteger();
 const { getTeam } = useTeamsApi();
-const { limit }= useUpgradeSettings ();
+let limit = ref(manager.value[0].NumLimit);
 let teamValue = await getTeam(manager.value[0].team);
 let team = ref(teamValue.rows[0]);
 const { updateTeam } = useTeamsApi();
@@ -173,8 +215,12 @@ let upgradeChooser = ref(false);
 let upgradenum = ref(0);
 let risklevel = ref(0);
 let priceUpgrade = ref(0);
+let upgradeSuccess = ref(false);
+let upgradeFail = ref(false);
+var finalprice = ref(0);
 
 function openUpgrade(num) {
+  sound.play();
   upgradeChooser.value = true;
   upgradenum.value = num; 
   switch(num) {
@@ -205,28 +251,26 @@ function closeUpgrade() {
   upgradeChooser.value = false;
 }
 
-function upgradeCentral(num, pick) {
+function upgradeCentral(num, pick, price) {
   upgradeChooser.value = false;
+  finalprice.value = price;
+  console.log(finalprice.value);
   let passValue = getRandomInteger(0, 100);
   switch (pick) {
     case 0:
-      if (passValue >= 80) {
-        return console.log("Neúspěšné vylepšení");
-      }
+      if (passValue >= 80) return upgradeFail.value = true, upgradeFailed();
       break;
     case 1:
-      if (passValue >= 50) {
-        return console.log("Neúspěšné vylepšení");
-      }
+      if (passValue >= 50) return upgradeFail.value = true, upgradeFailed();
       break;
     case 2:
-      if (passValue >= 20) {
-        return console.log("Neúspěšné vylepšení");
-      }
+      if (passValue >= 20) return upgradeFail.value = true, upgradeFailed();   
       break;
     default:
       console.log("Neplatné číslo výběru");
   }
+  upgradeSuccess.value = true;
+
   switch (num) {
     case 0:
       aerodynamics();
@@ -249,29 +293,33 @@ function upgradeCentral(num, pick) {
     default:
       console.log("Neplatné číslo vylepšení");
   }
-
 }
 const updateCurrentTeam = async (newData) => {
   try {
     await updateTeam(currentTeamId, newData);
-
     teamValue = await getTeam(manager.value[0].team);
     team.value = teamValue.rows[0];
+    upgradeLimit(limit.value - 1);
   } catch (error) {
     console.error("Error updating team:", error);
   }
 };
 
 const aerodynamics = async () => {
-  team.value.aerodynamics = team.value.aerodynamics + 1;
+  console.log(team.value.aerodynamics + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), team.value.aerodynamics, risklevel.value);
+  const newData = {
+    aerodynamics: team.value.aerodynamics + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), 
+    money: team.value.money - finalprice.value,
+  };
   console.log(team.value);
-  await updateCurrentTeam(team.value);
+  await updateCurrentTeam(newData);
 };
 
 const gearbox = async () => {
   const newData = {
     ...team.value,
-    gearbox: team.value.gearbox + 1, 
+    gearbox: team.value.gearbox + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), 
+    money: team.value.money - finalprice.value,
   };
   await updateCurrentTeam(newData);
 };
@@ -279,7 +327,8 @@ const gearbox = async () => {
 const brakes = async () => {
   const newData = {
     ...team.value,
-    brakes: team.value.brakes + 1, 
+    brakes: team.value.brakes + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2),
+    money: team.value.money - finalprice.value, 
   };
   await updateCurrentTeam(newData);
 };
@@ -287,7 +336,8 @@ const brakes = async () => {
 const frontwing = async () => {
   const newData = {
     ...team.value,
-    frontwing: team.value.frontwing + 1, 
+    frontwing: team.value.frontwing + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), 
+    money: team.value.money - finalprice.value,
   };
   await updateCurrentTeam(newData);
 };
@@ -295,7 +345,8 @@ const frontwing = async () => {
 const rearwing = async () => {
   const newData = {
     ...team.value,
-    rearwing: team.value.rearwing + 1, 
+    rearwing: team.value.rearwing + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), 
+    money: team.value.money - finalprice.value,
   };
   await updateCurrentTeam(newData);
 };
@@ -303,9 +354,32 @@ const rearwing = async () => {
 const reliability = async () => {
   const newData = {
     ...team.value,
-    reliability: team.value.reliability + 1, 
+    reliability: team.value.reliability + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), 
+    money: team.value.money - finalprice.value,
   };
   await updateCurrentTeam(newData);
+};
+
+const upgradeFailed = async () => {
+  const newData = {
+    ...team.value, 
+    money: team.value.money - finalprice.value,
+  };
+  await updateCurrentTeam(newData);
+};
+
+const upgradeLimit = async (newLimit) => {
+  try {
+    await $fetch("/api/manager/limit", {
+      method: "PUT",
+      body: {
+        NumLimit: newLimit,
+      },
+    });
+    limit.value = newLimit;
+  } catch (error) {
+    console.error("Error updating limit:", error);
+  }
 };
 
 //layout

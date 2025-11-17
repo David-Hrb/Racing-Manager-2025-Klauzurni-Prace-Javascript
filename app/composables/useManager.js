@@ -8,5 +8,4 @@ export const useManager = async () => {
     console.log(managerteam.value, "managerteam")
     let manteam = managerteam.value
     return { managerteam, manteam }
-  
 }

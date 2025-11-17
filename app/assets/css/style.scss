@@ -791,8 +791,8 @@ template {
 
 .menu-button {
         background: transparent;
-        color: $blue-500;
-        border: 2px solid $orange-500;
+        color: $amber-950;
+        border: 2px solid $amber-500;
         padding: 10px 28px;
         border-radius: 8px;
         font-size: 16px;
@@ -803,7 +803,7 @@ template {
     }
 
 .menu-button:hover {
-    background: $orange-500;
+    background: $amber-500;
     color: $gray-800;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
@@ -2053,8 +2053,7 @@ template {
   height: 8vh;
   background-color: $gray-900;
   width: 100%;
-  display: flex;
-  flex-direction: row;
+  @include flex-row;
   justify-content: space-between;
   align-items: stretch;
   padding: 0;
@@ -2062,7 +2061,18 @@ template {
   position: relative;
   z-index: 100;
   gap: 0;
+  .leftside {
+    width: 85%;
+    height: 100%;
+    @include flex-row;
+  }
+  .rigthside {
+    height: 100%;
+    width: 15%;
+    display: flex;
+    @include full-center;
 
+  }
   .footer-link {
     display: flex;
     flex-direction: column;
@@ -3009,29 +3019,31 @@ template {
         }
       }
 
-      .confirm-upgrade-btn {
-        background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
-        color: $gray-900;
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        font-size: clamp(1.2rem, 1rem + 1vw, 2rem);
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        letter-spacing: 0.05em;
-        box-shadow: 0 4px 12px rgba($amber-500, 0.3);
-
-        &:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 6px 20px rgba($amber-500, 0.5);
-          background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
-        }
-
-        &:active {
-          transform: translateY(-1px);
-        }
-      }
+      
     }
+  }
+}
+
+.confirm-upgrade-btn {
+  background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+  color: $gray-900;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: clamp(1.2rem, 1rem + 1vw, 2rem);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 12px rgba($amber-500, 0.3);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba($amber-500, 0.5);
+    background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+  }
+
+  &:active {
+    transform: translateY(-1px);
   }
 }

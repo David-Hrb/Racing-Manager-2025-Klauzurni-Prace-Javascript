@@ -1,4 +1,3 @@
-// server/api/manager/profile.ts
 export default defineEventHandler(async (event) => {
     const id = 1; 
     const method = event.method;
@@ -19,7 +18,9 @@ export default defineEventHandler(async (event) => {
                     date = ${requestBody.date},
                     lastwork = ${requestBody.lastwork},
                     SelectedGender = ${requestBody.SelectedGender},
-                    selectedAvatar = ${requestBody.selectedAvatar}
+                    selectedAvatar = ${requestBody.selectedAvatar},
+                    day = ${requestBody.day},
+                    NumLimit = ${requestBody.NumLimit}
                 WHERE id = ${id}
                 RETURNING *;
             `;

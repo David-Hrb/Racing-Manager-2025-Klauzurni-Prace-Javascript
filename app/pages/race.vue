@@ -319,7 +319,7 @@
         </div>
       <div class="div6race  grid-box">
          s
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -908,6 +908,7 @@ const updateCurrentLeadboard = async (id, newData) => {
   try {
     await updateLeadboard(id, newData);
     leadboard.value = await $fetch("/api/leadboard/listLeadboard");
+    
   } catch (error) {
     console.error("Error updating team:", error);
   }

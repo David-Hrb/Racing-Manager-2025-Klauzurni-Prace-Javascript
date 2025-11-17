@@ -81,17 +81,17 @@
                 <div class="sponzor">
                   <span class="fi" :class="`fi-${sponsornationality1}`" aria-hidden="true"></span> 
                   <span class="sponsor-name">{{ sponsor1 }}</span>
-                  <span class="sponsor-money">{{ sponsormoney1 }} €</span>
+                  <span class="sponsor-money">{{ (String(sponsormoney1).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
                 </div>
                 <div class="sponzor">
                   <span class="fi" :class="`fi-${sponsornationality2}`" aria-hidden="true"></span> 
                   <span class="sponsor-name">{{ sponsor2 }}</span>
-                  <span class="sponsor-money">{{ sponsormoney2 }} €</span>
+                  <span class="sponsor-money">{{ (String(sponsormoney2).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
                 </div>
                 <div class="sponzor">
                   <span class="fi" :class="`fi-${sponsornationality3}`" aria-hidden="true"></span> 
                   <span class="sponsor-name">{{ sponsor3 }}</span>
-                  <span class="sponsor-money">{{ sponsormoney3 }} €</span>
+                  <span class="sponsor-money">{{ (String(sponsormoney3).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
                 </div>      
               </div>
             </div>

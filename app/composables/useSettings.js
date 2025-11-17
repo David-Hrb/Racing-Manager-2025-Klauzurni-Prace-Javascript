@@ -16,6 +16,9 @@ export function useSettings() {
       console.error('Chyba při načítání nastavení:', error);
     }
     
+    initialized = true;
+  }
+  if (process.client) {
     watch(volume, (newVolume) => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ volume: newVolume }));
@@ -23,10 +26,7 @@ export function useSettings() {
         console.error('Chyba při ukládání nastavení:', error);
       }
     });
-    
-    initialized = true;
   }
-
   return {
     volume
   };

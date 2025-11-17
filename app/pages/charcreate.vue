@@ -355,7 +355,9 @@ const switchToTeams = () => {
       lastwork: lastwork.value,
       SelectedGender: selectedGender.value,
       selectedAvatar: avatar.value,
-      team: 'NULL'
+      team: 'NULL',
+      day: 1,
+      NumLimit: 1
     }
   });
   
