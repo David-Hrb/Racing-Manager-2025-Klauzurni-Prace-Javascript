@@ -2621,3 +2621,417 @@ template {
       text-align: center;
     }
 }
+
+.upgrade-header {
+  width: 90%;
+
+  margin-bottom: 2rem;
+  @include flex-column;
+  gap: 1.5rem;
+
+  h2 {
+    color: $amber-500;
+    @include titletext;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin: 0;
+  }
+
+  .upgrade-subtitle {
+    text-align: center;
+    
+    p {
+      color: $amber-700;
+      @include normaltext-biggest;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+
+  .upgrade-info {
+    background: $gray-900;
+    border: 3px solid $amber-900;
+    border-radius: 8px;
+    padding: 1.5rem;
+
+    h3 {
+      color: $amber-500;
+      @include normaltext-biggest;
+      font-weight: 700;
+      margin: 0 0 1rem 0;
+      text-align: center;
+    }
+
+    .upgrade-levels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+
+      p {
+        color: $amber-700;
+        @include normaltext-bigger;
+        font-weight: 600;
+        padding: 0.75rem;
+        background: $gray-950;
+        border-radius: 6px;
+        text-align: center;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.upgrade-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  width: 90%;
+  padding: 1rem;
+
+  button {
+    padding: 0.5rem 0rem;
+    border: 3px solid $amber-900;
+    border-radius: 8px;
+    background: linear-gradient(135deg, $gray-900 0%, $gray-950 100%);
+    color: $amber-500;
+    @include normaltext-bigger;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba($amber-500, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba($amber-500, 0.4);
+      border-color: $amber-500;
+      background: linear-gradient(135deg, $gray-800 0%, $gray-900 100%);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(-2px);
+    }
+
+    &.aerodynamics:hover {
+      border-color: $blue-500;
+      color: $blue-500;
+      box-shadow: 0 6px 20px rgba($blue-500, 0.4);
+    }
+
+    &.gearbox:hover {
+      border-color: $purple-500;
+      color: $purple-500;
+      box-shadow: 0 6px 20px rgba($purple-500, 0.4);
+    }
+
+    &.brakes:hover {
+      border-color: $red-500;
+      color: $red-500;
+      box-shadow: 0 6px 20px rgba($red-500, 0.4);
+    }
+
+    &.frontwing:hover {
+      border-color: $green-500;
+      color: $green-500;
+      box-shadow: 0 6px 20px rgba($green-500, 0.4);
+    }
+
+    &.rearwing:hover {
+      border-color: $cyan-500;
+      color: $cyan-500;
+      box-shadow: 0 6px 20px rgba($cyan-500, 0.4);
+    }
+
+    &.reliability:hover {
+      border-color: $orange-500;
+      color: $orange-500;
+      box-shadow: 0 6px 20px rgba($orange-500, 0.4);
+    }
+  }
+}
+
+.no-upgrades {
+  width: 90%;
+  max-width: 1400px;
+  padding: 3rem;
+  background: $gray-900;
+  border: 3px solid $red-900;
+  border-radius: 8px;
+  text-align: center;
+
+  h3 {
+    color: $red-500;
+    @include normaltext-biggest;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.upgrade-choose {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.90);
+  backdrop-filter: blur(5px);
+  display: flex;
+  @include full-center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .upgrade-choose-cont {
+    position: relative;
+    width: 90%;
+    max-width: 1400px;
+    height: 90%;
+    max-height: 900px;
+    background-color: $gray-950;
+    border: 5px solid $amber-900;
+    border-radius: 12px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.7);
+    @include flex-column;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    animation: slideUp 0.4s ease-out;
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .upgrade-limit {
+      width: 100%;
+      padding: 2rem;
+      @include flex-column;
+      gap: 2rem;
+
+      .upgrade-title {
+        color: $amber-500;
+        @include titletext;
+        font-weight: 900;
+        text-align: center;
+        letter-spacing: 0.1em;
+        margin: 0;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid $amber-900;
+      }
+
+      .upgrade-subtitle-info {
+        text-align: center;
+        color: $amber-700;
+        @include normaltext-bigger;
+        font-weight: 600;
+
+        strong {
+          color: $amber-500;
+          font-size: 1.3em;
+        }
+      }
+
+      .choose-title {
+        color: $amber-900;
+        @include normaltext-biggest;
+        font-weight: 700;
+        text-align: center;
+        margin: 0;
+      }
+
+      .upgrade-choose-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        width: 100%;
+
+        .choose-card {
+          background: $gray-900;
+          border: 3px solid $gray-800;
+          border-radius: 12px;
+          overflow: hidden;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+          &:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+          }
+
+          &.active {
+            border-color: $amber-500;
+            box-shadow: 0 8px 24px rgba($amber-500, 0.4);
+            
+            .card-header {
+              &.low-risk {
+                background: linear-gradient(135deg, $green-600 0%, $green-800 100%);
+              }
+              &.medium-risk {
+                background: linear-gradient(135deg, $orange-500 0%, $orange-800 100%);
+              }
+              &.high-risk {
+                background: linear-gradient(135deg, $red-500 0%, $red-800 100%);
+              }
+            }
+          }
+
+          .card-header {
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            
+            &.low-risk {
+              background: linear-gradient(135deg, $green-700 0%, $green-900 100%);
+            }
+            &.medium-risk {
+              background: linear-gradient(135deg, $orange-700 0%, $orange-900 100%);
+            }
+            &.high-risk {
+              background: linear-gradient(135deg, $red-700 0%, $red-900 100%);
+            }
+
+            h4 {
+              color: $gray-50;
+              @include normaltext-biggest;
+              font-weight: 700;
+              margin: 0;
+              letter-spacing: 0.05em;
+            }
+          }
+
+          .card-body {
+            padding: 1.5rem;
+            @include flex-column;
+            gap: 1rem;
+
+            .risk-info,
+            .price-info,
+            .upgrade-info {
+              @include flex-column;
+              gap: 0.5rem;
+              padding: 0.75rem;
+              background: $gray-950;
+              border-radius: 6px;
+
+              .risk-label,
+              .price-label,
+              .upgrade-label {
+                color: $amber-700;
+                @include normaltext;
+                font-weight: 600;
+              }
+
+              .risk-value,
+              .price-value,
+              .upgrade-value {
+                color: $amber-500;
+                @include normaltext-bigger;
+                font-weight: 700;
+              }
+            }
+          }
+        }
+      }
+
+      .price-summary {
+        background: $gray-900;
+        border: 3px solid $amber-900;
+        border-radius: 8px;
+        padding: 1.5rem;
+        @include flex-column;
+        gap: 1rem;
+
+        .summary-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem;
+          border-bottom: 2px solid $gray-800;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          &.total {
+            background: linear-gradient(135deg, rgba($amber-900, 0.2) 0%, transparent 100%);
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            padding: 1rem;
+
+            .summary-label,
+            .summary-value {
+              @include normaltext-biggest;
+              font-weight: 900;
+              color: $amber-500;
+            }
+          }
+
+          .summary-label {
+            color: $amber-700;
+            @include normaltext-bigger;
+            font-weight: 600;
+          }
+
+          .summary-value {
+            color: $amber-500;
+            @include normaltext-bigger;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+          }
+        }
+      }
+
+      .confirm-upgrade-btn {
+        background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+        color: $gray-900;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: clamp(1.2rem, 1rem + 1vw, 2rem);
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 0.05em;
+        box-shadow: 0 4px 12px rgba($amber-500, 0.3);
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 20px rgba($amber-500, 0.5);
+          background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+        }
+
+        &:active {
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+}

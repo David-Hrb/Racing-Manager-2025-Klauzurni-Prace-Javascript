@@ -17,34 +17,7 @@
         </div>
       </div>
     </div>
-    <div v-if="upgradeChooser" class="upgrade-choose">
-      <div class="upgrade-choose-cont">
-        <button class="settings-btn settings-close-btn" @click="closeUpgrade()"><svg width="2rem" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 460.775 460.775" xml:space="preserve"><path fill="currentcolor" d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55 c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/></svg></button>
-        <div class="upgrade-limit">
-          <h3>Vylepšení Vylepšení pro {{ 
-          upgradenum === 0 ? "Aerodynamiku" : 
-          upgradenum === 1 ? "Převodovku" : 
-          upgradenum === 2 ? "Brzdy" : 
-          upgradenum === 3 ? "Přední křídlo" : 
-          upgradenum === 4 ? "Zadní křídlo" : 
-          upgradenum === 5 ? "Spolehlivost" :
-          "vylepšení"
-        }} </h3>
-          <h4>Počet povolených vylepšení do dalšího závodu: {{ limit }}</h4>
-          <h3 style="text-align: center;">vyber si vylepšení</h3>
-          <div class="upgrade-choose-buttons" >
-            <div class="choose-button">
-              <span>Malý risk (20% neúspěch)</span> 
-              <span>Cena </span>
 
-            </div>
-            <button @click="upgradeCentral(upgradenum, 0)">Malý risk</button>
-            <button @click="upgradeCentral(upgradenum, 1)">Střední risk</button>
-            <button @click="upgradeCentral(upgradenum, 2)">Vysoký risk</button>
-          </div>
-        </div>
-      </div> 
-    </div>
     <div v-if="limit > 0" class="upgrade-buttons">
       <button @click="openUpgrade(0)" class="aerodynamics">Aerodynamika</button>
       <button @click="openUpgrade(1)" class="gearbox">Převodovka</button>
@@ -53,14 +26,136 @@
       <button @click="openUpgrade(4)" class="rearwing">Zadní křídlo</button>
       <button @click="openUpgrade(5)" class="reliability">Spolehlivost</button>
     </div>
+
     <div v-else class="no-upgrades">
       <h3>Nemáte povoleny žádné upgrady do dalšího závodu.</h3>
     </div>
-  </div>
 
+    <div v-if="upgradeChooser" class="upgrade-choose">
+      <div class="upgrade-choose-cont">
+        <button class="settings-btn settings-close-btn" @click="closeUpgrade()">
+          <svg width="2rem" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 460.775 460.775" xml:space="preserve">
+            <path fill="currentcolor" d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55 c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/>
+          </svg>
+        </button>
+        
+        <div class="upgrade-limit">
+          <h2 class="upgrade-title">Vylepšení pro {{ 
+            upgradenum === 0 ? "Aerodynamiku" : 
+            upgradenum === 1 ? "Převodovku" : 
+            upgradenum === 2 ? "Brzdy" : 
+            upgradenum === 3 ? "Přední křídlo" : 
+            upgradenum === 4 ? "Zadní křídlo" : 
+            upgradenum === 5 ? "Spolehlivost" :
+            "vylepšení"
+          }}</h2>
+          
+          <div class="upgrade-subtitle-info">
+            <p>Počet povolených vylepšení: <strong>{{ limit }}</strong></p>
+          </div>
+
+          <h3 class="choose-title">Vyberte úroveň rizika</h3>
+          
+          <div class="upgrade-choose-buttons">
+            <div 
+              class="choose-card" 
+              :class="{ 'active': risklevel === 0 }"
+              @click="risklevel = 0"
+            >
+              <div class="card-header low-risk">
+                <h4>Malý Risk</h4>
+              </div>
+              <div class="card-body">
+                <div class="risk-info">
+                  <span class="risk-label">Šance neúspěchu:</span>
+                  <span class="risk-value">20%</span>
+                </div>
+                <div class="price-info">
+                  <span class="price-label">Dodatečná cena:</span>
+                  <span class="price-value">0 €</span>
+                </div>
+                <div class="upgrade-info">
+                  <span class="upgrade-label">Posun ve vylepšení:</span>
+                  <span class="upgrade-value">+ 0.5</span>
+                </div>
+              </div>
+            </div>
+
+            <div 
+              class="choose-card" 
+              :class="{ 'active': risklevel === 1 }"
+              @click="risklevel = 1"
+            >
+              <div class="card-header medium-risk">
+                <h4>Střední Risk</h4>
+              </div>
+              <div class="card-body">
+                <div class="risk-info">
+                  <span class="risk-label">Šance neúspěchu:</span>
+                  <span class="risk-value">50%</span>
+                </div>
+                <div class="price-info">
+                  <span class="price-label">Dodatečná cena:</span>
+                  <span class="price-value">500 000 €</span>
+                </div>
+                <div class="upgrade-info">
+                  <span class="upgrade-label">Posun ve vylepšení:</span>
+                  <span class="upgrade-value">+ 1</span>
+                </div>
+              </div>
+            </div>
+
+            <div 
+              class="choose-card" 
+              :class="{ 'active': risklevel === 2 }"
+              @click="risklevel = 2"
+            >
+              <div class="card-header high-risk">
+                <h4>Vysoký Risk</h4>
+              </div>
+              <div class="card-body">
+                <div class="risk-info">
+                  <span class="risk-label">Šance neúspěchu:</span>
+                  <span class="risk-value">80%</span>
+                </div>
+                <div class="price-info">
+                  <span class="price-label">Dodatečná cena:</span>
+                  <span class="price-value">1 000 000 €</span>
+                </div>
+                <div class="upgrade-info">
+                  <span class="upgrade-label">Posun ve vylepšení:</span>
+                  <span class="upgrade-value">+ 2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="price-summary">
+            <div class="summary-row">
+              <span class="summary-label">Cena za {{ risklevel === 0 ? "Malý risk" : risklevel === 1 ? "Střední risk" : risklevel === 2 ? "Vysoký risk" : "nevybraný risk" }}:</span>
+              <span class="summary-value">{{ risklevel === 0 ? "0 €" : risklevel === 1 ? "500 000 €" : risklevel === 2 ? "1 000 000 €" : "Nevybráno" }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Základní cena upgradu:</span>
+              <span class="summary-value">{{ (String(priceUpgrade).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
+            </div>
+            <div class="summary-row total">
+              <span class="summary-label">Celková cena:</span>
+              <span class="summary-value">{{ (String(risklevel === 0 ? priceUpgrade : risklevel === 1 ? priceUpgrade + 500000 : risklevel === 2 ? priceUpgrade + 1000000 : 0).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
+            </div>
+          </div>
+
+          <button class="confirm-upgrade-btn" @click="upgradeCentral(upgradenum, risklevel)">
+            Potvrdit vylepšení
+          </button>
+        </div>
+      </div> 
+    </div>
+  </div>
 </template>
 
 <script setup>
+import price from '~/assets/json/upgrademoney.json'
 const manager = ref([]);
 const teams = ref([]);
 
@@ -76,10 +171,34 @@ const { updateTeam } = useTeamsApi();
 const currentTeamId = manager.value[0].team;
 let upgradeChooser = ref(false);
 let upgradenum = ref(0);
+let risklevel = ref(0);
+let priceUpgrade = ref(0);
 
 function openUpgrade(num) {
   upgradeChooser.value = true;
   upgradenum.value = num; 
+  switch(num) {
+    case 0:
+      priceUpgrade.value = price[team.value.aerodynamics];
+      break;
+    case 1:
+      priceUpgrade.value = price[team.value.gearbox];
+      break;
+    case 2:
+      priceUpgrade.value = price[team.value.brakes];
+      break;
+    case 3:
+      priceUpgrade.value = price[team.value.frontwing];
+      break;
+    case 4:
+      priceUpgrade.value = price[team.value.rearwing];
+      break;
+    case 5:
+      priceUpgrade.value = price[team.value.reliability];
+      break;
+    default:
+      console.log("Neplatné číslo vylepšení");
+  }
 }
 
 function closeUpgrade() {
@@ -87,6 +206,7 @@ function closeUpgrade() {
 }
 
 function upgradeCentral(num, pick) {
+  upgradeChooser.value = false;
   let passValue = getRandomInteger(0, 100);
   switch (pick) {
     case 0:
@@ -129,6 +249,7 @@ function upgradeCentral(num, pick) {
     default:
       console.log("Neplatné číslo vylepšení");
   }
+
 }
 const updateCurrentTeam = async (newData) => {
   try {
