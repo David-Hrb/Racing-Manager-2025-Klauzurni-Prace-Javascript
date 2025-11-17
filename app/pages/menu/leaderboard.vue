@@ -108,10 +108,11 @@ const toggleTables = (isDriverTable) => {
 };
 // Vytvoř množinu ID jezdců, kteří jsou v týmech
 const teamDriverIds = new Set();
-teams.value.forEach(team => { 
-  if (team.driver1) teamDriverIds.add(Number(team.driver1));
-  if (team.driver2) teamDriverIds.add(Number(team.driver2));
-});
+
+teams.value.slice(0, 10).forEach(team => { 
+    if (team.driver1) teamDriverIds.add(Number(team.driver1));
+    if (team.driver2) teamDriverIds.add(Number(team.driver2));
+  });
 
 // Filtruj jezdce, kteří jsou v týmech
 const fullLeaderboard = drivers.value.filter(driver => 
