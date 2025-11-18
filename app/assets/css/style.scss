@@ -3071,9 +3071,443 @@ template {
 
 .ListOfDrivers {
     @include flex-column;   
-    gap: 12px;
+    align-items: center;
+    justify-content: flex-start;
+
+    .header {
+      color: $gray-900;
+      @include titletext;
+      background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+      width: 100%;
+      font-weight: 900;
+      @include flex-column;
+      @include full-center;
+      letter-spacing: 0.1em;
+      margin: 0;
+      padding: 16px 0;
+      .filters-sort-container {
+        width: 90%;
+
+        @include flex-row;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+      }
+      .sort-order-btn {
+        padding: 8px 12px;
+        background: $gray-800;
+        color: $amber-500;
+        border: 2px solid $amber-900;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+
+        &:hover {
+          background: $gray-900;
+          border-color: $amber-500;
+          color: $orange-500;
+        }
+      }
+
+      .clear-filters-btn {
+        padding: 8px 12px;
+        background: $gray-800;
+        color: $red-500;
+        border: 2px solid $red-900;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+
+        &:hover {
+          background: $gray-900;
+          border-color: $red-500;
+          color: $red-300;
+        }
+      }
+     
+    }
+
+    .ListOfDriversCont {
+      width: 100%;
+      background-color: $gray-900;
+      @include flex-column;
+      @include full-center;
+      overflow: auto;
+      gap: 12px;
+    }
+
+    .info {
+      width: calc(100% - 17px);
+      display: grid;
+      grid-template-columns: 60px 1fr 2fr 1fr 2fr 1fr 1fr 1.2fr 1fr 2fr;
+      align-items: center;
+      text-align: left;
+      padding: 8px;      
+      border-bottom: 1px solid $amber-900;
+      font-weight: 600;
+      color: $amber-500;
+    }
+
     .allDriversList {
       width: 100%;
       overflow-y: auto;
+      
+      .driverInfo-cont {
+        display: grid;
+        grid-template-columns: 60px 1fr 2fr 1fr 2fr 1fr 1fr 1.2fr 1fr 2fr;
+        align-items: center;
+        gap: 12px;
+        padding: 8px;
+        border-bottom: 1px solid $amber-900;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        color: $amber-500 ;
+
+        &:hover {
+          background: rgba($amber-500, 0.1);
+        }
+
+        .avatar {
+          width: 40px;
+          height: 40px;
+          justify-self: center;
+        }
+
+        .driver-position {
+          text-align: center;
+        }
+
+        .driverflag {
+          @include flex-row;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .drivername {
+          color: $amber-500;
+          font-weight: 600;
+        }
+
+        .driverrating {
+          @include flex-row;
+          align-items: center;
+        }
+      }
     }
+    
+    .css-star {
+      width: 15px;
+      height: 15px;
+      background: $orange-500;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      display: inline-block;
+      margin: 0 2px;
+    }
+    
+    .css-star.empty {
+        background: $gray-900;
+    }
+    
+    .half-star {
+        background: linear-gradient(90deg, $orange-500 50%, $gray-900 50%);
+    }
+}
+
+.currentDriver {
+  @include flex-column;
+  @include full-center;
+  background-color: $gray-900;
+  height: 100%; 
+  overflow: hidden;
+
+  h2 {
+    color: $gray-900;
+    @include titletext;
+    background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+    width: 100%;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin: 0;
+    padding: 16px 0;
+    flex-shrink: 0;
+  }
+
+  .driver-fullinfo {
+    width: 100%;
+    @include flex-column;
+    gap: 20px;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 20px 00px;
+    overflow-y: auto;
+    flex: 1;
+    animation: fadeIn 0.3s ease-in-out;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid $amber-500;
+      box-shadow: 0 8px 24px rgba($amber-500, 0.3);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 32px rgba($amber-500, 0.5);
+      }
+    }
+
+    .drivername {
+      color: $amber-500;
+      @include normaltext-biggest;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 0.05em;
+      margin: 0;
+    }
+
+    .driverflag,
+    .bornyear,
+    .currentyear,
+    .popularity,
+    .ego,
+    .contractexp,
+    .payedDriver {
+      background: $gray-950;
+      border: 2px solid $gray-800;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      color: $amber-700;
+      @include normaltext-bigger;
+      font-weight: 600;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: $amber-900;
+        background: rgba($amber-900, 0.1);
+      }
+    }
+
+    .driverflag {
+      @include flex-row;
+      @include full-center;
+      gap: 8px;
+
+      .fi {
+        font-size: 1.5em;
+      }
+    }
+
+    .driverrating {
+      @include flex-row;
+      @include full-center;
+      gap: 4px;
+      padding: 1rem;
+      background: $gray-950;
+      border: 2px solid $amber-900;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+
+      .css-star {
+        width: 20px;
+        height: 20px;
+        background: $orange-500;
+        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        display: inline-block;
+        margin: 0 2px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        &.empty {
+          background: $gray-700;
+        }
+
+        &.half-star {
+          background: linear-gradient(90deg, $orange-500 50%, $gray-700 50%);
+        }
+      }
+    }
+
+    .driverfullrating {
+      @include flex-column;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      background: $gray-950;
+      border: 3px solid $amber-900;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+
+      span {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        background: $gray-900;
+        border-radius: 6px;
+        color: $amber-700;
+        @include normaltext;
+        font-weight: 600;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba($amber-900, 0.2);
+          color: $amber-500;
+        }
+
+        &::after {
+          content: '';
+          display: inline-block;
+          width: 4px;
+          height: 4px;
+          background: $amber-500;
+          border-radius: 50%;
+          margin-left: 8px;
+        }
+      }
+    }
+
+    button {
+      background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+      color: $gray-900;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 8px;
+      @include normaltext-bigger;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 12px rgba($amber-500, 0.3);
+      margin-top: 1rem;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba($amber-500, 0.5);
+        background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+      }
+
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  > div:not(.driver-fullinfo) {
+    width: 100%;
+    flex: 1;
+    @include flex-column;
+    @include full-center;
+    color: $amber-700;
+    @include normaltext-bigger;
+    font-weight: 600;
+    text-align: center;
+    padding: 2rem;
+    opacity: 0.7;
+  }
+}
+
+.driver-negonation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.90);
+  display: flex;
+  @include full-center;
+  z-index: 1000;
+  .driver-negonation-cont {
+    position: relative;
+    width: 60%;
+    height: 60%;
+    background-color: $gray-900;
+    border: 5px solid $amber-900;
+    border-radius: 8px;
+    @include flex-column;
+    justify-content: top;
+    align-items: center;
+    gap: 2rem;  
+    padding: 1rem;
+    @include normaltext-bigger;
+    color: $amber-500;
+    input,
+    select,
+    option {
+      width: 20%;
+    }
+    h2 {
+      color: $amber-500;
+      @include titletext;
+      font-weight: bolder;
+      text-align: center;
+    }
+    h3 {
+      color: $amber-700;
+      @include normaltext-biggest;
+      margin-bottom: 1rem;
+      text-align: center;
+    }  
+    .negonation-inputs {
+      @include flex-column;
+      gap: 1.5rem;
+      width: 100%;
+      align-items: center;
+      .negonation-input {
+        @include flex-row;
+        @include full-center;
+        gap: 0.5rem;
+        width: 100%;
+      }
+    }
+  }
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: brightness(0) invert(1);
+    cursor: pointer;
+}
+input[type="date"] {
+    color-scheme: dark;
+}
+input,
+select,
+option {
+    width: 20%; 
+   
+    box-sizing: border-box; 
+    padding: 1rem 1.5rem;
+    border: 2px solid $gray-800;
+    border-radius: 12px;
+    background: $gray-950;
+    color: $gray-100;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+    margin-bottom: 1.5rem;
+    
+
+}
+
+input:focus,
+select:focus,
+option:focus {
+    border-color: $amber-500;
+}
+
+input::placeholder {
+    color: #999;
 }
