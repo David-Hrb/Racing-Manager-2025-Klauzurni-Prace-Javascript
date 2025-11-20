@@ -157,13 +157,46 @@
           </div>
           <div class="negonation-input">
             <span>nabídněte plat:</span>
-            <input type="number" min="10000" max="10000000" step="1000" value="500000"> Kč za sezónu
-          </div>
-          <div class="negonation-input">
-            <span>bonus za výkup</span>
+            <div class="money">
+              <button @click="currentSalaryIndex <= 0 ? currentSalaryIndex = 0 : currentSalaryIndex-=1">-</button>
+              <div class="money-text">{{ (String(salaryPrices[currentSalaryIndex]).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</div>
+              <button @click="currentSalaryIndex >= salaryPrices.length - 1 ? currentSalaryIndex = salaryPrices.length - 1 : currentSalaryIndex+=1">+</button>
+            </div>
 
           </div>
+          <div class="negonation-input">
+            <span>cena za výkup</span>
+            {{ buyoutIdeal }}
+          </div>
+          <button @click="tryNegonation()">Potvrdit</button>
+
         </div>
+      </div>
+    </div>
+    <div class="driver-negonation" v-if="driverAccepted">
+      <div class="driver-negonation-cont">
+        <h2>Jezdec přijal vaši nabídku.</h2>
+        <h3>Vyberte jezdce, za kterého ho chcete nahradit.</h3>
+        <div class="drivers" v-for="drivers in getTeamAllDrivers" :key="drivers.ID">
+          <div class="driver-info">
+            <span>{{ drivers.name }}</span>
+            <span>{{ drivers.fee }}</span>
+            <button @click=" 
+              drivers[currentdriver].currentteam = currentteam;
+              drivers[currentdriver].contractexp = new Date().getFullYear() + parseInt(document.getElementById('years').value);
+              drivers.ID === drivers.ID ? drivers.currentteam = null : null;
+              ">Nahradit</button>
+
+          </div>
+
+        </div>
+        <button @click="driverAccepted = false">continue</button>
+      </div>
+    </div>
+    <div class="driver-negonation" v-if="driverDeclined">
+      <div class="driver-negonation-cont">
+        Jezdec odmítl vaši nabídku.
+        <button @click="driverDeclined = false">continue</button>
       </div>
     </div>
    </div>
@@ -171,12 +204,26 @@
 
 <script setup>
 import avatars from '~/assets/json/avatars.json'
+const sound = useClickSound(); 
+const sound2 = useClickSoundNext();
+const { getRandomInteger } = UseInteger();
+const { setupRace } = useRaceSetup();
 const drivers = ref([]);
 const teams = ref([]);
+const manager = ref([]);
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
+manager.value = await $fetch("/api/manager/listManager");
+let currentteam = ref(manager.value[0].team);
 let currentdriver = ref(null);
-let negonation = ref(false);
+let salaryIdeal = ref(0);
+let salaryPrices = ref([]);
+let currentSalaryIndex = ref(0);
+let wantToTeam = ref(false);
+let buyoutIdeal = ref(0);
+let driverAccepted = ref(false);
+let driverDeclined = ref(false);
+let negonation = ref(true);
 
 
 const sortBy = ref('');
@@ -185,6 +232,13 @@ const searchFilter = ref('');
 const teamFilter = ref('');
 const payedFilter = ref('');
 
+const { getTeamAllDrivers } = setupRace({
+  drivers: drivers.value,
+  teams: teams.value,
+  circuits: [],
+  teamId: currentteam.value,
+  circuitId: 0
+});
 console.log(drivers);
 
 function giveavatar(num) {
@@ -216,20 +270,12 @@ function calculateRating(driver) {
   return driver.concentration + driver.overtaking + driver.experience + driver.quickness + driver.stamina;
 }
 
-function toggleSortOrder() {
-  sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
-}
 
-function clearFilters() {
-  searchFilter.value = '';
-  teamFilter.value = '';
-  payedFilter.value = '';
-  sortBy.value = '';
-}
 
 const hasActiveFilters = computed(() => {
   return searchFilter.value || teamFilter.value || payedFilter.value || sortBy.value;
 });
+
 
 const closeNegonation = () => {
   negonation.value = false;
@@ -237,8 +283,91 @@ const closeNegonation = () => {
 
 const openNegonation = () => {
   negonation.value = true;
+  negonationLogic(drivers.value[currentdriver.value].ID);
 }
 
+function negonationLogic(driverID) {
+  
+  let negonationdriver = drivers.value.find(driver => driver.ID === driverID);
+  let driverTeam = teams.value.find(team => team.ID === negonationdriver.currentteam);
+  console.log(negonationdriver, "negonation driver");
+  console.log(negonationdriver.currentteam, currentteam.value);
+  let priceFactor = (negonationdriver.prmanagement + negonationdriver.ego) / 200;
+
+  if(negonationdriver.currentteam == null || negonationdriver.currentteam == currentteam.value || negonationdriver.currentteam == undefined) {
+    console.log("driver without team or different team");
+    wantToTeam.value = true;
+  } else {
+    buyoutIdeal.value = Math.floor((getRandomInteger(1000000, 5000000) * priceFactor) / 1000) * 1000;
+    let wantToTeam = ref(false);
+    console.log(teams.value[currentteam.value], "current team stats", teams.value[currentteam.value].aerodynamics, teams.value[currentteam.value].gearbox, teams.value[currentteam.value].brakes, teams.value[currentteam.value].rearwing, teams.value[currentteam.value].frontwing, teams.value[currentteam.value].reliability );
+    console.log(driverTeam, "driver team stats", driverTeam.aerodynamics, driverTeam.gearbox, driverTeam.brakes, driverTeam.rearwing, driverTeam.frontwing, driverTeam.reliability);
+    let currTeamStats = teams.value[currentteam.value].aerodynamics + teams.value[currentteam.value].gearbox + teams.value[currentteam.value].brakes + teams.value[currentteam.value].rearwing + teams.value[currentteam.value].frontwing + teams.value[currentteam.value].reliability ;
+    let driverTeamStats = driverTeam.aerodynamics + driverTeam.gearbox + driverTeam.brakes + driverTeam.rearwing + driverTeam.frontwing + driverTeam.reliability ;
+    console.log(currTeamStats, "current team stats");
+    console.log(driverTeamStats, "driver team stats");
+    let teamDifference =  currTeamStats - driverTeamStats;
+    console.log(teamDifference, "team difference");
+    if(teamDifference > -8) {
+      wantToTeam.value = true;
+    } else {
+      wantToTeam.value = false;
+      return driverDeclined.value = true, negonation.value = false;
+    }
+  }
+  salaryIdeal.value = Math.floor((getRandomInteger(500000, 2000000) * priceFactor) / 1000) * 10000;
+  salaryPrices.value = [
+    Math.round(salaryIdeal.value / 1.4),
+    Math.round(salaryIdeal.value / 1.3),
+    Math.round(salaryIdeal.value / 1.2),
+    Math.round(salaryIdeal.value / 1.1),
+    salaryIdeal.value,
+    Math.round(salaryIdeal.value * 1.1),
+    Math.round(salaryIdeal.value * 1.2),
+    Math.round(salaryIdeal.value * 1.3),
+    Math.round(salaryIdeal.value * 1.4)
+  ];
+  console.log(salaryIdeal.value, salaryPrices.value);
+}
+
+function tryNegonation() {
+  console.log(currentSalaryIndex.value, "current salary index");
+  let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
+  console.log("offered salary:", offeredSalary, "ideal salary:", salaryIdeal.value);
+  if(offeredSalary >= salaryIdeal.value && wantToTeam.value) {
+    driverAccepted.value = true;
+    negonation.value = false;
+    console.log("driver accepted the offer");  
+  } else {
+    driverDeclined.value = true;
+    negonation.value = false;
+    console.log("driver declined the offer");
+  }
+}
+
+function driverAcceptedOffer() {
+  
+}
+
+const updateTeam = async (teamID, newData) => {
+  try {
+    await updateTeam(teamID, newData);
+    teams.value = await $fetch("/api/listTeam");
+  } catch (error) {
+    console.error("Error updating team:", error);
+  }
+};
+
+const updateDriver = async (driverID, newData) => {
+  try {
+    await updateDriver(driverID, newData);
+    drivers.value = await $fetch("/api/listDriver");
+  } catch (error) {
+    console.error("Error updating team:", error);
+  }
+};
+
+// Filtering and sorting logic
 const filteredAndSortedDrivers = computed(() => {
   let result = [...drivers.value];
   
@@ -303,7 +432,15 @@ const filteredAndSortedDrivers = computed(() => {
   
   return result;
 });
-
+function toggleSortOrder() {
+  sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+}
+function clearFilters() {
+  searchFilter.value = '';
+  teamFilter.value = '';
+  payedFilter.value = '';
+  sortBy.value = '';
+}
 definePageMeta({ layout: 'menu' }) 
 
 const switchLayout = inject('switchLayout')
