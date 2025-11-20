@@ -177,7 +177,7 @@
       <div class="driver-negonation-cont">
         <h2>Jezdec přijal vaši nabídku.</h2>
         <h3>Vyberte jezdce, za kterého ho chcete nahradit.</h3>
-        <div class="drivers" v-for="drivers in getTeamAllDrivers" :key="drivers.ID">
+        <div class="drivers" v-for="drivers in teamAllDrivers" :key="drivers.ID">
           <div class="driver-info">
             <span>{{ drivers.name }}</span>
             <span>{{ drivers.fee }}</span>
@@ -223,7 +223,7 @@ let wantToTeam = ref(false);
 let buyoutIdeal = ref(0);
 let driverAccepted = ref(false);
 let driverDeclined = ref(false);
-let negonation = ref(true);
+let negonation = ref(false);
 
 
 const sortBy = ref('');
@@ -232,13 +232,14 @@ const searchFilter = ref('');
 const teamFilter = ref('');
 const payedFilter = ref('');
 
-const { getTeamAllDrivers } = setupRace({
+const { teamAllDrivers } = setupRace({
   drivers: drivers.value,
   teams: teams.value,
   circuits: [],
   teamId: currentteam.value,
   circuitId: 0
 });
+console.log(teamAllDrivers);
 console.log(drivers);
 
 function giveavatar(num) {
@@ -333,8 +334,8 @@ function negonationLogic(driverID) {
 function tryNegonation() {
   console.log(currentSalaryIndex.value, "current salary index");
   let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
-  console.log("offered salary:", offeredSalary, "ideal salary:", salaryIdeal.value);
-  if(offeredSalary >= salaryIdeal.value && wantToTeam.value) {
+  console.log("offered salary:", offeredSalary, "ideal salary:", salaryIdeal.value, "wants to team:", wantToTeam.value);
+  if(offeredSalary >= salaryIdeal.value) {
     driverAccepted.value = true;
     negonation.value = false;
     console.log("driver accepted the offer");  
