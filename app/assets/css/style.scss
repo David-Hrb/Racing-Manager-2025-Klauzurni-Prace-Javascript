@@ -778,13 +778,13 @@ template {
     h1 {
         font-size: clamp(4rem, 2.1633rem + 4.898vw, 10rem);
         font-weight: 900;
-        color: $blue-700;
+        color: $amber-900;
         letter-spacing: 0.2em;
     }
     h2 {
         font-size: clamp(3rem, 1.7755rem + 3.2653vw, 7rem);
         font-weight: 900;
-        color: $blue-500;
+        color: $amber-900;
         letter-spacing: 0.2em;
     }
 }
@@ -817,7 +817,7 @@ template {
     height: 90vh;
     margin-top: 10vh;
     h2 {
-        color: $orange-500;
+        color: $amber-900;
         font-size: clamp(2rem, 1.0816rem + 2.449vw, 5rem);
     }
 
@@ -834,7 +834,7 @@ template {
         width: 50%;
         
         h3 {
-            color: $blue-500;
+            color: $amber-500;
             font-size: clamp(1rem, 0.3878rem + 1.6327vw, 3rem);
             margin-bottom: 1rem;
         }
@@ -866,8 +866,8 @@ template {
 
         input:focus,
         select:focus {
-            border-color: $blue-500;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            border-color: $amber-500;
+            box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.2);
         }
 
         input::placeholder {
@@ -898,7 +898,7 @@ template {
                     
                 }
                 &:has(input[type="radio"]:checked) {
-                    border-color: $blue-500;
+                    border-color: $gray-50;
                 }
             }
         }
@@ -3510,4 +3510,388 @@ option:focus {
 
 input::placeholder {
     color: #999;
+}
+
+.driver-negonation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.90);
+  display: flex;
+  @include full-center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .driver-negonation-cont {
+    position: relative;
+    width: 60%;
+    max-width: 800px;
+    max-height: 80vh;
+    background-color: $gray-900;
+    border: 5px solid $amber-900;
+    border-radius: 12px;
+    @include flex-column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    color: $amber-500;
+    overflow-y: auto;
+    animation: slideUp 0.4s ease-out;
+
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      color: $amber-500;
+      @include titletext;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 0.05em;
+      margin: 1rem 0 0 0;
+      padding: 0;
+    }
+
+    h3 {
+      color: $amber-700;
+      @include normaltext-biggest;
+      margin: 0;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .negonation-inputs {
+      @include flex-column;
+      gap: 1.5rem;
+      width: 100%;
+      align-items: center;
+      margin-top: 1rem;
+
+      .negonation-input {
+        @include flex-column;
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 500px;
+        background: $gray-950;
+        border: 2px solid $gray-800;
+        border-radius: 8px;
+        padding: 1.25rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-color: $amber-900;
+          background: rgba($amber-900, 0.05);
+        }
+
+        > span {
+          color: $amber-700;
+          @include normaltext-bigger;
+          font-weight: 600;
+          text-align: left;
+          width: 100%;
+        }
+
+        select {
+          width: 100%;
+          margin-bottom: 0;
+        }
+
+        .money {
+          @include flex-row;
+          @include full-center;
+          gap: 1rem;
+          width: 100%;
+
+          button {
+            background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+            color: $gray-900;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            @include normaltext-biggest;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba($amber-500, 0.2);
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 6px 16px rgba($amber-500, 0.4);
+              background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+            }
+
+            &:active {
+              transform: translateY(0);
+            }
+          }
+
+          .money-text {
+            flex: 1;
+            text-align: center;
+            color: $amber-500;
+            @include normaltext-biggest;
+            font-weight: 900;
+            background: $gray-900;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: 2px solid $amber-900;
+            letter-spacing: 0.05em;
+          }
+        }
+
+        .driver-negonation-btn {
+          background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+          color: $gray-900;
+          border: none;
+          padding: 1rem 2rem;
+          border-radius: 8px;
+          @include normaltext-bigger;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          letter-spacing: 0.05em;
+          box-shadow: 0 4px 12px rgba($amber-500, 0.3);
+          margin-top: 0.5rem;
+          width: 100%;
+
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba($amber-500, 0.5);
+            background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+          }
+
+          &:active {
+            transform: translateY(-1px);
+          }
+        }
+      }
+    }
+    .driversneg-container {
+      @include flex-row;
+      gap: 0.5rem;
+      width: 100%;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .drivers {
+
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1200px;
+      padding: 1rem 0;
+
+      .driver-info {
+        @include flex-column;
+        align-items: center;
+        background: $gray-950;
+        border: 3px solid $gray-800;
+        border-radius: 12px;
+        padding: 1.5rem;
+        gap: 1rem;
+        transition: all 0.3s ease;
+        animation: cardFadeIn 0.4s ease-out;
+
+        @keyframes cardFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        &:hover {
+          border-color: $amber-900;
+          background: rgba($amber-900, 0.1);
+          transform: translateY(-5px);
+          box-shadow: 0 8px 24px rgba($amber-500, 0.2);
+        }
+
+        .avatar {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          border: 3px solid $amber-500;
+          box-shadow: 0 4px 16px rgba($amber-500, 0.3);
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba($amber-500, 0.5);
+          }
+        }
+
+        .driverflag {
+          @include flex-row;
+          @include full-center;
+          gap: 6px;
+          color: $amber-700;
+          @include normaltext;
+          font-weight: 600;
+          background: $gray-900;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          width: 100%;
+
+          .fi {
+            font-size: 1.2em;
+          }
+        }
+
+        span {
+          color: $amber-700;
+          @include normaltext;
+          font-weight: 600;
+          text-align: center;
+          padding: 0.25rem 0;
+
+          &:nth-of-type(1) {
+            color: $amber-500;
+            @include normaltext-bigger;
+            font-weight: 700;
+          }
+
+          &:nth-of-type(2) {
+            color: $amber-600;
+            font-weight: 700;
+          }
+
+          &:last-of-type {
+            color: $red-500;
+            @include normaltext;
+            font-weight: 500;
+            font-style: italic;
+            margin-top: 0.5rem;
+          }
+        }
+
+        .driver-negonation-btn {
+          background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+          color: $gray-900;
+          border: none;
+          padding: 0.875rem 1.75rem;
+          border-radius: 8px;
+          @include normaltext;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba($amber-500, 0.3);
+          width: 100%;
+          margin-top: 0.5rem;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba($amber-500, 0.5);
+            background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+    }
+
+    .driver-negonation-btn {
+      background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+      color: $gray-900;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 8px;
+      @include normaltext-bigger;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 12px rgba($amber-500, 0.3);
+      margin-top: 1rem;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba($amber-500, 0.5);
+        background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+      }
+
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+// Přepsání stylů pro input a select v rámci negonation dialogu
+.driver-negonation {
+  input,
+  select,
+  option {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid $gray-800;
+    border-radius: 8px;
+    background: $gray-950;
+    color: $amber-500;
+    @include normaltext-bigger;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    outline: none;
+    margin-bottom: 0;
+
+    &:focus {
+      border-color: $amber-500;
+      background: rgba($amber-900, 0.1);
+    }
+
+    &::placeholder {
+      color: $gray-600;
+    }
+  }
+
+  input[type="date"] {
+    color-scheme: dark;
+
+    &::-webkit-calendar-picker-indicator {
+      filter: brightness(0.8) sepia(1) saturate(5) hue-rotate(5deg);
+      cursor: pointer;
+    }
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 3rem;
+
+    &:hover {
+      border-color: $amber-900;
+    }
+  }
+
+  option {
+    background: $gray-950;
+    color: $amber-500;
+    padding: 0.75rem;
+
+    &:hover {
+      background: rgba($amber-900, 0.2);
+    }
+  }
 }

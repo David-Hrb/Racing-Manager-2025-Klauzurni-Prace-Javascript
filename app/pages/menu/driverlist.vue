@@ -148,11 +148,11 @@
           <div class="negonation-input">
             <span>vyberte délku smlouvy:</span>
             <select name="years" id="years">
-              <option value="1">1 rok</option>
-              <option value="2">2 roky</option>
-              <option value="3">3 roky</option>
-              <option value="4">4 roky</option>
-              <option value="5">5 roků</option>
+              <option @click="yearsOfContract = 1">1 rok</option>
+              <option @click="yearsOfContract = 2">2 roky</option>
+              <option @click="yearsOfContract = 3">3 roky</option>
+              <option @click="yearsOfContract = 4">4 roky</option>
+              <option @click="yearsOfContract = 5">5 roků</option>
             </select>
           </div>
           <div class="negonation-input">
@@ -168,7 +168,7 @@
             <span>cena za výkup</span>
             {{ buyoutIdeal }}
           </div>
-          <button @click="tryNegonation()">Potvrdit</button>
+          <button style="padding: 1.5rem 3rem; " class="settings-btn driver-negonation-btn" @click="tryNegonation()">Potvrdit</button>
 
         </div>
       </div>
@@ -177,20 +177,26 @@
       <div class="driver-negonation-cont">
         <h2>Jezdec přijal vaši nabídku.</h2>
         <h3>Vyberte jezdce, za kterého ho chcete nahradit.</h3>
-        <div class="drivers" v-for="drivers in teamAllDrivers" :key="drivers.ID">
-          <div class="driver-info">
-            <span>{{ drivers.name }}</span>
-            <span>{{ drivers.fee }}</span>
-            <button @click=" 
-              drivers[currentdriver].currentteam = currentteam;
-              drivers[currentdriver].contractexp = new Date().getFullYear() + parseInt(document.getElementById('years').value);
-              drivers.ID === drivers.ID ? drivers.currentteam = null : null;
-              ">Nahradit</button>
+        <div class="driversneg-container">
+          <div class="drivers" v-for="drivers in teamAllDrivers" :key="drivers.ID">
+            <div class="driver-info">
+              <img 
+                :src="`/images/avatars/${giveavatar(drivers.avatar)}.svg`" 
+                class="avatar" 
+                alt="avatar" 
+                style="width: 100px;"
+              >
+              <div class="driverflag">Národnost: <span class="fi" :class="`fi-${drivers.nationality}`" aria-hidden="true"></span> {{ drivers.nationality }}</div>
+              <span>Jmeno: {{ drivers.name }}</span>
+              <span>Cena: {{ drivers.fee }}</span>
+              <span>Pokud má jezdec body tak budou přepsány z nového jezdce!</span>
+              <button class="driver-negonation-btn" @click="driverAcceptedOffer(drivers.ID)">Nahradit</button>
 
-          </div>
+            </div>
 
+          </div>     
         </div>
-        <button @click="driverAccepted = false">continue</button>
+        <button class="driver-negonation-btn" @click="driverAccepted = false">zpět</button>
       </div>
     </div>
     <div class="driver-negonation" v-if="driverDeclined">
@@ -208,12 +214,16 @@ const sound = useClickSound();
 const sound2 = useClickSoundNext();
 const { getRandomInteger } = UseInteger();
 const { setupRace } = useRaceSetup();
+const { updateLeadboard  } = useLeadBoardsApi();
 const drivers = ref([]);
 const teams = ref([]);
 const manager = ref([]);
+const leadboard = ref([]);
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 manager.value = await $fetch("/api/manager/listManager");
+leadboard.value = await $fetch('/api/leadboard/listLeadboard');
+
 let currentteam = ref(manager.value[0].team);
 let currentdriver = ref(null);
 let salaryIdeal = ref(0);
@@ -224,7 +234,7 @@ let buyoutIdeal = ref(0);
 let driverAccepted = ref(false);
 let driverDeclined = ref(false);
 let negonation = ref(false);
-
+let yearsOfContract = ref(1);
 
 const sortBy = ref('');
 const sortOrder = ref('asc');
@@ -271,12 +281,9 @@ function calculateRating(driver) {
   return driver.concentration + driver.overtaking + driver.experience + driver.quickness + driver.stamina;
 }
 
-
-
 const hasActiveFilters = computed(() => {
   return searchFilter.value || teamFilter.value || payedFilter.value || sortBy.value;
 });
-
 
 const closeNegonation = () => {
   negonation.value = false;
@@ -294,8 +301,8 @@ function negonationLogic(driverID) {
   console.log(negonationdriver, "negonation driver");
   console.log(negonationdriver.currentteam, currentteam.value);
   let priceFactor = (negonationdriver.prmanagement + negonationdriver.ego) / 200;
-
-  if(negonationdriver.currentteam == null || negonationdriver.currentteam == currentteam.value || negonationdriver.currentteam == undefined) {
+  if(negonationdriver.currentteam == currentteam.value) return driverDeclined.value = true, negonation.value = false;
+  if(negonationdriver.currentteam == null  || negonationdriver.currentteam == undefined) {
     console.log("driver without team or different team");
     wantToTeam.value = true;
   } else {
@@ -346,11 +353,138 @@ function tryNegonation() {
   }
 }
 
-function driverAcceptedOffer() {
+function driverAcceptedOffer(replaceDriverID) {
+  //
+  console.log("replacing driver ID:", replaceDriverID);
+  let newTeamID = currentteam.value;
+  let TeamWithoutDriverTeamID = drivers.value[currentdriver.value].currentteam;
   
+
+  let changeDriverID = drivers.value[currentdriver.value].ID; 
+  let replaceDriver = drivers.value.find(driver => driver.ID === replaceDriverID);
+
+  let teamWithoutDriver = teams.value.find(t => t.ID === TeamWithoutDriverTeamID);
+  let team = teams.value.find(t => t.ID === replaceDriver.currentteam);
+  let contractExp = manager.value[0].season + yearsOfContract.value;
+
+  const driverFields = ['driver1', 'driver2', 'testdriver'];
+  let driverPosition = driverFields.findIndex(field => team[field] === replaceDriverID)
+ 
+  if(TeamWithoutDriverTeamID == null) {
+      const fieldToUpdate = driverFields[driverPosition];  
+      const updatedTeamData = { [fieldToUpdate]: changeDriverID, money: team.money - (salaryPrices.value[currentSalaryIndex.value] + replaceDriver.fee) };  
+      const pointsToTransfer = leadboard.value.find(entry => entry.driverID === replaceDriverID)?.points || 0;
+      const newPointsForChangedDriver = (leadboard.value.find(entry => entry.driverID === changeDriverID)?.points || 0);
+      console.log(pointsToTransfer, "points to transfer", newPointsForChangedDriver , "new points for changed driver");
+      editLeadboard(changeDriverID, pointsToTransfer);
+      editLeadboard(replaceDriverID, newPointsForChangedDriver);
+      updateTeamFunc(newTeamID, updatedTeamData);
+      updateDriverFunc(changeDriverID, {
+        currentteam: newTeamID,
+        contractexp: contractExp
+      });
+      updateDriverFunc(replaceDriverID, {
+        currentteam: null,
+        contractexp: null
+      });
+      console.log(TeamWithoutDriverTeamID, "TeamWithoutDriverTeamID");
+      console.log(currentteam.value, "current team ID");
+      console.log(changeDriverID, "change driver ID");
+      console.log(replaceDriverID, "replace driver ID");
+      console.log(driverPosition, "driver position in team");
+    return driverAccepted.value = false;
+  }
+ 
+  let currentDriverPosition = driverFields.findIndex(field => teamWithoutDriver[field] === changeDriverID)
+  let newDriverID = findNewDriver(teamWithoutDriver);
+  let newDriver = drivers.value.find(driver => driver.ID === newDriverID);
+  let newDriverFee = Math.floor((newDriver.concentration + newDriver.overtaking + newDriver.experience + newDriver.quickness + newDriver.stamina) / 5 * 10000);
+  console.log(TeamWithoutDriverTeamID, "TeamWithoutDriverTeamID");
+  console.log(currentteam.value, "current team ID");
+  console.log(changeDriverID, "change driver ID");
+  console.log(replaceDriverID, "replace driver ID");
+  console.log(driverPosition, "driver position in team");
+  console.log(newDriverID, "new driver ID to fill the empty spot");
+  console.log(newDriverFee, "new driver fee");
+  
+
+  if(newDriverID !== null) {
+    if (driverPosition !== -1) {
+      const fieldToUpdate = driverFields[driverPosition];
+      const currentDriverFieldToUpdate = driverFields[currentDriverPosition];
+      console.log({ [fieldToUpdate]: changeDriverID }, "field to update in team");
+      console.log({ [currentDriverFieldToUpdate]: newDriverID }, "current driver field to update in team");
+      const updatedTeamData = { [fieldToUpdate]: changeDriverID, money: team.money - (salaryPrices.value[currentSalaryIndex.value] + replaceDriver.fee) };
+      const currentTeamData = { [currentDriverFieldToUpdate]: newDriverID };
+
+      const pointsToTransfer = leadboard.value.find(entry => entry.driverid === replaceDriverID)?.points || 0;
+      const newPointsForChangedDriver = (leadboard.value.find(entry => entry.driverid === changeDriverID)?.points || 0);
+      editLeadboard(changeDriverID, pointsToTransfer);
+      editLeadboard(newDriverID, newPointsForChangedDriver);
+      updateTeamFunc(newTeamID, updatedTeamData);
+      updateTeamFunc(TeamWithoutDriverTeamID, currentTeamData);
+      updateDriverFunc(changeDriverID, {
+        currentteam: newTeamID,
+        contractexp: contractExp
+      });
+      updateDriverFunc(replaceDriverID, {
+        currentteam: null,
+        contractexp: null
+      });
+      updateDriverFunc(newDriverID, {
+        currentteam: TeamWithoutDriverTeamID,
+        contractexp: manager.value[0].season + getRandomInteger(1, 4),
+        fee: newDriverFee
+      });
+    } else {
+      alert("Chyba při nalezení pozice jezdce v týmu.");
+    }
+  } else {
+    alert("Není dostupný žádný vhodný jezdec na nahrazení.");
+  }
+  driverAccepted.value = false;
 }
 
-const updateTeam = async (teamID, newData) => {
+const editLeadboard = async (id, points) => {
+  const newData = {
+    ...leadboard.value[id],
+    points: points 
+  };
+  await updateCurrentLeadboard(id, newData);
+};
+
+const updateCurrentLeadboard = async (id, newData) => {
+  try {
+    await updateLeadboard(id, newData);
+    leadboard.value = await $fetch("/api/leadboard/listLeadboard");
+    
+  } catch (error) {
+    console.error("Error updating team:", error);
+  }
+};
+function findNewDriver(teamWithoutDriver) {
+  let availableDrivers = drivers.value.filter(driver => driver.currentteam == null);
+  console.log(availableDrivers, "available drivers");
+  console.log(teamWithoutDriver, "team without driver");
+  console.log(teamWithoutDriver.aerodynamics, teamWithoutDriver.gearbox, teamWithoutDriver.brakes, teamWithoutDriver.rearwing, teamWithoutDriver.frontwing, teamWithoutDriver.reliability );
+  if(availableDrivers.length > 0) {
+    let randomIndex = getRandomInteger(0, availableDrivers.length - 1);
+    let newDriver = drivers.value.find(driver => driver.ID === availableDrivers[randomIndex].ID);
+    let teamStats = teamWithoutDriver.aerodynamics + teamWithoutDriver.gearbox + teamWithoutDriver.brakes + teamWithoutDriver.rearwing + teamWithoutDriver.frontwing + teamWithoutDriver.reliability;
+    let driverStats = newDriver.concentration + newDriver.overtaking + newDriver.experience + newDriver.quickness + newDriver.stamina;
+    if(driverStats >= (teamStats / 6) * 5) {
+      console.log("found suitable new driver:", newDriver);
+      return newDriver.ID;
+    } else {
+      return findNewDriver(teamWithoutDriver);
+    }
+  } else {
+    return null;
+  }
+}
+const { updateTeam } = useTeamsApi();
+const { updateDriver } = useDriversApi();
+const updateTeamFunc = async (teamID, newData) => {
   try {
     await updateTeam(teamID, newData);
     teams.value = await $fetch("/api/listTeam");
@@ -359,7 +493,7 @@ const updateTeam = async (teamID, newData) => {
   }
 };
 
-const updateDriver = async (driverID, newData) => {
+const updateDriverFunc = async (driverID, newData) => {
   try {
     await updateDriver(driverID, newData);
     drivers.value = await $fetch("/api/listDriver");
