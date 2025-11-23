@@ -28,9 +28,9 @@ export const useLapTime = () => {
       tyretype
     } = stats;
 
-    let basespeed = quickness + concentration + stamina * 1.5;
-    let cornerspeed = turns * (aerodynamics + frontwing + brakes) * 2.5;
-    let straightspeed = drszones * (gearbox + rearwing) * 3.2;
+    let basespeed = quickness + concentration + stamina * 1.8;
+    let cornerspeed = turns * (aerodynamics + frontwing + brakes) * 2.7;
+    let straightspeed = drszones * (gearbox + rearwing) * 3.5;
     let overtakefactor = 0;
     let mistakemultiplier = 0;
     let pneudegradation = degradation;

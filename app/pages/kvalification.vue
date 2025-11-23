@@ -206,7 +206,7 @@ circuits.value = await $fetch("/api/listCircuit");
 manager.value = await $fetch("/api/manager/listManager");
 
 let currentteam = manager.value[0].team;;
-let currentcircuit = 1;
+const { currentcircuit } = await useGetNextRace()
 
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
   drivers: drivers.value,
@@ -649,7 +649,7 @@ function startIntervalLoop() {
 
 // ------------------------------ TIMER, ODČÍTÁNÍ ČASU, POČÍTÁNÍ ČASU JEZDCŮ, OVLÁDÁ POZICE JEZDCŮ NA TRATI, VOLÁ PO AKTUALIZACI ČASŮ ------------------------------
 
-const totalSeconds = ref(900) 
+const totalSeconds = ref(400) 
 const milliseconds = ref(0)
 const isRunning = ref(false)
 let timer = null

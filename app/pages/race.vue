@@ -318,7 +318,12 @@
          </div>
         </div>
       <div class="div6race  grid-box">
-         s
+         <div
+          v-for="(circuit) in currentcircuitinfo"
+          class="circuit"
+        >
+          {{ circuit.name }}
+        </div>
       </div>
     </div>
   </div>
@@ -341,15 +346,17 @@ let drivers = ref([]);
 let teams = ref([]);
 let circuits = ref([]); 
 let manager = ref([]);
+let calendar = ref([]);
 
 
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 circuits.value = await $fetch("/api/listCircuit");
 manager.value = await $fetch("/api/manager/listManager");
+calendar.value = await $fetch('/api/calendar/listCalendar');
 
 let currentteam = manager.value[0].team;;
-let currentcircuit = 1;
+const { currentcircuit } = await useGetNextRace()
 const raceEnded = ref(false);
 
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
@@ -362,7 +369,7 @@ const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace(
 
 let teamdrivers = ref(teamDrivers);
 let currentcircuitinfo = ref(currentCircuitInfo ? [currentCircuitInfo] : []);
-
+let currentCircuitPositionID = calendar.value.find(event => event.track === currentcircuit)?.ID || null;
 let selectedDriver = ref(null);
 const pitStopDriverId = ref(null);
 let boxTrue = ref(false);
@@ -394,10 +401,10 @@ let choosetyre = ref(true);
 let firstopen = ref(true);
 
 // timer 
-const totalLaps = ref(currentCircuitInfo.lapslength)        
+const totalLaps = ref(currentCircuitInfo.lapslength - 30);        
 const currentLap = ref(0)       
 const isRunning = ref(false)   
-const lapSpeed = ref(1000)       
+const lapSpeed = ref(500)       
 let currenttime = ref(0);
 let timedelay = ref({})
 
@@ -705,7 +712,7 @@ function processLap() {
     clearInterval(timer);
     isRunning.value = false;
     raceEnded.value = true;
-    raceEnd();
+    
     console.log('Race finished!');
   }
 }
@@ -915,26 +922,120 @@ const updateCurrentLeadboard = async (id, newData) => {
 };
 
 const editLeadboard = async (id, points) => {
+  // Najděte záznam podle ID, ne podle indexu
+  const currentRecord = leadboard.value.find(record => record.driverID === id);
+  
+  if (!currentRecord) {
+    console.error(`Leadboard záznam s ID ${id} nebyl nalezen`);
+    return;
+  }
+  
   const newData = {
-    ...leadboard.value[id],
+    ...currentRecord,
     points: points 
   };
   await updateCurrentLeadboard(id, newData);
 };
 
 
-function raceEnd() {
+async function raceEnd() {
   const pointsDistribution = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
-  displayedLaptimes.value.forEach((driver, i) => {
+  for (let i = 0; i < displayedLaptimes.value.length; i++) {
+    const driver = displayedLaptimes.value[i];
+    let currentDriver = drivers.value.find(d => d.ID === driver.id);
+    let currentTeam = teams.value.find(t => t.ID === currentDriver.currentteam);
+    console.log("Driver:", currentDriver.name, "Position:", i + 1, "DNF:", driver.dnf, currentTeam);
+    
+    if(!driver.dnf && i < 3) {
+      if(i == 0) {
+        let wins = currentDriver.wins + 1;
+        let teamwins = currentTeam.historywins + 1;
+        console.log("WINNER", currentDriver.name, "Total Wins:", wins);
+        console.log("TEAM WINNER", currentTeam.name, "Total Wins:", teamwins);
+        await updateDriverFunc(driver.id, {
+          wins: wins
+        });
+        await updateTeamFunc(currentTeam.ID, {
+          historywins: teamwins
+        });
+        await updateCalendarFunc(currentCircuitPositionID, {
+          winner: currentDriver.ID,
+          winnerteam: currentTeam.ID
+        });
+      }
+      else if(i == 1) {
+        await updateCalendarFunc(currentCircuitPositionID, {
+          secondplace: currentDriver.ID, 
+          secondteam: currentTeam.ID 
+        });
+      }
+      else if(i == 2) {
+        await updateCalendarFunc(currentCircuitPositionID, {
+          thirdplace: currentDriver.ID, 
+          thirdteam: currentTeam.ID 
+        });
+      }
+      
+      let podiums = currentDriver.podiums + 1;
+      let teampodiums = currentTeam.historypodiums + 1;
+      console.log("PODIUM", currentDriver.name, "Total Podiums:", podiums);
+      console.log("TEAM PODIUM", currentTeam.name, "Total Podiums:", teampodiums);
+      await updateDriverFunc(driver.id, {
+        podiums: podiums
+      });
+      await updateTeamFunc(currentTeam.ID, {
+        historypodiums: teampodiums
+      });
+    }
+    
     if (!driver.dnf && i < 10) {
       const pointsEarned = pointsDistribution[i];
       const driverId = driver.id;
-      editLeadboard(driverId, leadboard.value[driverId - 1].points + pointsEarned);
-      console.log(`${driver.name} získal ${pointsEarned} bodů za pozici ${i + 1}, celkem bodů: ${leadboard.value[driverId].points + pointsEarned}, body před: ${leadboard.value[driverId].points}, id bodů ${leadboard.value[driverId].driverID}, id: ${driverId}`);
+      const currentLeadboard = leadboard.value.find(l => l.driverID === driverId);
+      
+      if (currentLeadboard) {
+        const newPoints = currentLeadboard.points + pointsEarned;
+        await editLeadboard(driverId, newPoints);
+        console.log(`${driver.name} získal ${pointsEarned} bodů za pozici ${i + 1}`);
+      } else {
+        console.error(`Leadboard záznam pro řidiče ${driverId} nebyl nalezen`);
+      }
     }
+  }
+  console.log("Race ended, updating calendar...");
+  await updateCalendarFunc(currentCircuitPositionID, {
+    raced: 1
   });
+  console.log("Calendar updated after race end.");
 }
 
+const { updateTeam } = useTeamsApi();
+const { updateDriver } = useDriversApi();
+const { updateCalendar } = useCalendarApi();
+
+const updateTeamFunc = async (teamID, newData) => {
+  try {
+    await updateTeam(teamID, newData);
+  } catch (error) {
+    console.error("Error updating team:", error);
+  }
+};
+
+const updateDriverFunc = async (driverID, newData) => {
+  try {
+    await updateDriver(driverID, newData);
+  } catch (error) {
+    console.error("Error updating team:", error);
+  }
+};
+
+const updateCalendarFunc = async (calendarID, newData) => {
+  try {
+    await updateCalendar(calendarID, newData);
+  } catch (error) {
+    console.error("Error updating calendar:", error);
+  }
+};
 
 onUnmounted(() => {
   clearInterval(timer)

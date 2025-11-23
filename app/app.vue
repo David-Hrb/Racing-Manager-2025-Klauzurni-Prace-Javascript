@@ -1,12 +1,15 @@
 <template >
-  <NuxtLayout :name="currentLayout">
-    <NuxtPage />
-  </NuxtLayout>
-  <Transition name="fade">
-    <div v-if="loading" class="loading-overlay">
-      <div class="loader"></div>
-    </div>
-  </Transition>
+  <div>
+    <NuxtLayout :name="currentLayout">
+      <NuxtPage />
+    </NuxtLayout>
+
+    <Transition name="fade" appear>
+      <div v-if="loading" class="loading-overlay">
+        <div class="loader"></div>
+      </div>
+    </Transition>
+  </div>
 
 </template>
 

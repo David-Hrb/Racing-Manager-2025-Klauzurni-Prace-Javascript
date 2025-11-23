@@ -69,6 +69,7 @@ const currentmanager = thisManager.value[0];
 const { manager, currentday, refreshManager } = useManagerDay();
 await refreshManager();
 let money = ref(teams.value[manager.value[0].team - 1].money);
+const { daycount } = useDayCount()
 
 function settingsbutton() {
   sound.play()

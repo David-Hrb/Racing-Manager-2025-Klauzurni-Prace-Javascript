@@ -17,7 +17,6 @@
               <th>Zatáček</th>
               <th>DRS</th>
               <th>Jelo se?</th>
-              <th>Pole Position</th>
               <th>🥇 Vítěz</th>
               <th>🥈 Druhý</th>
               <th>🥉 Třetí</th>
@@ -47,30 +46,40 @@
                 </span>
               </td>
               <td>
-                <div v-if="calendar.poleposition !== 0" class="driver-info">
-                  <div class="driver-name">{{ calendar.poleposition }}</div>
-                  <div class="team-name">{{ calendar.polepositionteam }}</div>
-                </div>
-                <div v-else class="not-raced">Nejelo se</div>
-              </td>
-              <td>
                 <div v-if="calendar.winner !== 0" class="driver-info">
-                  <div class="driver-name winner">{{ calendar.winner }}</div>
-                  <div class="team-name">{{ calendar.winnerteam }}</div>
+                  <div class="driver-name winner">
+                  <span class="fi" :class="`fi-${drivers.find(driver => driver.ID === calendar.winner)?.nationality.toLowerCase()}`" aria-hidden="true"></span> 
+                  {{ drivers.find(driver => driver.ID === calendar.winner)?.name }}</div>
+                  <div class="team-name">
+                    <span class="fi" :class="`fi-${teams.find(team => team.ID === calendar.winnerteam)?.nationality.toLowerCase()}`" aria-hidden="true"></span>
+                    {{ teams.find(team => team.ID === calendar.winnerteam)?.name }}
+                  </div>
                 </div>
                 <div v-else class="not-raced">Nejelo se</div>
               </td>
               <td>
                 <div v-if="calendar.secondplace !== 0" class="driver-info">
-                  <div class="driver-name second">{{ calendar.secondplace }}</div>
-                  <div class="team-name">{{ calendar.secondteam }}</div>
+                  <div class="driver-name second">
+                    <span class="fi" :class="`fi-${drivers.find(driver => driver.ID === calendar.secondplace)?.nationality.toLowerCase()}`" aria-hidden="true"></span> 
+                    {{ drivers.find(driver => driver.ID === calendar.secondplace)?.name }}
+                  </div>
+                  <div class="team-name">
+                    <span class="fi" :class="`fi-${teams.find(team => team.ID === calendar.secondteam)?.nationality.toLowerCase()}`" aria-hidden="true"></span>
+                    {{ teams.find(team => team.ID === calendar.secondteam)?.name }}
+                  </div>
                 </div>
                 <div v-else class="not-raced">Nejelo se</div>
               </td>
               <td>
                 <div v-if="calendar.thirdplace !== 0" class="driver-info">
-                  <div class="driver-name third">{{ calendar.thirdplace }}</div>
-                  <div class="team-name">{{ calendar.thirdteam }}</div>
+                  <div class="driver-name third">
+                    <span class="fi" :class="`fi-${drivers.find(driver => driver.ID === calendar.thirdplace)?.nationality.toLowerCase()}`" aria-hidden="true"></span> 
+                    {{ drivers.find(driver => driver.ID === calendar.thirdplace)?.name }}
+                  </div>
+                  <div class="team-name">
+                    <span class="fi" :class="`fi-${teams.find(team => team.ID === calendar.thirdteam)?.nationality.toLowerCase()}`" aria-hidden="true"></span>
+                    {{ teams.find(team => team.ID === calendar.thirdteam)?.name }}
+                  </div>
                 </div>
                 <div v-else class="not-raced">Nejelo se</div>
               </td>
@@ -87,6 +96,14 @@ const circuits = ref([]);
 circuits.value = await $fetch("/api/listCircuit");
 const { calendarreturn } = await useCalendarRange()
 const { daycount } = useDayCount()
+
+
+const drivers = ref([])
+const teams = ref([])
+
+
+drivers.value = await $fetch('/api/listDriver')
+teams.value = await $fetch('/api/listTeam')
 console.log(circuits)
 
 const getCircuit = (trackId) => {
