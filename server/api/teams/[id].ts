@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id');
     const method = event.method;
     
-    console.log('Method:', method, 'ID:', id);
+    console.log('Method TEAMS:', method, 'ID:', id);
     
     const db = useDatabase("myDB");
 
@@ -15,11 +15,11 @@ export default defineEventHandler(async (event) => {
         try {
             const requestBody = await readBody(event);
             
-            console.log('Request body:', requestBody);
+            //console.log('Request body:', requestBody);
             
             const current = await db.sql`SELECT * FROM teams WHERE ID = ${id}`;
             
-            console.log('Current data:', current);
+            //console.log('Current data:', current);
             
             let currentData;
             if (Array.isArray(current) && current.length > 0) {
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
                 currentData = current;
             }
 
-            console.log('Parsed current data:', currentData);
+            //console.log('Parsed current data:', currentData);
             
             if (!currentData || !currentData.ID) {
                 throw createError({
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
 
             const updated = { ...currentData, ...requestBody };
             
-            console.log('Updated data:', updated);
+            //console.log('Updated data:', updated);
 
             const result = await db.sql`
                 UPDATE teams SET
@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
                 RETURNING *
             `;
             
-            console.log('Update result:', result);
+            //console.log('Update result:', result);
 
             return result;
         } catch (error) {

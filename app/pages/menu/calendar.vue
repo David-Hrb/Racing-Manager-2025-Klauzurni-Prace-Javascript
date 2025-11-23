@@ -16,7 +16,6 @@
               <th>Kola</th>
               <th>Zatáček</th>
               <th>DRS</th>
-              <th>Jelo se?</th>
               <th>🥇 Vítěz</th>
               <th>🥈 Druhý</th>
               <th>🥉 Třetí</th>
@@ -37,14 +36,6 @@
               <td class="text-right">{{ getCircuit(calendar.track)?.lapslength }} </td>
               <td class="text-right">{{ getCircuit(calendar.track)?.numberofturns }}</td>
               <td class="text-right">{{ getCircuit(calendar.track)?.DRSzones }}</td>
-              <td class="text-center">
-                <span 
-                  class="raced-badge"
-                  :class="{ 'yes': calendar.raced === 0 }"
-                >
-                  {{ calendar.raced === 0 ? "NE" : "ANO" }}
-                </span>
-              </td>
               <td>
                 <div v-if="calendar.winner !== 0" class="driver-info">
                   <div class="driver-name winner">

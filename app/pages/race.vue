@@ -712,7 +712,7 @@ function processLap() {
     clearInterval(timer);
     isRunning.value = false;
     raceEnded.value = true;
-    
+    raceEnd();
     console.log('Race finished!');
   }
 }
@@ -922,7 +922,6 @@ const updateCurrentLeadboard = async (id, newData) => {
 };
 
 const editLeadboard = async (id, points) => {
-  // Najděte záznam podle ID, ne podle indexu
   const currentRecord = leadboard.value.find(record => record.driverID === id);
   
   if (!currentRecord) {
@@ -940,6 +939,8 @@ const editLeadboard = async (id, points) => {
 
 async function raceEnd() {
   const pointsDistribution = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  
   for (let i = 0; i < displayedLaptimes.value.length; i++) {
     const driver = displayedLaptimes.value[i];
     let currentDriver = drivers.value.find(d => d.ID === driver.id);
@@ -952,40 +953,44 @@ async function raceEnd() {
         let teamwins = currentTeam.historywins + 1;
         console.log("WINNER", currentDriver.name, "Total Wins:", wins);
         console.log("TEAM WINNER", currentTeam.name, "Total Wins:", teamwins);
-        await updateDriverFunc(driver.id, {
-          wins: wins
-        });
-        await updateTeamFunc(currentTeam.ID, {
-          historywins: teamwins
-        });
+        
+        await updateDriverFunc(driver.id, { wins: wins });
+        await wait(100); 
+        
+        await updateTeamFunc(currentTeam.ID, { historywins: teamwins });
+        await wait(100);
+        
         await updateCalendarFunc(currentCircuitPositionID, {
           winner: currentDriver.ID,
           winnerteam: currentTeam.ID
         });
+        await wait(100);
       }
       else if(i == 1) {
         await updateCalendarFunc(currentCircuitPositionID, {
           secondplace: currentDriver.ID, 
           secondteam: currentTeam.ID 
         });
+        await wait(100);
       }
       else if(i == 2) {
         await updateCalendarFunc(currentCircuitPositionID, {
           thirdplace: currentDriver.ID, 
           thirdteam: currentTeam.ID 
         });
+        await wait(100);
       }
       
       let podiums = currentDriver.podiums + 1;
       let teampodiums = currentTeam.historypodiums + 1;
       console.log("PODIUM", currentDriver.name, "Total Podiums:", podiums);
       console.log("TEAM PODIUM", currentTeam.name, "Total Podiums:", teampodiums);
-      await updateDriverFunc(driver.id, {
-        podiums: podiums
-      });
-      await updateTeamFunc(currentTeam.ID, {
-        historypodiums: teampodiums
-      });
+      
+      await updateDriverFunc(driver.id, { podiums: podiums });
+      await wait(100);
+      
+      await updateTeamFunc(currentTeam.ID, { historypodiums: teampodiums });
+      await wait(100);
     }
     
     if (!driver.dnf && i < 10) {
@@ -996,23 +1001,40 @@ async function raceEnd() {
       if (currentLeadboard) {
         const newPoints = currentLeadboard.points + pointsEarned;
         await editLeadboard(driverId, newPoints);
+        await wait(100); 
         console.log(`${driver.name} získal ${pointsEarned} bodů za pozici ${i + 1}`);
       } else {
         console.error(`Leadboard záznam pro řidiče ${driverId} nebyl nalezen`);
       }
     }
+    await wait(150);
   }
+  
   console.log("Race ended, updating calendar...");
-  await updateCalendarFunc(currentCircuitPositionID, {
-    raced: 1
-  });
+  await updateCalendarFunc(currentCircuitPositionID, { raced: 1 });
+  await wait(100);
+
   console.log("Calendar updated after race end.");
+  upgradeLimit(1);
 }
 
 const { updateTeam } = useTeamsApi();
 const { updateDriver } = useDriversApi();
 const { updateCalendar } = useCalendarApi();
 
+const upgradeLimit = async (newLimit) => {
+  try {
+    await $fetch("/api/manager/limit", {
+      method: "PUT",
+      body: {
+        NumLimit: newLimit,
+      },
+    });
+    limit.value = newLimit;
+  } catch (error) {
+    console.error("Error updating limit:", error);
+  }
+};
 const updateTeamFunc = async (teamID, newData) => {
   try {
     await updateTeam(teamID, newData);
