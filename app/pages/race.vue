@@ -166,7 +166,9 @@
             <span class="bestlap"></span>       
           </div>
         </div>
-        <button @click="switchToMenu" class="close-button">POKRAČOVAT</button>
+        <button @click="switchToMenu" class="close-button" :disabled="isProcessingRaceEnd">
+          {{ isProcessingRaceEnd ? 'UKLÁDÁNÍ VÝSLEDKŮ...' : 'POKRAČOVAT' }}
+        </button>
       </div>
     </div>
   </div>
@@ -358,6 +360,7 @@ calendar.value = await $fetch('/api/calendar/listCalendar');
 let currentteam = manager.value[0].team;;
 const { currentcircuit } = await useGetNextRace()
 const raceEnded = ref(false);
+const isProcessingRaceEnd = ref(false);
 
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
   drivers: drivers.value,
@@ -712,6 +715,7 @@ function processLap() {
     clearInterval(timer);
     isRunning.value = false;
     raceEnded.value = true;
+    isProcessingRaceEnd.value = true;
     raceEnd();
     console.log('Race finished!');
   }
@@ -1015,7 +1019,9 @@ async function raceEnd() {
   await wait(100);
 
   console.log("Calendar updated after race end.");
-  upgradeLimit(1);
+  await upgradeLimit(1);
+  
+  isProcessingRaceEnd.value = false;
 }
 
 const { updateTeam } = useTeamsApi();
@@ -1030,7 +1036,6 @@ const upgradeLimit = async (newLimit) => {
         NumLimit: newLimit,
       },
     });
-    limit.value = newLimit;
   } catch (error) {
     console.error("Error updating limit:", error);
   }
@@ -1067,6 +1072,10 @@ onUnmounted(() => {
 const switchLayout = inject('switchLayout')
 
 const switchToMenu = () => {
+  if (isProcessingRaceEnd.value) {
+    console.log('Nelze přejít do menu - probíhá ukládání výsledků závodu');
+    return;
+  }
   navigateTo('menu/menu')
 } 
 onMounted(() => {
