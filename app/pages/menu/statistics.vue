@@ -2,40 +2,57 @@
   <div class="maincont">
     <div class="career">
       <div class="career-drivers">
-        <h2 class="title">Best Drivers</h2>
+        <h2 class="title">Best Teams
+          <div class="toggle-buttons">
+            <button 
+              :class="{ active: teamShowType === 'championship' }" 
+              @click="teamShowType = 'championship'; sound2.play()">
+              championáty
+            </button>
+            <button 
+              :class="{ active: teamShowType === 'wins' }" 
+              @click="teamShowType = 'wins'; sound2.play()">
+              vítězství
+            </button>
+            <button 
+              :class="{ active: teamShowType === 'podiums' }" 
+              @click="teamShowType = 'podiums'; sound2.play()">
+              pódia
+            </button>
+          </div>
+        </h2>
+        
         <div class="table-wrapper">
           <table class="drivers-table">
             <thead>
               <tr>
                 <th>Pořadí</th>
-                <th>Avatar</th>
-                <th>Jméno</th>
+                <th>Logo</th>
                 <th>Národnost</th>
-                <th>Datum Narození</th>
-                <th>Aktuální tým</th>
-                <th>Championáty</th>
+                <th>Datum Založení</th>
+                <th>Název týmu</th>
+                <th>{{ teamShowType === 'championship' ? 'Championáty' : teamShowType === 'wins' ? 'Vítězství' : 'Pódia' }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(driver, index) in championDrivers" :key="driver.id">
+              <tr v-for="(team, index) in currentTeamList" :key="team.ID">
                 <td class="driver-rank">{{ index + 1 }}</td>
                 <td>
                   <img 
-                    :src="`/images/avatars/${giveavatar(driver.avatar)}.svg`" 
+                    :src="`/images/logo/teams/${String(team.logo).padStart(2, '0')}.svg`"
                     class="avatar" 
-                    alt="avatar"
+                    alt="team logo"
+                    style="border: none; border-radius: 0%;"
                   >
                 </td>
-                <td class="drivername">{{ driver.name }}</td>
                 <td class="driverflag">
-                  <span class="fi" :class="`fi-${driver.nationality}`" aria-hidden="true"></span> 
-                  {{ driver.nationality }}
+                  <span class="fi" :class="`fi-${team.nationality}`" aria-hidden="true"></span>
                 </td>
-                <td class="bornyear">{{ driver.bornyear }}</td>
-                <td class="currentteam">
-                  {{ driver.currentteam == null ? "bez týmu" : teams.find(team => team.ID === driver.currentteam)?.name }}
+                <td class="bornyear">{{ team.creationyear }}</td>
+                <td class="drivername">{{ team.name }}</td>
+                <td class="career-points">
+                  {{ teamShowType === 'championship' ? team.historytitles : teamShowType === 'wins' ? team.historywins : team.historypodiums }}
                 </td>
-                <td class="driver-championship">{{ driver.championship }}</td>
               </tr>
             </tbody>
           </table>
@@ -46,20 +63,25 @@
         <h2 class="title">Career Statistics
           <div class="toggle-buttons">
             <button 
-              :class="{ active: showWins }" 
-              @click="toggleTables(true)">
+              :class="{ active: driverShowType === 'championship' }" 
+              @click="driverShowType = 'championship'; sound2.play()">
+              championáty
+            </button>
+            <button 
+              :class="{ active: driverShowType === 'wins' }" 
+              @click="driverShowType = 'wins'; sound2.play()">
               vítězství
             </button>
             <button 
-              :class="{ active: !showWins }" 
-              @click="toggleTables(false)">
+              :class="{ active: driverShowType === 'podiums' }" 
+              @click="driverShowType = 'podiums'; sound2.play()">
               pódia
             </button>
           </div>
         </h2>
         
         <div class="table-wrapper">
-          <table v-if="showWins" class="drivers-table">
+          <table class="drivers-table">
             <thead>
               <tr>
                 <th>Pořadí</th>
@@ -68,11 +90,11 @@
                 <th>Národnost</th>
                 <th>Datum Narození</th>
                 <th>Aktuální tým</th>
-                <th>Vítězství</th>
+                <th>{{ driverShowType === 'championship' ? 'Championáty' : driverShowType === 'wins' ? 'Vítězství' : 'Pódia' }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(driver, index) in winDrivers" :key="driver.id">
+              <tr v-for="(driver, index) in currentDriverList" :key="driver.id">
                 <td class="driver-rank">{{ index + 1 }}</td>
                 <td>
                   <img 
@@ -90,43 +112,9 @@
                 <td class="currentteam">
                   {{ driver.currentteam == null ? "bez týmu" : teams.find(team => team.ID === driver.currentteam)?.name }}
                 </td>
-                <td class="career-points">{{ driver.wins }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table v-else class="drivers-table">
-            <thead>
-              <tr>
-                <th>Pořadí</th>
-                <th>Avatar</th>
-                <th>Jméno</th>
-                <th>Národnost</th>
-                <th>Datum Narození</th>
-                <th>Aktuální tým</th>
-                <th>Pódia</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(driver, index) in podiumDrivers" :key="driver.id">
-                <td class="driver-rank">{{ index + 1 }}</td>
-                <td>
-                  <img 
-                    :src="`/images/avatars/${giveavatar(driver.avatar)}.svg`" 
-                    class="avatar" 
-                    alt="avatar"
-                  >
+                <td class="career-points">
+                  {{ driverShowType === 'championship' ? driver.championship : driverShowType === 'wins' ? driver.wins : driver.podiums }}
                 </td>
-                <td class="drivername">{{ driver.name }}</td>
-                <td class="driverflag">
-                  <span class="fi" :class="`fi-${driver.nationality}`" aria-hidden="true"></span> 
-                  {{ driver.nationality }}
-                </td>
-                <td class="bornyear">{{ driver.bornyear }}</td>
-                <td class="currentteam">
-                  {{ driver.currentteam == null ? "bez týmu" : teams.find(team => team.ID === driver.currentteam)?.name }}
-                </td>
-                <td class="career-points">{{ driver.podiums }}</td>
               </tr>
             </tbody>
           </table>
@@ -140,39 +128,39 @@
 import avatars from '~/assets/json/avatars.json'
 const sound = useClickSound(); 
 const sound2 = useClickSoundNext();
-const { getRandomInteger } = UseInteger();
-const { setupRace } = useRaceSetup();
-const { updateLeadboard  } = useLeadBoardsApi();
 const drivers = ref([]);
 const teams = ref([]);
-const manager = ref([]);
-const leadboard = ref([]);
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
-manager.value = await $fetch("/api/manager/listManager");
-leadboard.value = await $fetch('/api/leadboard/listLeadboard');
 
 function giveavatar(num) {
   return avatars[num.toString()] 
 }
 
-const championDrivers = computed(() => 
-  drivers.value.filter(driver => driver.championship > 0).sort((a, b) => b.championship - a.championship)
-);
+const teamShowType = ref('championship');
+const driverShowType = ref('championship');
 
-const showWins = ref(true);
+const currentTeamList = computed(() => {
+  const type = teamShowType.value;
+  if (type === 'championship') {
+    return teams.value.filter(team => team.historytitles > 0).sort((a, b) => b.historytitles - a.historytitles);
+  } else if (type === 'wins') {
+    return teams.value.filter(team => team.historywins > 0).sort((a, b) => b.historywins - a.historywins);
+  } else {
+    return teams.value.filter(team => team.historypodiums > 0).sort((a, b) => b.historypodiums - a.historypodiums);
+  }
+});
 
-const winDrivers = computed(() => 
-  drivers.value.filter(driver => driver.wins > 0).sort((a, b) => b.wins - a.wins)
-);
-
-const podiumDrivers = computed(() => 
-  drivers.value.filter(driver => driver.podiums > 0).sort((a, b) => b.podiums - a.podiums)
-);
-
-const toggleTables = (isWins) => {
-  showWins.value = isWins;
-};
+const currentDriverList = computed(() => {
+  const type = driverShowType.value;
+  if (type === 'championship') {
+    return drivers.value.filter(driver => driver.championship > 0).sort((a, b) => b.championship - a.championship);
+  } else if (type === 'wins') {
+    return drivers.value.filter(driver => driver.wins > 0).sort((a, b) => b.wins - a.wins);
+  } else {
+    return drivers.value.filter(driver => driver.podiums > 0).sort((a, b) => b.podiums - a.podiums);
+  }
+});
 
 const switchLayout = inject('switchLayout')
 
