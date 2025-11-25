@@ -154,7 +154,7 @@
           <button @click="changefastness(100)" class="speed-button">
             1X
           </button>
-          <button @click="changefastness(0.02)" class="speed-button">
+          <button @click="changefastness(200)" class="speed-button">
             0.5X
           </button>
         </div>
@@ -658,7 +658,7 @@ function startIntervalLoop() {
 
 // ------------------------------ TIMER, ODČÍTÁNÍ ČASU, POČÍTÁNÍ ČASU JEZDCŮ, OVLÁDÁ POZICE JEZDCŮ NA TRATI, VOLÁ PO AKTUALIZACI ČASŮ ------------------------------
 
-const totalSeconds = ref(400) 
+const totalSeconds = ref(900) 
 const milliseconds = ref(0)
 const isRunning = ref(false)
 let timer = null

@@ -412,7 +412,7 @@ let choosetyre = ref(true);
 let firstopen = ref(true);
 
 // timer 
-const totalLaps = ref(currentCircuitInfo.lapslength - 30);        
+const totalLaps = ref(currentCircuitInfo.lapslength);        
 const currentLap = ref(0)       
 const isRunning = ref(false)   
 const lapSpeed = ref(500)       
