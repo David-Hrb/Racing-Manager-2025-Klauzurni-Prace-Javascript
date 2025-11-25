@@ -106,12 +106,21 @@
       </div>
 
       <!-- DIV 5 -->
-      <div class="div5 grid-box">
+      <div class="div5 grid-box circuit-info">
         <div
           v-for="(circuit) in currentcircuitinfo"
           class="circuit"
         >
-          {{ circuit.name }}
+          
+          <div class="name">
+            <span class="fi" :class="`fi-${circuit.nationality.toLowerCase()}`"></span>
+            {{ circuit.name }}
+          </div>
+          <div class="info">
+            <div>Místo závodu: {{ circuit.town }}</div>
+            <div>Počet zatáček: {{ circuit.numberofturns }}</div>
+            <div>Délka kola: {{ circuit.length }} km</div>
+          </div>
         </div>
       </div>
 

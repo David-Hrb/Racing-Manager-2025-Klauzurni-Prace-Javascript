@@ -188,18 +188,15 @@ const currentTeamDrivers = ref({
 })
 const originalTeamDrivers = ref({})
 
-// Drag and drop state
 const draggedDriver = ref(null)
 const draggedFromSlot = ref(null)
 const dragOverSlot = ref(null)
 const isDragging = ref(false)
 
-// UI state
 const isSaving = ref(false)
 const saveMessage = ref('')
 const saveMessageType = ref('')
 
-// Load data
 const loadData = async () => {
   drivers.value = await $fetch("/api/listDriver")
   teams.value = await $fetch("/api/listTeam")
@@ -227,7 +224,6 @@ const loadData = async () => {
 
 await loadData()
 
-// Computed
 const canSave = computed(() => {
   if (!currentTeamDrivers.value.driver1 || 
       !currentTeamDrivers.value.driver2 || 
@@ -354,7 +350,7 @@ function resetChanges() {
   saveMessage.value = ''
 }
 
-// Layout switching
+
 const switchLayout = inject('switchLayout')
 
 onMounted(() => {
