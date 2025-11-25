@@ -945,7 +945,6 @@ async function raceEnd() {
   const pointsDistribution = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   
-  // Retry wrapper
   const retryUpdate = async (updateFn, maxRetries = 3) => {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -954,15 +953,13 @@ async function raceEnd() {
       } catch (error) {
         console.error(`Update failed (attempt ${attempt}/${maxRetries}):`, error);
         if (attempt === maxRetries) throw error;
-        await wait(500 * attempt); // exponential backoff
+        await wait(500 * attempt); 
       }
     }
   };
   
   for (let i = 0; i < displayedLaptimes.value.length; i++) {
     const driver = displayedLaptimes.value[i];
-    
-    // 🔥 Fetch aktuálních dat pro tohoto řidiče
 
     const currentDriver = drivers.value.find(d => d.ID === driver.id);
     
@@ -982,7 +979,6 @@ async function raceEnd() {
     
     if (!driver.dnf && i < 3) {
       if (i === 0) {
-        // Winner updates s retry
         await retryUpdate(async () => {
           const newWins = currentDriver.wins + 1;
           await updateDriver(driver.id, { wins: newWins });
@@ -1042,17 +1038,16 @@ async function raceEnd() {
       await retryUpdate(async () => {
         const newTeamPodiums = currentTeam.historypodiums + 1;
         await updateTeam(currentTeam.ID, { historypodiums: newTeamPodiums });
+        teams.value = await $fetch("/api/listTeam");
         console.log("✅ Team podiums updated:", currentTeam.name, newTeamPodiums);
       });
       
       await wait(500);
     }
     
-    // Points update
     if (!driver.dnf && i < 10) {
       const pointsEarned = pointsDistribution[i];
       
-      // Fetch fresh leadboard
       const freshLeadboard = await $fetch('/api/leadboard/listLeadboard');
       const currentLeadboard = freshLeadboard.find(l => l.driverID === driver.id);
       
@@ -1068,10 +1063,9 @@ async function raceEnd() {
       }
     }
     
-    await wait(750); // delší pauza mezi řidiči
+    await wait(750); 
   }
   
-  // Final updates
   await retryUpdate(async () => {
     await updateCalendar(currentCircuitPositionID, { raced: 1 });
     console.log("✅ Calendar marked as raced");
@@ -1084,9 +1078,8 @@ async function raceEnd() {
     console.log("✅ Limit upgraded");
   });
   
-  // Refresh všech dat
   leadboard.value = await $fetch('/api/leadboard/listLeadboard');
-  teams.value = await $fetch("/api/listTeam");
+
   drivers.value = await $fetch("/api/listDriver");
   
   isProcessingRaceEnd.value = false;

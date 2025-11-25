@@ -3835,7 +3835,6 @@ input::placeholder {
   }
 }
 
-// Přepsání stylů pro input a select v rámci negonation dialogu
 .driver-negonation {
   input,
   select,
@@ -3994,5 +3993,245 @@ input::placeholder {
         }
       }
     }
+  }
+}
+.team-management {
+  min-height: 86vh;
+  background: $gray-800;
+  display: flex;
+  @include full-center;
+}
+
+.management-container {
+  width: 80%;
+  height: 80%;
+  margin: 0 auto;
+  .current-team-section {
+    background: $gray-900;
+    border: 0.2rem solid $gray-950;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .current-team-section h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: $amber-500;
+    @include maintext;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .team-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .team-slot {
+    background: $gray-950; 
+    border: 3px dashed $amber-900;
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-height: 350px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .team-slot.drag-over {
+    background: rgba($amber-900, 0.1);
+    border-color: $amber-900;
+    border-style: solid;
+    transform: scale(1.03);
+  }
+
+  .slot-label {
+    text-align: center;
+    font-weight: bold;
+    color: $amber-500;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .empty-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: rgba(255, 255, 255, 0.3);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .driver-card {
+    background: $gray-900;
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: grab;
+    transition: all 0.3s ease;
+    border: 2px solid $amber-900;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .driver-card:active {
+    cursor: grabbing;
+  }
+
+  .driver-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba($amber-500, 0.3);
+    border-color: rgba($amber-500, 0.6);
+  }
+
+  .driver-card .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: block;
+    border: 3px solid rgba($amber-500, 1);
+    box-shadow: 0 0 20px rgba($amber-500, 0.3);
+  }
+
+  .driver-card h3 {
+    text-align: center;
+    color: $amber-500;
+    @include normaltext-bigger;
+    margin: 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .driver-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+    color: rgba($amber-500, 0.8);
+    @include normaltext;
+  }
+
+  .driver-card p {
+    text-align: center;
+    color: rgba($amber-500, 0.7);
+    @include normaltext;
+    margin: 0.3rem 0;
+  }
+
+  .driver-rating {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 1rem;
+  }
+
+  .css-star {
+      width: 15px;
+      height: 15px;
+      background: $orange-500;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      display: inline-block;
+      margin: 0 2px;
+    }
+    
+    .css-star.empty {
+        background: $gray-950;
+    }
+    
+    .half-star {
+        background: linear-gradient(90deg, $orange-500 50%, $gray-950 50%);
+    }
+
+  /* Control Panel */
+  .control-panel {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .save-button,
+  .reset-button {
+    flex: 1;
+    min-width: 200px;
+    padding: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .save-button {
+    background: linear-gradient(135deg, $amber-500, $amber-900);
+    color: $gray-800;
+  }
+
+  .save-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    color: $gray-950;
+  }
+
+  .save-button:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .reset-button {
+    background: rgba($red-950, 0.3);
+    color: #fff;
+    border: 2px solid rgba($red-950, 0.5);
+  }
+
+  .reset-button:hover:not(:disabled) {
+    background: rgba($red-950, 0.8);
+    transform: translateY(-3px);
+  }
+
+  .save-message {
+    flex: 1 1 100%;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .save-message.success {
+    background: rgba(255, 191, 0, 0.2);
+    color: $amber-500;
+    border: 2px solid $amber-900;
+    box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
+  }
+
+  .save-message.error {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff0000;
+    border: 2px solid #ff0000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
   }
 }

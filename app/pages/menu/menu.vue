@@ -1,7 +1,7 @@
 <template>
   <div class="parent">
     <div class="drivers">
-      <h2 class="section-title">Vaši jezdci</h2>
+      <h2 class="section-title">Vaši hlavní jezdci</h2>
       <div 
       v-for="(driver, index) in teamDrivers" 
       :key="index" 
