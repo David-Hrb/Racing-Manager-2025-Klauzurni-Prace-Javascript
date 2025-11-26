@@ -50,7 +50,10 @@ const loadgame = () => {
 
 async function downloadData() {
   try {
-    const data = await $fetch('/api/port/export.get');
+    const name = prompt('Zadej název souboru:', 'moje-data');
+    if (!name) return;
+    
+    const data = await $fetch(`/api/port/export?name=${encodeURIComponent(name)}`);
     const blob = new Blob([JSON.stringify(data, null, 2)], { 
       type: 'application/json' 
     });
@@ -58,11 +61,9 @@ async function downloadData() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `mydata-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `${name}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    
-    console.log('Data byla úspěšně stažena');
   } catch (error) {
     console.error('Chyba při stahování:', error);
     alert('Nepodařilo se stáhnout data');
