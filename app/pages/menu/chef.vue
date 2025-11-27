@@ -223,7 +223,7 @@ const loadData = async () => {
 }
 
 await loadData()
-
+// Computed property to check if there are unsaved changes
 const canSave = computed(() => {
   if (!currentTeamDrivers.value.driver1 || 
       !currentTeamDrivers.value.driver2 || 
@@ -240,10 +240,12 @@ function giveavatar(num) {
   return avatars[num.toString()] 
 }
 
+// Get driver points from leadboard<
 function getDriverPoints(driverId) {
   return leadboard.value.find(entry => entry.driverID === driverId)?.points || 0
 }
 
+// Calculate driver rating
 function calculateRating(driver) {
   return driver.concentration + driver.overtaking + driver.experience + driver.quickness + driver.stamina
 }

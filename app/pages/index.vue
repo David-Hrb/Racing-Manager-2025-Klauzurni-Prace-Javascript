@@ -6,7 +6,7 @@
     </div>
     
     <div class="menu-options">
-      <button @click="downloadData" class="menu-button primary">
+      <button @click="loaddata" class="menu-button primary">
         Load Game
       </button>
       <button @click="newgame" class="menu-button primary">
@@ -70,7 +70,34 @@ async function downloadData() {
   }
 }
 
-
+async function loaddata() {
+  try {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    
+    input.onchange = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const text = await file.text();
+      const data = JSON.parse(text);
+      
+      await $fetch('/api/port/import', {
+        method: 'POST',
+        body: data
+      });
+      
+      alert('Data úspěšně načtena');
+      navigateTo('/');
+    };
+    
+    input.click();
+  } catch (error) {
+    console.error('Chyba při načítání:', error);
+    alert('Nepodařilo se načíst data');
+  }
+}
 
 /* 
 Formula 1 = Velocity Series

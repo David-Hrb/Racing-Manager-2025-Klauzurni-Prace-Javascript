@@ -415,7 +415,7 @@ let firstopen = ref(true);
 const totalLaps = ref(currentCircuitInfo.lapslength);        
 const currentLap = ref(0)       
 const isRunning = ref(false)   
-const lapSpeed = ref(500)       
+const lapSpeed = ref(3000)       
 let currenttime = ref(0);
 let timedelay = ref({})
 
