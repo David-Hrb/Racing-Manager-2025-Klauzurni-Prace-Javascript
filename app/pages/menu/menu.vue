@@ -121,7 +121,7 @@
           </div>
           <div class="spec-item">
             <span class="label">Délka:</span>
-            <span class="value">{{ currentCircuitInfo.length }} km</span>
+            <span class="value">{{ currentCircuitInfo.length }} m</span>
           </div>
           <div class="spec-item">
             <span class="label">Kola:</span>
@@ -169,12 +169,75 @@
       </div>
     </div>
   </div>
+
+   <div v-if="endOfSeason" class="endseason-overlay">
+    <div class="endseason-content">
+      <div class="endseason-calendar">
+        <h2>Výsledky velkých cen</h2>
+        <div class="circuit-navigation">
+          <button 
+            @click="previousCalendarEntry" 
+            :disabled="isFirstCalendarEntry"
+            class="nav-button"
+          >
+            ← Předchozí
+          </button>
+          <span class="current-circuit">
+            {{ currentCalendarCircuitName }}
+          </span>
+          <button 
+            @click="nextCalendarEntry" 
+            :disabled="isLastCalendarEntry"
+            class="nav-button"
+          >
+            Další →
+          </button>
+        </div>
+
+        <div class="calendar-entries">
+          <div 
+            v-if="currentCalendarEntry"
+            class="calendar-entry"
+          >
+            <div class="event-info">
+              <div class="event-track">
+                {{ circuits.find(circuit => circuit.ID === currentCalendarEntry.track)?.name || 'Unknown Track' }}
+              </div>
+              <div class="event-date">{{ currentCalendarEntry.date }}</div>
+              <div class="podium">
+                <div class="secondplace">
+                  <span class="position-label">2.</span>
+                  <span class="driver-name" v-if="currentCalendarEntry.secondplace !== 0">
+                    {{ drivers.find(driver => driver.ID === currentCalendarEntry.secondplace)?.name || 'Unknown' }} 
+                    ({{ teams.find(team => team.ID === currentCalendarEntry.secondteam)?.name || 'Unknown Team' }})
+                  </span>
+                  <span class="driver-name" v-else>-</span>
+                </div>
+                <div class="winner">
+                  <span class="position-label">1.</span>
+                  <span class="driver-name" v-if="currentCalendarEntry.winner !== 0">
+                    {{ drivers.find(driver => driver.ID === currentCalendarEntry.winner)?.name || 'Unknown' }} 
+                    ({{ teams.find(team => team.ID === currentCalendarEntry.winnerteam)?.name || 'Unknown Team' }})
+                  </span>
+                  <span class="driver-name" v-else>-</span>
+                </div>
+                <div class="thirdplace">
+                  <span class="position-label">3.</span>
+                  <span class="driver-name" v-if="currentCalendarEntry.thirdplace !== 0">
+                    {{ drivers.find(driver => driver.ID === currentCalendarEntry.thirdplace)?.name || 'Unknown' }} 
+                    ({{ teams.find(team => team.ID === currentCalendarEntry.thirdteam)?.name || 'Unknown Team' }})
+                  </span>
+                  <span class="driver-name" v-else>-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>    
+    </div>
+  </div>
 </template>
-<!--
-    <button @click="switchToDefaut" class="menu-button next">
-      Spustit aplikaci
-    </button>
-    -->
+
 <script setup>
 import avatars from '~/assets/json/avatars.json'
 // Načítání dat z databáze
@@ -182,16 +245,19 @@ let drivers = ref([]);
 let teams = ref([]);
 const circuits = ref([]);
 const manager = ref([]);
+const allCalendar = ref([]);
  
 
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 circuits.value = await $fetch("/api/listCircuit");
 manager.value = await $fetch("/api/manager/listManager");
+allCalendar.value = await $fetch("/api/calendar/listCalendar");
 const gender = ref(manager.value[0].SelectedGender);
 const { currentcircuit } = await useGetNextRace()
 console.log(currentcircuit)
 let currentteam = manager.value[0].team;
+
 
 const { setupRace } = useRaceSetup();
 const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
@@ -210,37 +276,15 @@ const { logoroad } = await useLogos(manteam - 1);
 const ManagerNationality = useNationality(manager.value[0].nationality);
 console.log(ManagerNationality)
 
-
-
+console.log(allCalendar.value)
+let endOfSeason = ref(allCalendar.value.find(item => item.raced === 1));
+console.log(endOfSeason.value);
 
 
 // Zíksání sponzorů
 const { sponsorsname: sponsor1, sponsormoney: sponsormoney1, sponsornationality: sponsornationality1 } = getSponsor(currentTeamInfo.sponzor1);
 const { sponsorsname: sponsor2, sponsormoney: sponsormoney2, sponsornationality: sponsornationality2 } = getSponsor(currentTeamInfo.sponzor2);
 const { sponsorsname: sponsor3, sponsormoney: sponsormoney3, sponsornationality: sponsornationality3 } = getSponsor(currentTeamInfo.sponzor3);
-
-// API
-const { updateTeam  } = useTeamsApi();
-
-
-const updateCurrentTeam = async (newData) => {
-  try {
-    await updateTeam(currentteam, newData);
-    teams.value = await $fetch("/api/listTeam");
-  } catch (error) {
-    console.error("Error updating team:", error);
-  }
-};
-
-const editTeam = async () => {
-  /*
-  const newData = {
-    ...currentTeamInfo.value,
-    name: "Another Distance", 
-  };
-  */
-  await updateCurrentTeam(newData);
-};
 
 
 function giveavatar(num) {
@@ -260,27 +304,43 @@ function cirtype(num) {
   }
 }
 
-function submit() {
-  console.log("database");
-  for(let i = 0; i < calendar.value.length; i++) { 
-    $fetch("/api/calendar/createCalendar", {
-      method: "POST",
-      body: {
-        track: calendar.value[i].i,
-        date: calendar.value[i].date,
-        raced: 0,
-        poleposition: 0,
-        polepositionteam: 0,
-        winner: 0,
-        winnerteam: 0,
-        secondplace: 0,
-        secondteam: 0,
-        thirdplace:0,
-        thirdteam : 0
-      }
-    });
+const currentCalendarIndex = ref(0);
+
+// NOVÉ: Computed property pro aktuální záznam z kalendáře
+const currentCalendarEntry = computed(() => {
+  if (!allCalendar.value?.length) return null;
+  return allCalendar.value[currentCalendarIndex.value];
+});
+
+// NOVÉ: Název okruhu pro aktuální záznam kalendáře
+const currentCalendarCircuitName = computed(() => {
+  if (!currentCalendarEntry.value || !circuits.value?.length) {
+    return 'Žádné závody';
   }
-}
+  return circuits.value.find(
+    circuit => circuit.ID === currentCalendarEntry.value.track
+  )?.name || 'Unknown Track';
+});
+
+// NOVÉ: Kontrola prvního/posledního záznamu v kalendáři
+const isFirstCalendarEntry = computed(() => currentCalendarIndex.value === 0);
+const isLastCalendarEntry = computed(() => {
+  if (! allCalendar.value?.length) return true;
+  return currentCalendarIndex.value === allCalendar.value.length - 1;
+});
+
+// NOVÉ: Metody pro navigaci v kalendáři
+const nextCalendarEntry = () => {
+  if (allCalendar.value && currentCalendarIndex.value < allCalendar.value.length - 1) {
+    currentCalendarIndex.value++;
+  }
+};
+
+const previousCalendarEntry = () => {
+  if (currentCalendarIndex.value > 0) {
+    currentCalendarIndex.value--;
+  }
+};
 
 const switchLayout = inject('switchLayout')
 

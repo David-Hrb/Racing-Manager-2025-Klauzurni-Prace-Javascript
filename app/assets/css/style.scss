@@ -444,6 +444,10 @@ template {
           height: 6rem;
           border-radius: 0%;
           object-fit: cover;
+          @media (max-width: 1400px) {
+            width: 4rem;
+            height: 4rem;
+          }
         }
         
         .person {
@@ -500,7 +504,6 @@ template {
       .team-header {
         display: flex;
         gap: 2rem;
-        margin-bottom: 20px;
 
         .logo {
           width: 8rem;
@@ -806,7 +809,6 @@ template {
     background: $amber-500;
     color: $gray-800;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
 }
 
 .char-options {
@@ -867,7 +869,6 @@ template {
         input:focus,
         select:focus {
             border-color: $amber-500;
-            box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.2);
         }
 
         input::placeholder {
@@ -1345,7 +1346,6 @@ template {
         background: $amber-900;
         color: $gray-800;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
     }
 .timer {
   @include flex-column;
@@ -1624,7 +1624,6 @@ template {
       background: $amber-900;
       color: $gray-900;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
     }
   }
 }
@@ -1943,7 +1942,6 @@ template {
 
         &:focus {
           border-color: $amber-500;
-          box-shadow: 0 0 0 3px rgba($amber-500, 0.2);
         }
       }
     }
@@ -2455,7 +2453,6 @@ template {
     border: 5px solid $amber-900;
     border-radius: 10px;
     padding: 2rem;
-    box-shadow: 0 0px 30px rgba(255, 111, 0, 0.5);
     overflow-y: auto;
     @include flex-column;
     gap: 2rem;
@@ -2508,7 +2505,6 @@ template {
           background: $amber-500;
           cursor: pointer;
           transition: all 0.2s;
-          box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
       }
 
       input[type="range"]::-webkit-slider-thumb:hover {
@@ -2524,7 +2520,6 @@ template {
           cursor: pointer;
           border: none;
           transition: all 0.2s;
-          box-shadow: 0 2px 8px rgba(255, 111, 0, 0.4);
       }
 
       input[type="range"]::-moz-range-thumb:hover {
@@ -2898,7 +2893,6 @@ template {
 
           &.active {
             border-color: $amber-500;
-            box-shadow: 0 8px 24px rgba($amber-500, 0.4);
             
             .card-header {
               &.low-risk {
@@ -3034,12 +3028,10 @@ template {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  letter-spacing: 0.05em;
-  box-shadow: 0 4px 12px rgba($amber-500, 0.3);
+  letter-spacing: 0.05em; 
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba($amber-500, 0.5);
     background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
   }
 
@@ -3256,12 +3248,10 @@ template {
       height: 120px;
       border-radius: 50%;
       border: 4px solid $amber-500;
-      box-shadow: 0 8px 24px rgba($amber-500, 0.3);
       transition: all 0.3s ease;
 
       &:hover {
         transform: scale(1.05);
-        box-shadow: 0 12px 32px rgba($amber-500, 0.5);
       }
     }
 
@@ -3393,12 +3383,10 @@ template {
       cursor: pointer;
       transition: all 0.3s ease;
       letter-spacing: 0.05em;
-      box-shadow: 0 4px 12px rgba($amber-500, 0.3);
       margin-top: 1rem;
 
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba($amber-500, 0.5);
         background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
       }
 
@@ -3626,11 +3614,9 @@ input::placeholder {
             font-weight: 900;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba($amber-500, 0.2);
 
             &:hover {
-              transform: translateY(-2px);
-              box-shadow: 0 6px 16px rgba($amber-500, 0.4);
+              transform: translateY(-2px);   
               background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
             }
 
@@ -3664,13 +3650,11 @@ input::placeholder {
           cursor: pointer;
           transition: all 0.3s ease;
           letter-spacing: 0.05em;
-          box-shadow: 0 4px 12px rgba($amber-500, 0.3);
           margin-top: 0.5rem;
           width: 100%;
 
           &:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba($amber-500, 0.5);
             background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
           }
 
@@ -3720,7 +3704,6 @@ input::placeholder {
           border-color: $amber-900;
           background: rgba($amber-900, 0.1);
           transform: translateY(-5px);
-          box-shadow: 0 8px 24px rgba($amber-500, 0.2);
         }
 
         .avatar {
@@ -3728,12 +3711,10 @@ input::placeholder {
           height: 100px;
           border-radius: 50%;
           border: 3px solid $amber-500;
-          box-shadow: 0 4px 16px rgba($amber-500, 0.3);
           transition: all 0.3s ease;
 
           &:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba($amber-500, 0.5);
           }
         }
 
@@ -3791,13 +3772,11 @@ input::placeholder {
           font-weight: 700;
           cursor: pointer;
           transition: all 0.3s ease;
-          box-shadow: 0 4px 12px rgba($amber-500, 0.3);
           width: 100%;
           margin-top: 0.5rem;
 
           &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba($amber-500, 0.5);
             background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
           }
 
@@ -3819,12 +3798,10 @@ input::placeholder {
       cursor: pointer;
       transition: all 0.3s ease;
       letter-spacing: 0.05em;
-      box-shadow: 0 4px 12px rgba($amber-500, 0.3);
       margin-top: 1rem;
 
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba($amber-500, 0.5);
         background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
       }
 
@@ -3996,7 +3973,9 @@ input::placeholder {
   }
 }
 .team-management {
+  height: 86vh;
   min-height: 86vh;
+  max-height: 86vh;
   background: $gray-800;
   display: flex;
   @include full-center;
@@ -4004,19 +3983,25 @@ input::placeholder {
 
 .management-container {
   width: 80%;
-  height: 80%;
-  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  @include full-center;
+  @media (max-width: 1400px) {
+    width: 90%;
+    height: auto;
+  }
   .current-team-section {
     background: $gray-900;
     border: 0.2rem solid $gray-950;
     padding: 2rem;
+    width: 80%;
     border-radius: 15px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   }
 
   .current-team-section h1 {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     color: $amber-500;
     @include maintext;
     text-transform: uppercase;
@@ -4024,10 +4009,14 @@ input::placeholder {
   }
 
   .team-slots {
+
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    @media (max-width: 1400px) {
+      gap: 1.5rem;
+    }
   }
 
   .team-slot {
@@ -4039,6 +4028,10 @@ input::placeholder {
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    @media (max-width: 1400px) {
+      min-height: 320px;
+      padding: 1.25rem;
+    }
   }
 
   .team-slot.drag-over {
@@ -4086,7 +4079,7 @@ input::placeholder {
 
   .driver-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba($amber-500, 0.3);
+
     border-color: rgba($amber-500, 0.6);
   }
 
@@ -4097,7 +4090,7 @@ input::placeholder {
     margin: 0 auto 1rem;
     display: block;
     border: 3px solid rgba($amber-500, 1);
-    box-shadow: 0 0 20px rgba($amber-500, 0.3);
+
   }
 
   .driver-card h3 {
@@ -4225,14 +4218,12 @@ input::placeholder {
     background: rgba(255, 191, 0, 0.2);
     color: $amber-500;
     border: 2px solid $amber-900;
-    box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
   }
 
   .save-message.error {
     background: rgba(255, 0, 0, 0.2);
     color: #ff0000;
     border: 2px solid #ff0000;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
   }
 }
 
@@ -4240,4 +4231,109 @@ input::placeholder {
   @include flex-column;
   @include full-center;
   @include normaltext-biggest;
+}
+
+.savegame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, $amber-500, $amber-900);
+  color: $gray-800;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  @include normaltext-bigger;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    color: $gray-950;
+    svg {
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.endseason-overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;  
+  display: flex;
+  @include full-center;
+  .endseason-content {
+    background: $gray-900;
+    border: 5px solid $amber-900;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 50%;
+    max-width: 600px;
+    text-align: center;
+    color: $amber-500;
+    @include flex-column;
+    gap: 1.5rem;
+
+    h2 {
+      @include titletext;
+      font-weight: 900;
+      margin: 0;
+      padding: 0;
+    }
+
+    p {
+      @include normaltext-bigger;
+      margin: 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+      color: $gray-900;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 8px;
+      @include normaltext-bigger;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.05em;
+
+      &:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+      }
+
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
 }

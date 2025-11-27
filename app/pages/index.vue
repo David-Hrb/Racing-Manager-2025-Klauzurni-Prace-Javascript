@@ -12,7 +12,7 @@
       <button @click="newgame" class="menu-button primary">
         New Game
       </button>
-      <button @click="setting" class="menu-button primary">
+      <button @click="toggle" class="menu-button primary">
         Settings
       </button>
       <button @click="author" class="menu-button primary">
@@ -31,6 +31,7 @@
 
 const sound = useClickSound(); 
 const switchLayout = inject('switchLayout')
+const { settingsval, toggle } = useSettingsValue();
 
 onMounted(() => {
   switchLayout('default')
@@ -42,36 +43,11 @@ const newgame = () => {
   navigateTo('charcreate')
 }
 
-const loadgame = () => {
-  sound.play()
-  
-  
-}
-
-async function downloadData() {
-  try {
-    const name = prompt('Zadej název souboru:', 'moje-data');
-    if (!name) return;
-    
-    const data = await $fetch(`/api/port/export?name=${encodeURIComponent(name)}`);
-    const blob = new Blob([JSON.stringify(data, null, 2)], { 
-      type: 'application/json' 
-    });
-    
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${name}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Chyba při stahování:', error);
-    alert('Nepodařilo se stáhnout data');
-  }
-}
 
 async function loaddata() {
+  sound.play()
   try {
+    
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/json';
@@ -89,7 +65,7 @@ async function loaddata() {
       });
       
       alert('Data úspěšně načtena');
-      navigateTo('/');
+      navigateTo('menu/menu');
     };
     
     input.click();

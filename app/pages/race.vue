@@ -331,7 +331,7 @@
           <div class="info">
             <div>Místo závodu: {{ circuit.town }}</div>
             <div>Počet zatáček: {{ circuit.numberofturns }}</div>
-            <div>Délka kola: {{ circuit.length }} km</div>
+            <div>Délka kola: {{ circuit.length }} m</div>
           </div>
         </div>
       </div>

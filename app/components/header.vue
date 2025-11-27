@@ -39,13 +39,13 @@
       
       <div class="divider-vertical"></div>
       
-      <div class="user-info">
-        <div class="user-details" v-for="(manager) in manager">
-          <span class="username">{{manager.name}} {{manager.surname}}</span>
-          <span class="user-subtitle">{{manager.lastwork}}</span>
-        </div>
-        
-      </div>
+      <button @click="downloadData" class="savegame">
+        Uložit hru
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2M5 5v14h14V10h-4V5H5m7 3l5 5h-3v4h-4v-4H9l5-5z"/>
+        </svg>
+      </button>
+      
       
       <div class="divider-vertical"></div>
       
@@ -70,6 +70,29 @@ const { manager, currentday, refreshManager } = useManagerDay();
 await refreshManager();
 let money = ref(teams.value[manager.value[0].team - 1].money);
 const { daycount } = useDayCount()
+
+async function downloadData() {
+  sound.play()
+  try {
+    const name = prompt('Zadej název souboru:', 'moje-data');
+    if (!name) return;
+    
+    const data = await $fetch(`/api/port/export?name=${encodeURIComponent(name)}`);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { 
+      type: 'application/json' 
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Chyba při stahování:', error);
+    alert('Nepodařilo se stáhnout data');
+  }
+}
 
 function settingsbutton() {
   sound.play()
