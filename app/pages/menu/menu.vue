@@ -385,7 +385,9 @@
   </div>
   <div v-if="startOfNewSeason" class="endseason-overlay">
     <div class="endseason-content">
-
+      <h1>Začátek nové sezóny</h1>
+      <h2>Došlo ke změnám pravidel: {{ changes.join(" ") }}</h2>
+      <button @click="startOfNewSeason = false">Pokračujte na novou sezónu</button>
     </div>
   </div>
 </template>
@@ -425,7 +427,7 @@ const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace(
 
 // COMPOSABLES
 const { calendar } = useCreateCalendar();
-const { triggerEndOfSeason } = await useEndOfSeason();
+const { triggerEndOfSeason, changes } = await useEndOfSeason();
 const { getSponsor } = useSponsors();
 const { manteam } = await useManager();
 const { logoroad } = await useLogos(manteam - 1);
@@ -433,7 +435,7 @@ const ManagerNationality = useNationality(manager.value[0].nationality);
 console.log(ManagerNationality)
 
 console.log(allCalendar.value)
-let endOfSeason = ref(allCalendar.value.find(item => item.raced === 1));
+let endOfSeason = ref(true);//ref(allCalendar.value.find(item => item.raced === 1));
 let startOfNewSeason = ref(false);
 console.log(endOfSeason.value);
 
