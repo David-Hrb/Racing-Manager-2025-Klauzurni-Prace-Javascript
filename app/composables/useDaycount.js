@@ -7,6 +7,7 @@ export const useDayCount = () => {
             day: 'numeric', 
             month: 'short'
         });
+        if (date == null) return '-';
     }
     
     return { daycount: Daytodatum }

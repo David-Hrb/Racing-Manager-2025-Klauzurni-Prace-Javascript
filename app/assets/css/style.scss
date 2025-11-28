@@ -4280,60 +4280,369 @@ input::placeholder {
   }
 }
 
+
 .endseason-overlay {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1000;  
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
   display: flex;
   @include full-center;
+  overflow-y: auto;
+
   .endseason-content {
     background: $gray-900;
     border: 5px solid $amber-900;
     border-radius: 12px;
     padding: 2rem;
-    width: 50%;
-    max-width: 600px;
-    text-align: center;
-    color: $amber-500;
-    @include flex-column;
-    gap: 1.5rem;
+    width: 90%;
+    max-width: 1600px;
+    height: 80%;
+    display: flex;
+    gap: 2rem;
+    
+    @media (max-width: 1200px) {
+      flex-direction: column;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  }
+
+  // Levá sekce - Kalendář výsledků
+  .endseason-calendar {
+    flex: 1;
+    background: $gray-950;
+    border: 3px solid $amber-900;
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 
     h2 {
-      @include titletext;
-      font-weight: 900;
-      margin: 0;
-      padding: 0;
-    }
-
-    p {
-      @include normaltext-bigger;
-      margin: 0;
-    }
-
-    button {
       background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
       color: $gray-900;
-      border: none;
-      padding: 1rem 2.5rem;
+      @include titletext;
+      padding: 1rem;
+      text-align: center;
       border-radius: 8px;
-      @include normaltext-bigger;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      letter-spacing: 0.05em;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
 
-      &:hover {
-        transform: translateY(-3px);
-        background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+    .circuit-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.5rem 0;
+
+      .current-circuit {
+        color: $amber-500;
+        @include normaltext-bigger;
+        font-weight: 700;
+        text-align: center;
+        flex: 1;
+      }
+    }
+
+    .calendar-entries {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calendar-entry {
+      background: $gray-800;
+      border: 2px solid $amber-900;
+      border-radius: 10px;
+      padding: 1.5rem;
+
+      .event-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
       }
 
-      &:active {
-        transform: translateY(-1px);
+      .event-track {
+        color: $amber-500;
+        @include titletext;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
+
+      .event-date {
+        color: $amber-800;
+        @include normaltext;
+        text-align: center;
+        font-style: italic;
+      }
+
+      .podium {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        min-height: 180px;
+
+        .winner,
+        .secondplace,
+        .thirdplace {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1rem;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+
+          .position-label {
+            font-weight: 900;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .driver-name {
+            @include normaltext;
+            text-align: center;
+            line-height: 1.4;
+          }
+        }
+
+        .winner {
+          background: linear-gradient(135deg, rgba($amber-500, 0.3) 0%, rgba($amber-900, 0.3) 100%);
+          border: 3px solid $amber-500;
+          min-height: 160px;
+          width: 35%;
+
+          .position-label {
+            color: $amber-400;
+            font-size: 2.5rem;
+          }
+
+          .driver-name {
+            color: $amber-500;
+            font-weight: 700;
+          }
+        }
+
+        .secondplace {
+          background: rgba($gray-700, 0.5);
+          border: 2px solid #c0c0c0;
+          min-height: 130px;
+          width: 30%;
+
+          .position-label {
+            color: #c0c0c0;
+          }
+
+          .driver-name {
+            color: #c0c0c0;
+          }
+        }
+
+        .thirdplace {
+          background: rgba($gray-700, 0.5);
+          border: 2px solid #cd7f32;
+          min-height: 100px;
+          width: 28%;
+
+          .position-label {
+            color: #cd7f32;
+          }
+
+          .driver-name {
+            color: #cd7f32;
+          }
+        }
+      }
+    }
+  }
+
+  // Pravá sekce - Statistiky
+  .endseason-statistics {
+    flex: 1.5;
+    background: $gray-950;
+    border: 3px solid $amber-900;
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 80vh;
+
+    h2 {
+      background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+      color: $gray-900;
+      @include titletext;
+      padding: 1rem;
+      text-align: center;
+      border-radius: 8px;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .statistics-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .main-toggle,
+    .stat-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.3rem;
+    }
+
+    .stat-toggle {
+      .smaller-button {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    .table-wrapper {
+      flex: 1;
+      background: $gray-900;
+      border-radius: 8px;
+      overflow: auto;
+      border: 2px solid $amber-950;
+
+      .leaderboard-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: $amber-500;
+
+        thead {
+          background: $gray-900;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+
+          th {
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            @include normaltext;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 3px solid $amber-900;
+            white-space: nowrap;
+            color: $amber-500;
+          }
+        }
+
+        tbody {
+          tr {
+            background: $gray-800;
+            transition: all 0.3s ease;
+            color: $amber-500;
+
+            &:hover {
+              background: $gray-700;
+            }
+
+            &:nth-child(even) {
+              color: $amber-800;
+              background: $gray-900;
+            }
+          }
+
+          td {
+            padding: 10px 12px;
+            @include normaltext;
+            vertical-align: middle;
+            border-bottom: 1px solid $amber-950;
+          }
+        }
+
+        .driver-rank {
+          font-weight: 700;
+          font-size: 1.2rem;
+          color: $amber-400;
+          text-align: center;
+          width: 50px;
+        }
+
+        .kvalimg {
+          border-radius: 50%;
+          border: 2px solid $amber-500;
+          display: block;
+        }
+
+        .driver-nationality {
+          .fi {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+          }
+        }
+
+        .drivername {
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .currentteam {
+          color: $amber-800;
+          font-style: italic;
+        }
+
+        .career-points {
+          font-weight: 700;
+          font-size: 1.1rem;
+          color: $amber-400;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  // Společný styl tlačítek
+  .endseason-button {
+    background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+    color: $gray-900;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    @include normaltext;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background: $gray-700;
+      color: $gray-950;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    &.active {
+      background: linear-gradient(135deg, $amber-400 0%, $amber-500 100%);
+      border: 0.15rem $gray-700 solid;
+      transform: scale(1.05);
     }
   }
 }

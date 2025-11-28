@@ -94,6 +94,15 @@ async function downloadData() {
   }
 }
 
+watch(
+  () => teams.value[manager.value[0].team - 1].money,
+  (newValue, oldValue) => {
+    money.value = newValue;
+    console.log(`Peníze se změnily z ${oldValue} na ${newValue}`);
+  },
+  { deep: true } // pokud je money objekt
+);
+
 function settingsbutton() {
   sound.play()
   console.log("Toogle")

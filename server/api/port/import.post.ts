@@ -3,10 +3,8 @@ export default defineEventHandler(async (event) => {
   const db = useDatabase("myDB");
 
   try {
-    // Začni transakci
     await db.sql`BEGIN TRANSACTION`;
 
-    // Vymaž tabulky
     await db.sql`DELETE FROM drivers`;
     await db.sql`DELETE FROM calendar`;
     await db.sql`DELETE FROM circuits`;
@@ -14,7 +12,6 @@ export default defineEventHandler(async (event) => {
     await db.sql`DELETE FROM teams`;
     await db.sql`DELETE FROM leadboard`;
 
-    // Drivers - použij prepared statement pro lepší výkon
     for (const driver of body.drivers || []) {
       await db.sql`INSERT INTO drivers (
         id, name, nationality, bornyear, avatar, currentteam, championshipplace,
@@ -33,7 +30,6 @@ export default defineEventHandler(async (event) => {
       )`;
     }
 
-    // Teams
     for (const team of body.teams || []) {
       await db.sql`INSERT INTO teams (
         id, name, nationality, color1, color2, color3, creationyear, logo,
@@ -51,7 +47,6 @@ export default defineEventHandler(async (event) => {
       )`;
     }
 
-    // Circuits
     for (const circuit of body.circuits || []) {
       await db.sql`INSERT INTO circuits (
         id, name, nationality, town, type, length, normallaptime, lapslength,
@@ -67,7 +62,6 @@ export default defineEventHandler(async (event) => {
       )`;
     }
 
-    // Calendar
     for (const calEvent of body.calendar || []) {
       await db.sql`INSERT INTO calendar (
         id, track, date, raced, winner, winnerteam, secondplace, secondteam, thirdplace, thirdteam
@@ -78,13 +72,11 @@ export default defineEventHandler(async (event) => {
       )`;
     }
 
-    // Leaderboard
     for (const entry of body.leadboard || []) {
       await db.sql`INSERT INTO leadboard (driverID, points) 
         VALUES (${entry.driverID}, ${entry.points})`;
     }
 
-    // Manager
     const managerData = Array.isArray(body.manager) ?  body.manager[0] : body.manager;
     if (managerData) {
       await db.sql`INSERT INTO manager (
@@ -96,13 +88,11 @@ export default defineEventHandler(async (event) => {
       )`;
     }
 
-    // Potvrď transakci
     await db.sql`COMMIT`;
 
     return { success: true };
 
   } catch (error) {
-    // Při chybě vrať změny zpět
     await db.sql`ROLLBACK`;
     console.error('Import error:', error);
     throw createError({

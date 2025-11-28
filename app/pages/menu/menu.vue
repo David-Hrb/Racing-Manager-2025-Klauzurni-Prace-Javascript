@@ -170,7 +170,10 @@
     </div>
   </div>
 
-   <div v-if="endOfSeason" class="endseason-overlay">
+  <div v-if="endOfSeason" class="endseason-overlay">
+    <button class="next endseason-button" @click="nextSeason">
+      Pokračovat
+    </button>
     <div class="endseason-content">
       <div class="endseason-calendar">
         <h2>Výsledky velkých cen</h2>
@@ -178,7 +181,7 @@
           <button 
             @click="previousCalendarEntry" 
             :disabled="isFirstCalendarEntry"
-            class="nav-button"
+            class="endseason-button"
           >
             ← Předchozí
           </button>
@@ -188,7 +191,7 @@
           <button 
             @click="nextCalendarEntry" 
             :disabled="isLastCalendarEntry"
-            class="nav-button"
+            class="endseason-button"
           >
             Další →
           </button>
@@ -203,10 +206,16 @@
               <div class="event-track">
                 {{ circuits.find(circuit => circuit.ID === currentCalendarEntry.track)?.name || 'Unknown Track' }}
               </div>
-              <div class="event-date">{{ currentCalendarEntry.date }}</div>
+              <div class="event-date">{{ daycount(currentCalendarEntry.date) }}</div>
               <div class="podium">
                 <div class="secondplace">
                   <span class="position-label">2.</span>
+                  <img 
+                    :src="`/images/avatars/${giveavatar(drivers.find(driver => driver.ID === currentCalendarEntry.secondplace)?.avatar)}.svg`" 
+                    class="kvalimg" 
+                    alt="avatar" 
+                    style="width: 3rem; height: 3rem;"
+                  >
                   <span class="driver-name" v-if="currentCalendarEntry.secondplace !== 0">
                     {{ drivers.find(driver => driver.ID === currentCalendarEntry.secondplace)?.name || 'Unknown' }} 
                     ({{ teams.find(team => team.ID === currentCalendarEntry.secondteam)?.name || 'Unknown Team' }})
@@ -215,6 +224,12 @@
                 </div>
                 <div class="winner">
                   <span class="position-label">1.</span>
+                  <img 
+                    :src="`/images/avatars/${giveavatar(drivers.find(driver => driver.ID === currentCalendarEntry.winner)?.avatar)}.svg`" 
+                    class="kvalimg" 
+                    alt="avatar" 
+                    style="width: 4rem; height: 4rem;"
+                  >
                   <span class="driver-name" v-if="currentCalendarEntry.winner !== 0">
                     {{ drivers.find(driver => driver.ID === currentCalendarEntry.winner)?.name || 'Unknown' }} 
                     ({{ teams.find(team => team.ID === currentCalendarEntry.winnerteam)?.name || 'Unknown Team' }})
@@ -223,6 +238,12 @@
                 </div>
                 <div class="thirdplace">
                   <span class="position-label">3.</span>
+                  <img 
+                    :src="`/images/avatars/${giveavatar(drivers.find(driver => driver.ID === currentCalendarEntry.thirdplace)?.avatar)}.svg`" 
+                    class="kvalimg" 
+                    alt="avatar" 
+                    style="width: 2rem; height: 2rem;"
+                  >
                   <span class="driver-name" v-if="currentCalendarEntry.thirdplace !== 0">
                     {{ drivers.find(driver => driver.ID === currentCalendarEntry.thirdplace)?.name || 'Unknown' }} 
                     ({{ teams.find(team => team.ID === currentCalendarEntry.thirdteam)?.name || 'Unknown Team' }})
@@ -233,26 +254,160 @@
             </div>
           </div>
         </div>
-      </div>    
+      </div>  
+      <div class="endseason-statistics">
+        <h2>Historické a sezónní statistiky</h2>
+        <div class="statistics-content">
+          <!-- Hlavní přepínač: Jezdci / Týmy -->
+          <div class="main-toggle">
+            <button 
+              class="endseason-button"
+              :class="{ active: viewType === 'drivers' }" 
+              @click="viewType = 'drivers'; sound.play()">
+              Jezdci
+            </button>
+            <button 
+              class="endseason-button"
+              :class="{ active: viewType === 'teams' }" 
+              @click="viewType = 'teams'; sound.play()">
+              Týmy
+            </button>
+          </div>
+
+          <!-- Sekundární přepínač: Body / Vítězství / Pódia -->
+          <div class="stat-toggle">
+            <button 
+              class="endseason-button smaller-button"
+              :class="{ active: statType === 'points' }" 
+              @click="statType = 'points'; sound2.play()">
+              Body
+            </button>
+            <button 
+              class="endseason-button smaller-button"
+              :class="{ active: statType === 'wins' }" 
+              @click="statType = 'wins'; sound2.play()">
+              Vítězství
+            </button>
+            <button 
+              class="endseason-button smaller-button"
+              :class="{ active: statType === 'podiums' }" 
+              @click="statType = 'podiums'; sound2.play()">
+              Pódia
+            </button>
+          </div>
+
+          <!-- Tabulka jezdců -->
+          <div class="table-wrapper" v-if="viewType === 'drivers'">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Avatar</th>
+                  <th>Národnost</th>
+                  <th>Jezdec</th>
+                  <th>Tým</th>
+                  <th>{{ statLabel }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(entry, index) in currentDriverList" :key="entry.driverID || entry.ID">
+                  <td class="driver-rank">{{ index + 1 }}</td>
+                  <td>
+                    <img 
+                      :src="`/images/avatars/${giveavatar(entry.driver?.avatar || entry.avatar)}.svg`" 
+                      class="kvalimg" 
+                      alt="avatar" 
+                      style="width: 50px; height: 50px;"
+                    >
+                  </td>
+                  <td class="driver-nationality">
+                    <span 
+                      class="fi" 
+                      :class="`fi-${entry.driver?.nationality || entry.nationality}`" 
+                      aria-hidden="true">
+                    </span>
+                    {{ entry.driver?.nationality || entry.nationality }}
+                  </td>
+                  <td class="drivername">{{ entry.driver?.name || entry.name }}</td>
+                  <td class="currentteam">
+                    {{ getTeamName(entry.driver?.currentteam || entry.currentteam) }}
+                  </td>
+                  <td class="career-points">
+                    {{ getDriverStatValue(entry) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Tabulka týmů -->
+          <div class="table-wrapper" v-if="viewType === 'teams'">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Logo</th>
+                  <th>Národnost</th>
+                  <th>Tým</th>
+                  <th>Jezdec 1</th>
+                  <th>Jezdec 2</th>
+                  <th>{{ statLabel }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(team, index) in currentTeamList" :key="team.ID">
+                  <td class="driver-rank">{{ index + 1 }}</td>
+                  <td>
+                    <img 
+                      :src="`/images/logo/teams/${String(team.logo).padStart(2, '0')}.svg`"
+                      class="kvalimg" 
+                      alt="team logo"
+                      style="width: 50px; height: auto; border: none; border-radius: 0%; background: none;"
+                    >
+                  </td>
+                  <td class="driver-nationality">
+                    <span class="fi" :class="`fi-${team.nationality}`" aria-hidden="true"></span>
+                    {{ team.nationality }}
+                  </td>
+                  <td class="drivername">{{ team.name }}</td>
+                  <td>{{ getDriverName(team.driver1) }}</td>
+                  <td>{{ getDriverName(team.driver2) }}</td>
+                  <td class="career-points">
+                    {{ getTeamStatValue(team) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-if="startOfNewSeason" class="endseason-overlay">
+    <div class="endseason-content">
+
     </div>
   </div>
 </template>
 
 <script setup>
 import avatars from '~/assets/json/avatars.json'
-// Načítání dat z databáze
+const { daycount } = useDayCount()
+const sound = useClickSound();
+const sound2 = useClickSound();
 let drivers = ref([]);
 let teams = ref([]);
 const circuits = ref([]);
 const manager = ref([]);
 const allCalendar = ref([]);
- 
+const leadboard = ref([]);
 
 drivers.value = await $fetch("/api/listDriver");
 teams.value = await $fetch("/api/listTeam");
 circuits.value = await $fetch("/api/listCircuit");
 manager.value = await $fetch("/api/manager/listManager");
 allCalendar.value = await $fetch("/api/calendar/listCalendar");
+leadboard.value = await $fetch("/api/leadboard/listLeadboard") || [];
 const gender = ref(manager.value[0].SelectedGender);
 const { currentcircuit } = await useGetNextRace()
 console.log(currentcircuit)
@@ -270,6 +425,7 @@ const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace(
 
 // COMPOSABLES
 const { calendar } = useCreateCalendar();
+const { triggerEndOfSeason } = await useEndOfSeason();
 const { getSponsor } = useSponsors();
 const { manteam } = await useManager();
 const { logoroad } = await useLogos(manteam - 1);
@@ -278,6 +434,7 @@ console.log(ManagerNationality)
 
 console.log(allCalendar.value)
 let endOfSeason = ref(allCalendar.value.find(item => item.raced === 1));
+let startOfNewSeason = ref(false);
 console.log(endOfSeason.value);
 
 
@@ -288,6 +445,9 @@ const { sponsorsname: sponsor3, sponsormoney: sponsormoney3, sponsornationality:
 
 
 function giveavatar(num) {
+  if (num === undefined || num === null) {
+    return 'default' 
+  }
   return avatars[num.toString()] 
 }
 
@@ -306,13 +466,11 @@ function cirtype(num) {
 
 const currentCalendarIndex = ref(0);
 
-// NOVÉ: Computed property pro aktuální záznam z kalendáře
 const currentCalendarEntry = computed(() => {
-  if (!allCalendar.value?.length) return null;
-  return allCalendar.value[currentCalendarIndex.value];
+  if (!allCalendar.value || !allCalendar.value.length) return null;
+  return allCalendar.value[currentCalendarIndex.value] || null;
 });
 
-// NOVÉ: Název okruhu pro aktuální záznam kalendáře
 const currentCalendarCircuitName = computed(() => {
   if (!currentCalendarEntry.value || !circuits.value?.length) {
     return 'Žádné závody';
@@ -322,14 +480,13 @@ const currentCalendarCircuitName = computed(() => {
   )?.name || 'Unknown Track';
 });
 
-// NOVÉ: Kontrola prvního/posledního záznamu v kalendáři
 const isFirstCalendarEntry = computed(() => currentCalendarIndex.value === 0);
 const isLastCalendarEntry = computed(() => {
   if (! allCalendar.value?.length) return true;
   return currentCalendarIndex.value === allCalendar.value.length - 1;
 });
 
-// NOVÉ: Metody pro navigaci v kalendáři
+
 const nextCalendarEntry = () => {
   if (allCalendar.value && currentCalendarIndex.value < allCalendar.value.length - 1) {
     currentCalendarIndex.value++;
@@ -342,6 +499,126 @@ const previousCalendarEntry = () => {
   }
 };
 
+const viewType = ref('drivers'); 
+const statType = ref('points'); 
+
+const statLabel = computed(() => {
+  switch (statType.value) {
+    case 'points': return 'Body';
+    case 'wins': return 'Vítězství';
+    case 'podiums': return 'Pódia';
+    default: return 'Body';
+  }
+});
+
+function getTeamName(teamId) {
+  if (teamId == null) return 'bez týmu';
+  return teams.value.find(team => team.ID === teamId)?.name || 'bez týmu';
+}
+
+function getDriverName(driverId) {
+  if (driverId == null) return '-';
+  return drivers.value.find(driver => driver.ID === driverId)?.name || '-';
+}
+
+const teamDriverIds = computed(() => {
+  const ids = new Set();
+  teams.value.slice(0, 10).forEach(team => { 
+    if (team.driver1) ids.add(Number(team.driver1));
+    if (team.driver2) ids.add(Number(team.driver2));
+    if (leadboard.value.find(entry => Number(entry.driverID) === Number(team.testdriver))?.points > 0) {
+      ids.add(Number(team.testdriver));
+    }
+  });
+  return ids;
+});
+
+const fullLeaderboard = computed(() => {
+  return drivers.value.filter(driver => teamDriverIds.value.has(Number(driver.ID)));
+});
+
+const driverLeaderboard = computed(() => {
+  return leadboard.value
+    .map(entry => {
+      const driver = fullLeaderboard.value.find(d => Number(d.ID) === Number(entry.driverID));
+      return driver ?  { ...entry, driver } : null;
+    })
+    .filter(entry => entry !== null);
+});
+
+const teamLeaderboard = computed(() => {
+  return teams.value.slice(0, 10).map(team => {
+    const driver1Entry = driverLeaderboard.value.find(
+      entry => Number(entry.driverID) === Number(team.driver1)
+    );
+    const driver2Entry = driverLeaderboard.value.find(
+      entry => Number(entry.driverID) === Number(team.driver2)
+    );
+    const driver3Entry = driverLeaderboard.value.find(
+      entry => Number(entry.driverID) === Number(team.testdriver)
+    );
+
+    return {
+      ...team,
+      points: (driver1Entry?.points || 0) + (driver2Entry?.points || 0) + (driver3Entry?.points || 0),
+      wins: (driver1Entry?.wins || 0) + (driver2Entry?.wins || 0) + (driver3Entry?.wins || 0),
+      podiums: (driver1Entry?.podiums || 0) + (driver2Entry?.podiums || 0) + (driver3Entry?.podiums || 0)
+    };
+  });
+});
+
+function getDriverStatValue(entry) {
+  switch (statType.value) {
+    case 'points': return `${entry.points || 0} pts`;
+    case 'wins': return entry.wins || entry.driver?.wins || 0;
+    case 'podiums': return entry.podiums || entry.driver?.podiums || 0;
+    default: return entry.points || 0;
+  }
+}
+
+function getTeamStatValue(team) {
+  switch (statType.value) {
+    case 'points': return `${team.points || 0} pts`;
+    case 'wins': return team.historywins || 0;
+    case 'podiums': return team.historypodiums || 0;
+    default: return team.points || 0;
+  }
+}
+
+const currentDriverList = computed(() => {
+  const list = [...driverLeaderboard.value];
+  switch (statType.value) {
+    case 'points':
+      return list.sort((a, b) => (b.points || 0) - (a.points || 0));
+    case 'wins':
+      return list.sort((a, b) => (b.wins || b.driver?.wins || 0) - (a.wins || a.driver?.wins || 0));
+    case 'podiums':
+      return list.sort((a, b) => (b.podiums || b.driver?.podiums || 0) - (a.podiums || a.driver?.podiums || 0));
+    default:
+      return list;
+  }
+});
+
+const currentTeamList = computed(() => {
+  const list = [...teamLeaderboard.value];
+  switch (statType.value) {
+    case 'points':
+      return list.sort((a, b) => (b.points || 0) - (a.points || 0));
+    case 'wins':
+      return list.sort((a, b) => (b.wins || 0) - (a.wins || 0));
+    case 'podiums':
+      return list.sort((a, b) => (b.podiums || 0) - (a.podiums || 0));
+    default:
+      return list;
+  }
+});
+
+async function nextSeason() {
+  sound.play()
+  endOfSeason.value = false;
+  startOfNewSeason.value = true;
+  await triggerEndOfSeason();
+}
 const switchLayout = inject('switchLayout')
 
 onMounted(() => {
