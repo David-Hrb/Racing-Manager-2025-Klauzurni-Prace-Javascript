@@ -86,6 +86,7 @@
 const circuits = ref([]);
 circuits.value = await $fetch("/api/listCircuit");
 const { calendarreturn } = await useCalendarRange()
+console.log(calendarreturn)
 const { daycount } = useDayCount()
 
 

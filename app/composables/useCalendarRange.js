@@ -3,7 +3,7 @@ export const useCalendarRange = async () => {
     calendar.value = await $fetch("/api/calendar/listCalendar");
     
     const calendarrangefirst = 1
-    const calendarrangesecond = 18
+    const calendarrangesecond = calendar.value.length
     
     console.log(calendarrangefirst, calendarrangesecond)
     

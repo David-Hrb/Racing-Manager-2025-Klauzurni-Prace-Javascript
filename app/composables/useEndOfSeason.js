@@ -6,7 +6,196 @@ export const useEndOfSeason = () => {
     
     const changeRules = ["aerodynamics", "gearbox", "brakes", "frontwing", "rearwing", "reliability"];
     const changes = ref([]);
+    let manTeamExp = ref([]);
 
+    async function checkTeamsOverLimit() {
+        let teamsList = await $fetch('/api/listTeam');
+        let updates = [];
+
+        for (const team of teamsList) {
+            let updateNeeded = false;
+            const keys = ["aerodynamics", "gearbox", "brakes", "frontwing", "rearwing", "reliability"];
+            const updatedTeam = { ...team };
+
+            for (const key of keys) {
+                if (updatedTeam[key] > 100) {
+                    updatedTeam[key] = 100;
+                    updateNeeded = true;
+                }
+            }
+
+            if (updateNeeded) {
+                updates.push(
+                    $fetch(`/api/teams/${team.ID}`, {
+                        method: "PUT",
+                        body: updatedTeam,
+                    })
+                );
+            }
+        }
+
+        if (updates.length > 0) {
+            await Promise.all(updates);
+        }
+        
+        return await $fetch('/api/listTeam');
+    }
+
+    async function checkDriverContractExp() {
+        const [drivers, manager, teams] = await Promise.all([
+            $fetch('/api/listDriver'),
+            $fetch('/api/manager/listManager'),
+            $fetch('/api/listTeam')
+        ]);
+        
+        function calculateTeamRating(team) {
+            const teamRatings = [
+                team.aerodynamics,
+                team.gearbox,
+                team.brakes,
+                team.frontwing,
+                team.rearwing,
+                team.reliability
+            ];
+            return teamRatings.reduce((sum, rating) => sum + rating, 0) / teamRatings.length;
+        }
+        
+        function calculateDriverRating(driver) {
+            const driverRatings = [
+                driver.concentration,
+                driver.overtaking,
+                driver.experience,
+                driver.quickness,
+                driver.stamina
+            ];
+            return driverRatings.reduce((sum, rating) => sum + rating, 0) / driverRatings.length;
+        }
+        
+        function findSuitableCandidateRandom(teamRating, excludeDriverId, allDrivers, usedDriverIds) {
+            const tolerance = 15;
+            
+            const suitableCandidates = allDrivers.filter(candidate => {
+                if (candidate.ID === excludeDriverId) return false;
+                if (usedDriverIds.has(candidate.ID)) return false;
+                if (candidate.currentteam === manager[0].team) return false;
+                
+                const candidateRating = calculateDriverRating(candidate);
+                const difference = Math.abs(teamRating - candidateRating);
+                
+                return difference <= tolerance;
+            });
+            
+            if (suitableCandidates.length === 0) {
+                const allAvailable = allDrivers.filter(candidate => {
+                    if (candidate.ID === excludeDriverId) return false;
+                    if (usedDriverIds.has(candidate.ID)) return false;
+                    if (candidate.currentteam === manager[0].team) return false;
+                    return true;
+                });
+                
+                if (allAvailable.length === 0) return null;
+                
+                const randomIndex = Math.floor(Math.random() * allAvailable.length);
+                return allAvailable[randomIndex];
+            }
+            
+            const randomIndex = Math.floor(Math.random() * suitableCandidates.length);
+            return suitableCandidates[randomIndex];
+        }
+        
+        const usedDriverIds = new Set();
+        
+        for (const driver of drivers) {
+            if (driver.contractexp <= manager[0].season) {
+                
+                const driverTeam = teams.find(team => team.ID === driver.currentteam);
+                
+                if (driverTeam) {
+                    const teamRating = calculateTeamRating(driverTeam);
+                    const candidate = findSuitableCandidateRandom(teamRating, driver.ID, drivers, usedDriverIds);
+                    
+                    if (driver.currentteam === manager[0].team) {
+                        manTeamExp.value.push(driver.ID);
+                    } else if (candidate) {
+                        usedDriverIds.add(candidate.ID);
+                        
+                        const candidateOldTeam = teams.find(team => team.ID === candidate.currentteam);
+                        
+                        let driverPosition = null;
+                        if (driverTeam.driver1 === driver.ID) {
+                            driverPosition = 'driver1';
+                        } else if (driverTeam.driver2 === driver.ID) {
+                            driverPosition = 'driver2';
+                        }
+                        
+                        let candidateOldPosition = null;
+                        if (candidateOldTeam) {
+                            if (candidateOldTeam.driver1 === candidate.ID) {
+                                candidateOldPosition = 'driver1';
+                            } else if (candidateOldTeam.driver2 === candidate.ID) {
+                                candidateOldPosition = 'driver2';
+                            }
+                        }
+                        
+                        // SEKVENČNÍ AKTUALIZACE - jedna po druhé s await
+                        
+                        // 1.Aktualizuj odcházejícího jezdce
+                        await $fetch(`/api/driver/${driver.ID}`, {
+                            method: "PUT",
+                            body: { 
+                                ...driver, 
+                                contractexp: manager[0].season + 3,
+                                currentteam: candidate.currentteam
+                            },
+                        });
+                        
+                        // 2.Aktualizuj kandidáta
+                        await $fetch(`/api/driver/${candidate.ID}`, {
+                            method: "PUT",
+                            body: {
+                                ...candidate,
+                                contractexp: manager[0].season + 3,
+                                currentteam: driver.currentteam
+                            },
+                        });
+                        
+                        // 3.Aktualizuj tým odcházejícího jezdce
+                        if (driverPosition) {
+                            await $fetch(`/api/teams/${driverTeam.ID}`, {
+                                method: "PUT",
+                                body: {
+                                    ...driverTeam,
+                                    [driverPosition]: candidate.ID
+                                },
+                            });
+                        }
+                        
+                        // 4.Aktualizuj starý tým kandidáta
+                        if (candidateOldTeam && candidateOldPosition) {
+                            await $fetch(`/api/teams/${candidateOldTeam.ID}`, {
+                                method: "PUT",
+                                body: {
+                                    ...candidateOldTeam,
+                                    [candidateOldPosition]: driver.ID
+                                },
+                            });
+                        }
+                        
+                    } else {
+                        // Žádný kandidát - pouze prodluž smlouvu
+                        await $fetch(`/api/driver/${driver.ID}`, {
+                            method: "PUT",
+                            body: { 
+                                ...driver, 
+                                contractexp: manager[0].season + 3,
+                            },
+                        });
+                    }
+                }
+            }
+        }
+        
+    }
     async function triggerEndOfSeason() {
         const [leadboard, manager, teams] = await Promise.all([
             $fetch('/api/leadboard/listLeadboard'),
@@ -46,7 +235,7 @@ export const useEndOfSeason = () => {
             
             const data = isPlayerTeam 
                 ? {
-                    [randomChange]: team[randomChange] + getRandomInteger(-5, 5),
+                    [randomChange]: team[randomChange] + getRandomInteger(-10, 0),
                     money: team.money + sponsorMoney
                 }
                 : {
@@ -56,7 +245,7 @@ export const useEndOfSeason = () => {
                     frontwing: team.frontwing + getRandomInteger(0, 3),
                     rearwing: team.rearwing + getRandomInteger(0, 3),
                     reliability: team.reliability + getRandomInteger(0, 3),
-                    [randomChange]: team[randomChange] + getRandomInteger(-5, 5)
+                    [randomChange]: team[randomChange] + getRandomInteger(-10, 0)
                 };
 
             return { id: team.ID, data };
@@ -71,7 +260,10 @@ export const useEndOfSeason = () => {
                 teamUpdates
             }
         });
+
+        checkTeamsOverLimit();
+        checkDriverContractExp()
     }
 
-    return { triggerEndOfSeason, changes };
+    return { triggerEndOfSeason, changes, manTeamExp };
 };

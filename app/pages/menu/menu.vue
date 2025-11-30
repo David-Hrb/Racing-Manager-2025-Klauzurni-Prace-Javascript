@@ -387,6 +387,7 @@
     <div class="endseason-content">
       <h1>Začátek nové sezóny</h1>
       <h2>Došlo ke změnám pravidel: {{ changes.join(" ") }}</h2>
+      <h2>jezdci kterým vám končí smlouva {{ manTeamExp }}</h2>
       <button @click="startOfNewSeason = false">Pokračujte na novou sezónu</button>
     </div>
   </div>
@@ -425,9 +426,8 @@ const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace(
   circuitId: currentcircuit
 });
 
-// COMPOSABLES
 const { calendar } = useCreateCalendar();
-const { triggerEndOfSeason, changes } = await useEndOfSeason();
+const { triggerEndOfSeason, changes, manTeamExp } = await useEndOfSeason();
 const { getSponsor } = useSponsors();
 const { manteam } = await useManager();
 const { logoroad } = await useLogos(manteam - 1);
@@ -440,7 +440,6 @@ let startOfNewSeason = ref(false);
 console.log(endOfSeason.value);
 
 
-// Zíksání sponzorů
 const { sponsorsname: sponsor1, sponsormoney: sponsormoney1, sponsornationality: sponsornationality1 } = getSponsor(currentTeamInfo.sponzor1);
 const { sponsorsname: sponsor2, sponsormoney: sponsormoney2, sponsornationality: sponsornationality2 } = getSponsor(currentTeamInfo.sponzor2);
 const { sponsorsname: sponsor3, sponsormoney: sponsormoney3, sponsornationality: sponsornationality3 } = getSponsor(currentTeamInfo.sponzor3);

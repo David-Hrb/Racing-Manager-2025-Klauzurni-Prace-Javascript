@@ -93,91 +93,81 @@
 </template>
 
 <script setup>
-import avatars from '~/assets/json/avatars.json'
+  import avatars from '~/assets/json/avatars.json'
 
+  const leadboard = ref([])
+  const drivers = ref([])
+  const teams = ref([])
 
-const leadboard = ref([])
-const drivers = ref([])
-const teams = ref([])
+  leadboard.value = await $fetch('/api/leadboard/listLeadboard')
+  drivers.value = await $fetch('/api/listDriver')
+  teams.value = await $fetch('/api/listTeam')
 
-leadboard.value = await $fetch('/api/leadboard/listLeadboard')
-drivers.value = await $fetch('/api/listDriver')
-teams.value = await $fetch('/api/listTeam')
+  const driverstable = ref(true);
+  const teamstable = ref(false);
+  const sound = useClickSound();
 
-const driverstable = ref(true);
-const teamstable = ref(false);
-const sound = useClickSound();
-
-const toggleTables = (isDriverTable) => {
-  if (isDriverTable) {
-    sound.play()
-    driverstable.value = true;
-    teamstable.value = false;
-  } else {
-    sound.play()
-    driverstable.value = false;
-    teamstable.value = true;
-  }
-};
-// Vytvoř množinu ID jezdců, kteří jsou v týmech
-const teamDriverIds = new Set();
-
-teams.value.slice(0, 10).forEach(team => { 
-    if (team.driver1) teamDriverIds.add(Number(team.driver1));
-    if (team.driver2) teamDriverIds.add(Number(team.driver2));
-    if (leadboard.value.find(entry => Number(entry.driverID) === Number(team.testdriver))?.points > 0) {
-      teamDriverIds.add(Number(team.testdriver));
+  const toggleTables = (isDriverTable) => {
+    if (isDriverTable) {
+      sound.play()
+      driverstable.value = true;
+      teamstable.value = false;
+    } else {
+      sound.play()
+      driverstable.value = false;
+      teamstable.value = true;
     }
+  };
+
+  // Vytvoř množinu ID jezdců, kteří jsou v týmech (top 10 týmů)
+  const teamDriverIds = computed(() => {
+    const ids = new Set();
+    teams.value.slice(0, 10).forEach(team => { 
+      if (team.driver1) ids.add(Number(team.driver1));
+      if (team.driver2) ids.add(Number(team.driver2));
+      // Testovací jezdec pouze pokud má body
+      const testDriverPoints = leadboard.value.find(
+        entry => Number(entry.driverID) === Number(team.testdriver)
+      )?.points || 0;
+      if (testDriverPoints > 0 && team.testdriver) {
+        ids.add(Number(team.testdriver));
+      }
+    });
+    return ids;
   });
 
-// Filtruj jezdce, kteří jsou v týmech
-const fullLeaderboard = drivers.value.filter(driver => 
-  teamDriverIds.has(Number(driver.ID))
-);
+  // Spoj leadboard s daty jezdců - POUZE jezdci, kteří jsou v týmech
+  const sortedDriverLeaderboard = computed(() => {
+    return leadboard.value
+      .filter(entry => teamDriverIds.value.has(Number(entry.driverID))) // Filtruj jen jezdce v týmech
+      .map(entry => {
+        const driver = drivers.value.find(d => Number(d.ID) === Number(entry.driverID));
+        return driver ? { ...entry, driver } : null;
+      })
+      .filter(entry => entry !== null)
+      .sort((a, b) => b.points - a.points);
+  });
 
-// Spoj data z leadboardu s daty jezdců
-const driverLeaderboard = leadboard.value
-.map(entry => {
-  const driver = fullLeaderboard.find(d => Number(d.ID) === Number(entry.driverID));
-  return driver ? { ...entry, driver } : null;
-})
-.filter(entry => entry !== null);
+  // Vytvoř leadboard týmů se součtem bodů jejich jezdců
+  const sortedTeamLeaderboard = computed(() => {
+    return teams.value.slice(0, 10).map(team => {
+      const getPoints = (driverId) => 
+        leadboard.value.find(entry => Number(entry.driverID) === Number(driverId))?.points || 0;
+      
+      return {
+        ...team,
+        points: getPoints(team.driver1) + getPoints(team.driver2) + getPoints(team.testdriver)
+      };
+    }).sort((a, b) => b.points - a.points);
+  });
 
-// Vytvoř leadboard týmů se součtem bodů jejich jezdců
-const teamLeaderboard = teams.value.slice(0, 10).map(team => {
-  const driver1Points = driverLeaderboard.find(
-    entry => Number(entry.driverID) === Number(team.driver1)
-  )?.points || 0;
-  
-  const driver2Points = driverLeaderboard.find(
-    entry => Number(entry.driverID) === Number(team.driver2)
-  )?.points || 0;
+  function giveavatar(num) {
+    return avatars[num.toString()] 
+  }
 
-  const driver3Points = driverLeaderboard.find(
-    entry => Number(entry.driverID) === Number(team.testdriver)
-  )?.points || 0;
+  const switchLayout = inject('switchLayout')
 
-  return {
-    ...team,
-    points: driver1Points + driver2Points + driver3Points
-  };
-});
-
-const sortedDriverLeaderboard = driverLeaderboard.sort((a, b) => b.points - a.points);
-const sortedTeamLeaderboard = teamLeaderboard.sort((a, b) => b.points - a.points);
-console.log(sortedTeamLeaderboard);
-
-function giveavatar(num) {
-  return avatars[num.toString()] 
-}
-
-const switchLayout = inject('switchLayout')
-
-onMounted(() => {
-  switchLayout('menu') 
-})
+  onMounted(() => {
+    switchLayout('menu') 
+  })
 </script>
-
-<style>
-
-</style>

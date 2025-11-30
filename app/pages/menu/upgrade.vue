@@ -225,6 +225,7 @@ function openUpgrade(num) {
   upgradenum.value = num; 
   switch(num) {
     case 0:
+      if (team.value.aerodynamics > 100) return alert("Maximální úroveň aerodynamiky dosažena");
       priceUpgrade.value = price[team.value.aerodynamics];
       break;
     case 1:
