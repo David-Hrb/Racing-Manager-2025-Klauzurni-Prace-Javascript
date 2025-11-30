@@ -126,6 +126,8 @@ export const useEndOfSeason = () => {
                             driverPosition = 'driver1';
                         } else if (driverTeam.driver2 === driver.ID) {
                             driverPosition = 'driver2';
+                        } else if (driverTeam.testdriver === driver.ID) {
+                            driverPosition = 'testdriver';
                         }
                         
                         let candidateOldPosition = null;
@@ -139,43 +141,48 @@ export const useEndOfSeason = () => {
                         
                         // SEKVENČNÍ AKTUALIZACE - jedna po druhé s await
                         
-                        // 1.Aktualizuj odcházejícího jezdce
+
+                        // 1. Aktualizuj odcházejícího jezdce
+                        const { currentteam: _oldTeam, ... driverWithoutTeam } = driver;
                         await $fetch(`/api/driver/${driver.ID}`, {
                             method: "PUT",
                             body: { 
-                                ...driver, 
+                                ...driverWithoutTeam,
                                 contractexp: manager[0].season + 3,
                                 currentteam: candidate.currentteam
                             },
                         });
-                        
-                        // 2.Aktualizuj kandidáta
+
+                        // 2.  Aktualizuj kandidáta
+                        const { currentteam: _oldCandidateTeam, ...candidateWithoutTeam } = candidate;
                         await $fetch(`/api/driver/${candidate.ID}`, {
                             method: "PUT",
                             body: {
-                                ...candidate,
+                                ...candidateWithoutTeam,
                                 contractexp: manager[0].season + 3,
-                                currentteam: driver.currentteam
+                                currentteam: driver.currentteam  // ← Pozor! Tady je původní tým drivera
                             },
                         });
                         
                         // 3.Aktualizuj tým odcházejícího jezdce
                         if (driverPosition) {
+                            const currentDriverTeam = await $fetch(`/api/teams/${driverTeam.ID}`);
                             await $fetch(`/api/teams/${driverTeam.ID}`, {
                                 method: "PUT",
                                 body: {
-                                    ...driverTeam,
+                                    ...currentDriverTeam,
                                     [driverPosition]: candidate.ID
                                 },
                             });
                         }
-                        
-                        // 4.Aktualizuj starý tým kandidáta
+
+                        // 4. Aktualizuj starý tým kandidáta - načti AKTUÁLNÍ stav
                         if (candidateOldTeam && candidateOldPosition) {
-                            await $fetch(`/api/teams/${candidateOldTeam.ID}`, {
+                            const currentCandidateTeam = await $fetch(`/api/teams/${candidateOldTeam.ID}`);
+                            await $fetch(`/api/teams/${candidateOldTeam. ID}`, {
                                 method: "PUT",
                                 body: {
-                                    ...candidateOldTeam,
+                                    ...currentCandidateTeam,
                                     [candidateOldPosition]: driver.ID
                                 },
                             });
