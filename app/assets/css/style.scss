@@ -4646,3 +4646,236 @@ input::placeholder {
     }
   }
 }
+
+.endseason-overlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.90);
+  z-index: 1000;
+  display: flex;
+  @include full-center;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .endseason-content {
+    position: relative;
+    width: 70%;
+    max-width: 900px;
+    max-height: 85vh;
+    background: $gray-900;
+    border: 5px solid $amber-900;
+    border-radius: 12px;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-y: auto;
+    animation: slideUp 0.4s ease-out;
+
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      @include titletext;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    h2 {
+      color: $amber-700;
+      @include normaltext-bigger;
+      font-weight: 600;
+      text-align: center;
+      margin: 0;
+      padding: 0.5rem 1rem;
+      background: $gray-950;
+      border: 2px solid $gray-800;
+      border-radius: 8px;
+    }
+
+    // Sekce s jezdci, kterým končí smlouva
+    .driverexp {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      margin-top: 1rem;
+
+      .driverexp-conteiner {
+        @include flex-column;
+        @include full-center;
+        gap: 1rem;
+        background: $gray-950;
+        border: 3px solid $gray-800;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        transition: all 0.3s ease;
+        animation: cardFadeIn 0.4s ease-out;
+
+        @keyframes cardFadeIn {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        &:hover {
+          border-color: $amber-900;
+          background: rgba($amber-900, 0.08);
+          transform: translateX(5px);
+        }
+
+        .avatar {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          border: 3px solid $amber-500;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: scale(1.1);
+            border-color: $amber-400;
+          }
+        }
+
+        .nationality {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: $amber-700;
+          @include normaltext;
+          font-weight: 600;
+          background: $gray-900;
+          padding: 0.4rem 0.75rem;
+          border-radius: 6px;
+          text-transform: uppercase;
+
+          .fi {
+            font-size: 1.3em;
+          }
+        }
+
+        .driver-name {
+          color: $amber-500;
+          @include normaltext-bigger;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .expire {
+          color: $red-500;
+          @include normaltext;
+          font-weight: 500;
+          font-style: italic;
+          max-width: 250px;
+          text-align: center;
+        }
+
+        button {
+          background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+          color: $gray-900;
+          border: none;
+          padding: 0.75rem 1.25rem;
+          border-radius: 8px;
+          @include normaltext;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          white-space: nowrap;
+
+          &:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+          }
+
+          &:active {
+            transform: translateY(-1px);
+          }
+
+          &:last-child {
+            background: linear-gradient(135deg, $red-500 0%, $red-900 100%);
+            
+            &:hover {
+              background: linear-gradient(135deg, $red-400 0%, $red-800 100%);
+            }
+          }
+        }
+
+        // Responzivní design
+        @media (max-width: 900px) {
+          grid-template-columns: 1fr;
+          justify-items: center;
+          text-align: center;
+          gap: 0.75rem;
+          padding: 1.5rem;
+
+          .expire {
+            max-width: 100%;
+            text-align: center;
+          }
+
+          button {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    // Hlavní tlačítko pro pokračování
+    > button {
+      background: linear-gradient(135deg, $amber-500 0%, $amber-900 100%);
+      color: $gray-900;
+      border: none;
+      padding: 1.25rem 3rem;
+      border-radius: 10px;
+      @include normaltext-bigger;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 1rem;
+
+      &:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(135deg, $amber-400 0%, $amber-800 100%);
+        box-shadow: 0 10px 30px rgba($amber-500, 0.3);
+      }
+
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
