@@ -81,17 +81,17 @@
                 <div class="sponzor">
                   <span class="fi" :class="`fi-${sponsornationality1}`" aria-hidden="true"></span> 
                   <span class="sponsor-name">{{ sponsor1 }}</span>
-                  <span class="sponsor-money">{{ (String(sponsormoney1).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
+                  <span class="sponsor-money">{{ formatMoney(sponsormoney1) }} €</span>
                 </div>
                 <div class="sponzor">
                   <span class="fi" :class="`fi-${sponsornationality2}`" aria-hidden="true"></span> 
                   <span class="sponsor-name">{{ sponsor2 }}</span>
-                  <span class="sponsor-money">{{ (String(sponsormoney2).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
+                  <span class="sponsor-money">{{ formatMoney(sponsormoney2) }} €</span>
                 </div>
                 <div class="sponzor">
                   <span class="fi" :class="`fi-${sponsornationality3}`" aria-hidden="true"></span> 
                   <span class="sponsor-name">{{ sponsor3 }}</span>
-                  <span class="sponsor-money">{{ (String(sponsormoney3).split(/(?=(?:\d{3})+(?!\d))/)).join(' ') }} €</span>
+                  <span class="sponsor-money">{{ formatMoney(sponsormoney3) }} €</span>
                 </div>      
               </div>
             </div>
@@ -170,7 +170,7 @@
     </div>
   </div>
 
-  <div v-if="endOfSeason" class="endseason-overlay">
+  <div v-if="endOfSeason" style="z-index: 200;" class="endseason-overlay">
     <button class="next endseason-button" @click="nextSeason">
       Pokračovat
     </button>
@@ -379,17 +379,174 @@
       </div>
     </div>
   </div>
+
   <div v-if="startOfNewSeason" class="endseason-overlay">
     <div class="endseason-content">
       <h1>Začátek nové sezóny</h1>
       <h2>Došlo ke změnám pravidel: {{ changes.join(" ") }}</h2>
-      <h2>jezdci kterým vám končí smlouva {{ manTeamExp }}</h2>
+      <h2>Jezdci, kterým vám končí smlouva:</h2>
       <div class="driverexp">
         <div class="driverexp-conteiner" v-for="driver in driverTeamExpires" :key="driver.ID">
-          {{ driver.name }} - smlouva končí v {{ driver.contractexp }} sezoně
+          <img 
+            :src="`/images/avatars/${giveavatar(driver.avatar)}.svg`" 
+            class="avatar" 
+            alt="avatar" 
+            style="width: 50px; height: 50px;"
+          >
+          <div class="nationality">
+            <span class="fi" :class="`fi-${driver.nationality}`" aria-hidden="true"></span>
+            {{ driver.nationality }}
+          </div>
+          <div class="driver-name">
+            {{ driver.name }} 
+          </div>
+          <div class="expire">
+            smlouva tohoto jezdce skončila prodlužte ji nebo ho vyměnte.
+          </div>
+
+          <button @click="openExtendNegotiation(driver)">Prodloužit</button>
+          <button @click="openReplaceDriver(driver)">Vyměnit Jezdce</button>
         </div>
       </div>
-      <button @click="startOfNewSeason = false">Pokračujte na novou sezónu</button>
+      <button v-if="driverTeamExpires.length == 0" @click="startOfNewSeason = false">Pokračujte na novou sezónu</button>
+    </div>
+  </div>
+
+  <div class="driver-negonation" style="top: 0; left:0;" v-if="extendNegotiation">
+    <div class="driver-negonation-cont">
+      <button class="settings-btn settings-close-btn" @click="closeExtendNegotiation()">
+        <svg width="2rem" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 460.775 460.775" xml:space="preserve">
+          <path fill="currentcolor" d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/>
+        </svg>
+      </button>
+      <h2>Prodloužení smlouvy s {{ selectedDriverForExtend?.name }}</h2>
+      <h3>Nabídněte podmínky smlouvy</h3>
+      <div class="negonation-inputs">
+        <div class="negonation-input">
+          <span>Vyberte délku smlouvy:</span>
+          <select v-model="yearsOfContract">
+            <option :value="1">1 rok</option>
+            <option :value="2">2 roky</option>
+            <option :value="3">3 roky</option>
+            <option :value="4">4 roky</option>
+            <option :value="5">5 roků</option>
+          </select>
+        </div>
+        <div class="negonation-input">
+          <span>Nabídněte plat:</span>
+          <div class="money">
+            <button @click="currentSalaryIndex <= 0 ?currentSalaryIndex = 0 : currentSalaryIndex -= 1">-</button>
+            <div class="money-text">{{ formatMoney(salaryPrices[currentSalaryIndex]) }} €</div>
+            <button @click="currentSalaryIndex >= salaryPrices.length - 1 ?currentSalaryIndex = salaryPrices.length - 1 : currentSalaryIndex += 1">+</button>
+          </div>
+        </div>
+        <button style="padding: 1.5rem 3rem;" class="settings-btn driver-negonation-btn" @click="tryExtendContract()">Potvrdit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="driver-negonation" style="top: 0; left:0;" v-if="replaceDriverModal">
+    <div class="driver-negonation-cont">
+      <button class="settings-btn settings-close-btn" @click="closeReplaceDriver()">
+        <svg width="2rem" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 460.775 460.775" xml:space="preserve">
+          <path fill="currentcolor" d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/>
+        </svg>
+      </button>
+      <h2>Nahrazení jezdce {{ selectedDriverForReplace?.name }}</h2>
+      <h3>Vyberte nového jezdce</h3>
+      
+      <div class="table-wrapper">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Avatar</th>
+              <th>Národnost</th>
+              <th>Jméno</th>
+              <th>Popularita</th>
+              <th>Ego</th>
+              <th>Aktuální tým</th>
+              <th>Konec smlouvy</th>
+              <th>Akce</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="driver in availableDriversForReplace" :key="driver.ID">
+              <td>
+                <img 
+                  :src="`/images/avatars/${giveavatar(driver.avatar)}.svg`" 
+                  class="avatar" 
+                  alt="avatar" 
+                  style="width: 50px; height: 50px;"
+                >
+              </td>
+              <td class="driver-nationality">
+                <span class="fi" :class="`fi-${driver.nationality}`" aria-hidden="true"></span>
+                {{ driver.nationality }}
+              </td>
+              <td class="drivername">{{ driver.name }}</td>
+              <td>{{ driver.popularity }}</td>
+              <td>{{ driver.ego }}</td>
+              <td>{{ driver.currentteam == null ?  "bez týmu" : teams.find(team => team.ID === driver.currentteam)?.name }}</td>
+              <td>{{ driver.contractexp == null ? "nemá" : driver.contractexp }}</td>
+              <td>
+                <button class="driver-negonation-btn" @click="selectNewDriver(driver)">Vybrat</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>   
+      <button class="driver-negonation-btn" @click="closeReplaceDriver()">Zpět</button>
+    </div>
+  </div>
+
+  <div class="driver-negonation" style="top: 0; left:0;" v-if="newDriverNegotiation">
+    <div class="driver-negonation-cont">
+      <button class="settings-btn settings-close-btn" @click="closeNewDriverNegotiation()">
+        <svg width="2rem" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 460.775 460.775" xml:space="preserve">
+          <path fill="currentcolor" d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/>
+        </svg>
+      </button>
+      <h2>Nabídka pro {{ selectedNewDriver?.name }}</h2>
+      <h3>Nabídněte podmínky smlouvy</h3>
+      <div class="negonation-inputs">
+        <div class="negonation-input">
+          <span>Vyberte délku smlouvy:</span>
+          <select v-model="yearsOfContract">
+            <option :value="1">1 rok</option>
+            <option :value="2">2 roky</option>
+            <option :value="3">3 roky</option>
+            <option :value="4">4 roky</option>
+            <option :value="5">5 roků</option>
+          </select>
+        </div>
+        <div class="negonation-input">
+          <span>Nabídněte plat:</span>
+          <div class="money">
+            <button @click="currentSalaryIndex <= 0 ?currentSalaryIndex = 0 : currentSalaryIndex -= 1">-</button>
+            <div class="money-text">{{ formatMoney(salaryPrices[currentSalaryIndex]) }} €</div>
+            <button @click="currentSalaryIndex >= salaryPrices.length - 1 ?currentSalaryIndex = salaryPrices.length - 1 : currentSalaryIndex += 1">+</button>
+          </div>
+        </div>
+        <div class="negonation-input" v-if="buyoutPrice > 0">
+          <span>Cena za výkup:</span>
+          <span>{{ formatMoney(buyoutPrice) }} €</span>
+        </div>
+        <button style="padding: 1.5rem 3rem;" class="settings-btn driver-negonation-btn" @click="tryReplaceContract()">Potvrdit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="driver-negonation" style="top: 0; left:0;" v-if="driverAccepted">
+    <div class="driver-negonation-cont">
+      <h2>Jezdec přijal vaši nabídku! </h2>
+      <button class="driver-negonation-btn" @click="driverAccepted = false">Pokračovat</button>
+    </div>
+  </div>
+
+  <div class="driver-negonation"  style="top: 0; left:0;"v-if="driverDeclined">
+    <div class="driver-negonation-cont">
+      <h2>Jezdec odmítl vaši nabídku.</h2>
+      <button class="driver-negonation-btn" @click="driverDeclined = false">Pokračovat</button>
     </div>
   </div>
 </template>
@@ -400,6 +557,8 @@ import avatars from '~/assets/json/avatars.json'
 const { daycount } = useDayCount()
 const sound = useClickSound();
 const sound2 = useClickSound();
+const { getRandomInteger } = UseInteger();
+
 let drivers = ref([]);
 let teams = ref([]);
 const circuits = ref([]);
@@ -413,11 +572,11 @@ circuits.value = await $fetch("/api/listCircuit");
 manager.value = await $fetch("/api/manager/listManager");
 allCalendar.value = await $fetch("/api/calendar/listCalendar");
 leadboard.value = await $fetch("/api/leadboard/listLeadboard") || [];
+
 const gender = ref(manager.value[0].SelectedGender);
 const { currentcircuit } = await useGetNextRace()
 console.log(currentcircuit)
 let currentteam = manager.value[0].team;
-
 
 const { setupRace } = useRaceSetup();
 const { teamDrivers, teamAllDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
@@ -441,17 +600,40 @@ let endOfSeason = ref(true);//ref(allCalendar.value.find(item => item.raced === 
 let startOfNewSeason = ref(false);
 console.log(endOfSeason.value);
 
+const extendNegotiation = ref(false);
+const replaceDriverModal = ref(false);
+const newDriverNegotiation = ref(false);
+const driverAccepted = ref(false);
+const driverDeclined = ref(false);
+
+const selectedDriverForExtend = ref(null);
+const selectedDriverForReplace = ref(null);
+const selectedNewDriver = ref(null);
+
+const yearsOfContract = ref(1);
+const salaryIdeal = ref(0);
+const salaryPrices = ref([]);
+const currentSalaryIndex = ref(0);
+const buyoutPrice = ref(0);
+
+const { updateDriver } = useDriversApi();
+const { updateTeam } = useTeamsApi();
+const { updateLeadboard } = useLeadBoardsApi();
 
 const { sponsorsname: sponsor1, sponsormoney: sponsormoney1, sponsornationality: sponsornationality1 } = getSponsor(currentTeamInfo.sponzor1);
 const { sponsorsname: sponsor2, sponsormoney: sponsormoney2, sponsornationality: sponsornationality2 } = getSponsor(currentTeamInfo.sponzor2);
 const { sponsorsname: sponsor3, sponsormoney: sponsormoney3, sponsornationality: sponsornationality3 } = getSponsor(currentTeamInfo.sponzor3);
-
 
 function giveavatar(num) {
   if (num === undefined || num === null) {
     return 'default' 
   }
   return avatars[num.toString()] 
+}
+
+function formatMoney(num) {
+  if (num === undefined || num === null) return '0';
+  return (String(num).split(/(?=(?:\d{3})+(?!\d))/)).join(' ');
 }
 
 function cirtype(num) {
@@ -470,7 +652,7 @@ function cirtype(num) {
 const currentCalendarIndex = ref(0);
 
 const currentCalendarEntry = computed(() => {
-  if (!allCalendar.value || !allCalendar.value.length) return null;
+  if (! allCalendar.value || ! allCalendar.value.length) return null;
   return allCalendar.value[currentCalendarIndex.value] || null;
 });
 
@@ -485,10 +667,9 @@ const currentCalendarCircuitName = computed(() => {
 
 const isFirstCalendarEntry = computed(() => currentCalendarIndex.value === 0);
 const isLastCalendarEntry = computed(() => {
-  if (! allCalendar.value?.length) return true;
+  if (!allCalendar.value?.length) return true;
   return currentCalendarIndex.value === allCalendar.value.length - 1;
 });
-
 
 const nextCalendarEntry = () => {
   if (allCalendar.value && currentCalendarIndex.value < allCalendar.value.length - 1) {
@@ -544,7 +725,7 @@ const driverLeaderboard = computed(() => {
   return leadboard.value
     .map(entry => {
       const driver = fullLeaderboard.value.find(d => Number(d.ID) === Number(entry.driverID));
-      return driver ?  { ...entry, driver } : null;
+      return driver ?{ ...entry, driver } : null;
     })
     .filter(entry => entry !== null);
 });
@@ -616,25 +797,190 @@ const currentTeamList = computed(() => {
   }
 });
 
+const driverTeamExpires = computed(() => {
+  const driverTeam = ref([]);
+  console.log(manTeamExp.value);
+  console.log(teamAllDrivers.value)
+  drivers.value.forEach(driver => {
+    if (manTeamExp.value.includes(driver.ID)) {
+      driverTeam.value.push(driver);
+    }
+  });
+  console.log(driverTeam);
+  return driverTeam.value;
+});
+
+function openExtendNegotiation(driver) {
+  selectedDriverForExtend.value = driver;
+  calculateSalaryPrices(driver);
+  extendNegotiation.value = true;
+}
+
+function closeExtendNegotiation() {
+  extendNegotiation.value = false;
+  selectedDriverForExtend.value = null;
+  resetNegotiationValues();
+}
+
+function calculateSalaryPrices(driver) {
+  let priceFactor = (driver.prmanagement + driver.ego) / 200;
+  salaryIdeal.value = Math.floor((getRandomInteger(500000, 2000000) * priceFactor) / 1000) * 10000;
+  salaryPrices.value = [
+    Math.round(salaryIdeal.value / 1.4),
+    Math.round(salaryIdeal.value / 1.3),
+    Math.round(salaryIdeal.value / 1.2),
+    Math.round(salaryIdeal.value / 1.1),
+    salaryIdeal.value,
+    Math.round(salaryIdeal.value * 1.1),
+    Math.round(salaryIdeal.value * 1.2),
+    Math.round(salaryIdeal.value * 1.3),
+    Math.round(salaryIdeal.value * 1.4)
+  ];
+  currentSalaryIndex.value = 0; 
+}
+
+async function tryExtendContract() {
+  let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
+  
+  if (offeredSalary >= salaryIdeal.value) {
+    
+    let contractExp = manager.value[0].season + yearsOfContract.value;
+    
+    try {
+      await updateDriver(selectedDriverForExtend.value.ID, {
+        contractexp: contractExp
+      });
+      drivers.value = await $fetch("/api/listDriver");
+      
+      driverAccepted.value = true;
+      manTeamExp.value = (manTeamExp.value || []).filter(driverId => driverId !== selectedDriverForExtend.value.ID);
+
+    } catch (error) {
+      console.error("Error extending contract:", error);
+    }
+  } else {
+    driverDeclined.value = true;
+  }
+  
+  closeExtendNegotiation();
+}
+
+function openReplaceDriver(driver) {
+  selectedDriverForReplace.value = driver;
+  replaceDriverModal.value = true;
+}
+
+function closeReplaceDriver() {
+  replaceDriverModal.value = false;
+  selectedDriverForReplace.value = null;
+}
+
+const availableDriversForReplace = computed(() => {
+  return drivers.value.filter(driver => {
+    return driver.currentteam === null || driver.currentteam !== currentteam;
+  });
+});
+
+function selectNewDriver(driver) {
+  selectedNewDriver.value = driver;
+  replaceDriverModal.value = false;
+  calculateSalaryPrices(driver);
+  
+  if (driver.currentteam !== null) {
+    let priceFactor = (driver.prmanagement + driver.ego) / 200;
+    buyoutPrice.value = Math.floor((getRandomInteger(1000000, 5000000) * priceFactor) / 1000) * 1000;
+  } else {
+    buyoutPrice.value = 0;
+  }
+  
+  newDriverNegotiation.value = true;
+}
+
+function closeNewDriverNegotiation() {
+  newDriverNegotiation.value = false;
+  selectedNewDriver.value = null;
+  resetNegotiationValues();
+}
+
+async function tryReplaceContract() {
+  let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
+  
+  if (selectedNewDriver.value.currentteam !== null) {
+    let driverTeam = teams.value.find(team => team.ID === selectedNewDriver.value.currentteam);
+    let currTeamStats = currentTeamInfo.aerodynamics + currentTeamInfo.gearbox + currentTeamInfo.brakes + currentTeamInfo.rearwing + currentTeamInfo.frontwing + currentTeamInfo.reliability;
+    let driverTeamStats = driverTeam.aerodynamics + driverTeam.gearbox + driverTeam.brakes + driverTeam.rearwing + driverTeam.frontwing + driverTeam.reliability;
+    let teamDifference = currTeamStats - driverTeamStats;
+    
+    if (teamDifference <= -8) {
+      driverDeclined.value = true;
+      closeNewDriverNegotiation();
+      return;
+    }
+  }
+  
+  if (offeredSalary >= salaryIdeal.value) {
+    let contractExp = manager.value[0].season + yearsOfContract.value;
+    
+    try {
+      const team = teams.value.find(t => t.ID === currentteam);
+      const driverFields = ['driver1', 'driver2', 'testdriver'];
+      let driverPosition = driverFields.findIndex(field => team[field] === selectedDriverForReplace.value.ID);
+      
+      if (driverPosition !== -1) {
+        const fieldToUpdate = driverFields[driverPosition];
+        
+        await updateTeam(currentteam, { 
+          [fieldToUpdate]: selectedNewDriver.value.ID,
+          money: team.money - (offeredSalary + buyoutPrice.value)
+        });
+        
+        const oldDriverPoints = leadboard.value.find(entry => entry.driverID === selectedDriverForReplace.value.ID)?.points || 0;
+        const newDriverPoints = leadboard.value.find(entry => entry.driverID === selectedNewDriver.value.ID)?.points || 0;
+        
+        await updateLeadboard(selectedNewDriver.value.ID, { points: oldDriverPoints });
+        await updateLeadboard(selectedDriverForReplace.value.ID, { points: newDriverPoints });
+        
+        await updateDriver(selectedNewDriver.value.ID, {
+          currentteam: currentteam,
+          contractexp: contractExp
+        });
+        
+        await updateDriver(selectedDriverForReplace.value.ID, {
+          currentteam: null,
+          contractexp: null
+        });
+        
+        drivers.value = await $fetch("/api/listDriver");
+        teams.value = await $fetch("/api/listTeam");
+        leadboard.value = await $fetch("/api/leadboard/listLeadboard");
+        
+        driverAccepted.value = true;
+        driverTeam.value = driverTeam.value.filter(driverId => driverId !== selectedDriverForReplace.value.ID);
+      }
+    } catch (error) {
+      console.error("Error replacing driver:", error);
+    }
+  } else {
+    driverDeclined.value = true;
+  }
+  
+  closeNewDriverNegotiation();
+}
+
+function resetNegotiationValues() {
+  yearsOfContract.value = 1;
+  salaryIdeal.value = 0;
+  salaryPrices.value = [];
+  currentSalaryIndex.value = 0;
+  buyoutPrice.value = 0;
+}
+
 async function nextSeason() {
   sound.play()
   endOfSeason.value = false;
   startOfNewSeason.value = true;
   await triggerEndOfSeason();
 }
-
-const driverTeamExpires = computed (() => {
-  const driverTeam = ref([]);
-  console.log(manTeamExp.value);
-  console.log(teamAllDrivers.value)
-  drivers.value.forEach(driver => {
-    if(manTeamExp.value.includes(driver.ID)) {
-      driverTeam.value.push(driver);
-    }
-  });
-  console.log(driverTeam);
-  return driverTeam.value;
-})
 
 const switchLayout = inject('switchLayout')
 

@@ -295,7 +295,6 @@ const openNegonation = () => {
 }
 
 function negonationLogic(driverID) {
-  
   let negonationdriver = drivers.value.find(driver => driver.ID === driverID);
   let driverTeam = teams.value.find(team => team.ID === negonationdriver.currentteam);
   console.log(negonationdriver, "negonation driver");
