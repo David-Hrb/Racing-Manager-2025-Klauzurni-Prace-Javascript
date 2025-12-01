@@ -385,12 +385,9 @@
       <h2>Došlo ke změnám pravidel: {{ changes.join(" ") }}</h2>
       <h2>jezdci kterým vám končí smlouva {{ manTeamExp }}</h2>
       <div class="driverexp">
-        <!--
         <div class="driverexp-conteiner" v-for="driver in driverTeamExpires" :key="driver.ID">
           {{ driver.name }} - smlouva končí v {{ driver.contractexp }} sezoně
-
         </div>
-        -->
       </div>
       <button @click="startOfNewSeason = false">Pokračujte na novou sezónu</button>
     </div>
@@ -399,7 +396,7 @@
 
 <script setup>
 import avatars from '~/assets/json/avatars.json'
-import man from '~~/server/api/manager/man';
+
 const { daycount } = useDayCount()
 const sound = useClickSound();
 const sound2 = useClickSound();
@@ -627,15 +624,18 @@ async function nextSeason() {
 }
 
 const driverTeamExpires = computed (() => {
-  const driverTeam = [];
-  teamAllDrivers.value.forEach(driver => {
+  const driverTeam = ref([]);
+  console.log(manTeamExp.value);
+  console.log(teamAllDrivers.value)
+  drivers.value.forEach(driver => {
     if(manTeamExp.value.includes(driver.ID)) {
-      driverTeam.push(driver);
+      driverTeam.value.push(driver);
     }
   });
   console.log(driverTeam);
-  return driverTeam;
+  return driverTeam.value;
 })
+
 const switchLayout = inject('switchLayout')
 
 onMounted(() => {
