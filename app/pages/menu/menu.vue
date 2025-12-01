@@ -258,7 +258,6 @@
       <div class="endseason-statistics">
         <h2>Historické a sezónní statistiky</h2>
         <div class="statistics-content">
-          <!-- Hlavní přepínač: Jezdci / Týmy -->
           <div class="main-toggle">
             <button 
               class="endseason-button"
@@ -274,7 +273,6 @@
             </button>
           </div>
 
-          <!-- Sekundární přepínač: Body / Vítězství / Pódia -->
           <div class="stat-toggle">
             <button 
               class="endseason-button smaller-button"
@@ -296,7 +294,6 @@
             </button>
           </div>
 
-          <!-- Tabulka jezdců -->
           <div class="table-wrapper" v-if="viewType === 'drivers'">
             <table class="leaderboard-table">
               <thead>
@@ -340,7 +337,6 @@
             </table>
           </div>
 
-          <!-- Tabulka týmů -->
           <div class="table-wrapper" v-if="viewType === 'teams'">
             <table class="leaderboard-table">
               <thead>
@@ -388,6 +384,14 @@
       <h1>Začátek nové sezóny</h1>
       <h2>Došlo ke změnám pravidel: {{ changes.join(" ") }}</h2>
       <h2>jezdci kterým vám končí smlouva {{ manTeamExp }}</h2>
+      <div class="driverexp">
+        <!--
+        <div class="driverexp-conteiner" v-for="driver in driverTeamExpires" :key="driver.ID">
+          {{ driver.name }} - smlouva končí v {{ driver.contractexp }} sezoně
+
+        </div>
+        -->
+      </div>
       <button @click="startOfNewSeason = false">Pokračujte na novou sezónu</button>
     </div>
   </div>
@@ -395,6 +399,7 @@
 
 <script setup>
 import avatars from '~/assets/json/avatars.json'
+import man from '~~/server/api/manager/man';
 const { daycount } = useDayCount()
 const sound = useClickSound();
 const sound2 = useClickSound();
@@ -418,7 +423,7 @@ let currentteam = manager.value[0].team;
 
 
 const { setupRace } = useRaceSetup();
-const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
+const { teamDrivers, teamAllDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
   drivers: drivers.value,
   teams: teams.value,
   circuits: circuits.value,
@@ -620,6 +625,17 @@ async function nextSeason() {
   startOfNewSeason.value = true;
   await triggerEndOfSeason();
 }
+
+const driverTeamExpires = computed (() => {
+  const driverTeam = [];
+  teamAllDrivers.value.forEach(driver => {
+    if(manTeamExp.value.includes(driver.ID)) {
+      driverTeam.push(driver);
+    }
+  });
+  console.log(driverTeam);
+  return driverTeam;
+})
 const switchLayout = inject('switchLayout')
 
 onMounted(() => {
