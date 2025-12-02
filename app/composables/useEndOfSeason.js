@@ -72,6 +72,7 @@ export const useEndOfSeason = () => {
         }
         
         function findSuitableCandidateRandom(teamRating, excludeDriverId, allDrivers, usedDriverIds) {
+       
             const tolerance = 15;
             
             const suitableCandidates = allDrivers.filter(candidate => {
@@ -107,6 +108,11 @@ export const useEndOfSeason = () => {
         
         for (const driver of drivers) {
             if (driver.contractexp <= manager[0].season) {
+                const [drivers, manager, teams] = await Promise.all([
+                    $fetch('/api/listDriver'),
+                    $fetch('/api/manager/listManager'),
+                    $fetch('/api/listTeam')
+                ]);
                 
                 const driverTeam = teams.find(team => team.ID === driver.currentteam);
                 
@@ -195,13 +201,13 @@ export const useEndOfSeason = () => {
                 }
             }
         }
-        
     }
     async function triggerEndOfSeason() {
-        const [leadboard, manager, teams] = await Promise.all([
+        const [leadboard, manager, teams, drivers] = await Promise.all([
             $fetch('/api/leadboard/listLeadboard'),
             $fetch('/api/manager/listManager'),
-            $fetch('/api/listTeam')
+            $fetch('/api/listTeam'),
+            $fetch('/api/listDriver')
         ]);
 
         const playerTeam = teams.find(team => team.ID === manager[0].team);
@@ -213,7 +219,78 @@ export const useEndOfSeason = () => {
         changes.value.push(randomChange);
 
         const { calendar } = useCreateCalendar();
+        let championDriverID = null;
+        let championTeamId = null;
+        const teamDriverIds = new Set();
+        teams.slice(0, 10).forEach(team => { 
+            if (team.driver1) teamDriverIds.add(Number(team.driver1));
+            if (team.driver2) teamDriverIds.add(Number(team.driver2));
+            if (leadboard.find(entry => Number(entry.driverID) === Number(team.testdriver))?.points > 0) {
+            teamDriverIds.add(Number(team.testdriver));
+            }
+        });
+
+        // Filtruj jezdce, kteří jsou v týmech
+        const fullLeaderboard = drivers.filter(driver => 
+        teamDriverIds.has(Number(driver.ID))
+        );
+
+        // Spoj data z leadboardu s daty jezdců
+        const driverLeaderboard = leadboard
+        .map(entry => {
+        const driver = fullLeaderboard.find(d => Number(d.ID) === Number(entry.driverID));
+        return driver ? { ...entry, driver } : null;
+        })
+        .filter(entry => entry !== null);
+
+        // Vytvoř leadboard týmů se součtem bodů jejich jezdců
+        const teamLeaderboard = teams.slice(0, 10).map(team => {
+        const driver1Points = driverLeaderboard.find(
+            entry => Number(entry.driverID) === Number(team.driver1)
+        )?.points || 0;
         
+        const driver2Points = driverLeaderboard.find(
+            entry => Number(entry.driverID) === Number(team.driver2)
+        )?.points || 0;
+
+        const driver3Points = driverLeaderboard.find(
+            entry => Number(entry.driverID) === Number(team.testdriver)
+        )?.points || 0;
+
+        return {
+            ...team,
+            points: driver1Points + driver2Points + driver3Points
+        };
+        });
+
+        const sortedDriverLeaderboard = driverLeaderboard.sort((a, b) => b.points - a.points);
+        const sortedTeamLeaderboard = teamLeaderboard.sort((a, b) => b.points - a.points);
+
+        if (leadboard.length > 0) {
+            console.log("Champion Driver:", sortedDriverLeaderboard[0]);
+            championDriverID = sortedDriverLeaderboard[0].driver.ID;
+            console.log("Champion DRIVER IDDDDDDDDD:", championDriverID);
+            championTeamId = sortedTeamLeaderboard[0].ID;
+        }
+
+        await $fetch(`/api/driver/${championDriverID}`, {
+            method: "PUT",
+            body: { 
+                ...sortedDriverLeaderboard[0], 
+                championship: (sortedDriverLeaderboard[0].championship || 0) + 1
+            },
+        });
+
+        await $fetch(`/api/teams/${championTeamId}`, {
+            method: "PUT",
+            body: { 
+                ...sortedTeamLeaderboard[0], 
+                historytitles: (sortedTeamLeaderboard[0].historytitles || 0) + 1
+            },
+        });
+
+
+
         const calendarItems = calendar.value.map(item => ({
             track: item.i,
             date: item.date,
@@ -225,7 +302,8 @@ export const useEndOfSeason = () => {
             thirdplace: 0,
             thirdteam: 0
         }));
-
+        
+        
         const leadboardUpdates = leadboard.map((_, index) => ({
             id: index,
             data: { points: 0 }
@@ -236,7 +314,7 @@ export const useEndOfSeason = () => {
             
             const data = isPlayerTeam 
                 ? {
-                    [randomChange]: team[randomChange] + getRandomInteger(-10, 0),
+                    [randomChange]: team[randomChange] + getRandomInteger(-7, 0),
                     money: team.money + sponsorMoney
                 }
                 : {
@@ -246,7 +324,7 @@ export const useEndOfSeason = () => {
                     frontwing: team.frontwing + getRandomInteger(0, 3),
                     rearwing: team.rearwing + getRandomInteger(0, 3),
                     reliability: team.reliability + getRandomInteger(0, 3),
-                    [randomChange]: team[randomChange] + getRandomInteger(-10, 0)
+                    [randomChange]: team[randomChange] + getRandomInteger(-7, 0)
                 };
 
             return { id: team.ID, data };

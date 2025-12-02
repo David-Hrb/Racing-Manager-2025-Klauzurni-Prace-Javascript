@@ -225,27 +225,27 @@ function openUpgrade(num) {
   upgradenum.value = num; 
   switch(num) {
     case 0:
-      if (team.value.aerodynamics > 100){ upgradeChooser.value = false; return alert("Maximální úroveň dosažena"); }
+      if (team.value.aerodynamics >= 100){ upgradeChooser.value = false; return alert("Maximální úroveň dosažena"); }
       priceUpgrade.value = price[team.value.aerodynamics];
       break;
     case 1:
-      if (team.value.gearbox > 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
+      if (team.value.gearbox >= 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
       priceUpgrade.value = price[team.value.gearbox];
       break;
     case 2:
-      if (team.value.brakes > 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
+      if (team.value.brakes >= 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
       priceUpgrade.value = price[team.value.brakes];
       break;
     case 3:
-      if (team.value.frontwing > 100){upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
+      if (team.value.frontwing >= 100){upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
       priceUpgrade.value = price[team.value.frontwing];
       break;
     case 4:
-      if (team.value.rearwing > 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
+      if (team.value.rearwing >= 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
       priceUpgrade.value = price[team.value.rearwing];
       break;
     case 5:
-      if (team.value.reliability > 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
+      if (team.value.reliability >= 100) {upgradeChooser.value = false; return alert("Maximální úroveň dosažena");}
       priceUpgrade.value = price[team.value.reliability];
       break;
     default:
