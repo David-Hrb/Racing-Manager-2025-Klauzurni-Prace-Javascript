@@ -100,8 +100,10 @@ watch(
     money.value = newValue;
     console.log(`Peníze se změnily z ${oldValue} na ${newValue}`);
   },
-  { deep: true } // pokud je money objekt
+  { deep: true }
 );
+
+
 
 function settingsbutton() {
   sound.play()

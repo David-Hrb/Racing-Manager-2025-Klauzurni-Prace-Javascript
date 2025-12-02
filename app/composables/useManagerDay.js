@@ -8,7 +8,7 @@ export const useManagerDay = () => {
       currentday.value = manager.value[0].day;
     }
   };
-  
+
   return {
     manager,
     currentday,

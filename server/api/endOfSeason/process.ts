@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
 
         await db.sql`UPDATE manager SET season = ${newSeason}`;
 
+        await db.sql`UPDATE manager SET day = 1`;
+
         await db.sql`UPDATE leadboard SET points = 0`;
 
         await db.sql`DELETE FROM calendar`;

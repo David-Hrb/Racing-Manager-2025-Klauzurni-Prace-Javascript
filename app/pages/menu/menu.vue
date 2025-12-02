@@ -170,8 +170,8 @@
     </div>
   </div>
 
-  <div v-if="endOfSeason" style="z-index: 200;" class="endseason-overlay">
-    <button class="next endseason-button" @click="nextSeason">
+  <div v-if="endOfSeason" class="endseason-overlay">
+    <button class="next endseason-button" style="z-index: 500;" @click="nextSeason">
       Pokračovat
     </button>
     <div class="endseason-content">
@@ -408,7 +408,7 @@
           <button @click="openReplaceDriver(driver)">Vyměnit Jezdce</button>
         </div>
       </div>
-      <button v-if="driverTeamExpires.length == 0" @click="startOfNewSeason = false">Pokračujte na novou sezónu</button>
+      <button v-if="driverTeamExpires.length == 0" @click="startNewSeasonFunc()">Pokračujte na novou sezónu</button>
     </div>
   </div>
 
@@ -558,6 +558,7 @@ const { daycount } = useDayCount()
 const sound = useClickSound();
 const sound2 = useClickSound();
 const { getRandomInteger } = UseInteger();
+const { refreshManager } = useManagerDay();
 
 let drivers = ref([]);
 let teams = ref([]);
@@ -596,7 +597,7 @@ const ManagerNationality = useNationality(manager.value[0].nationality);
 console.log(ManagerNationality)
 
 console.log(allCalendar.value)
-let endOfSeason = ref(true);//ref(allCalendar.value.find(item => item.raced === 1));
+let endOfSeason = ref(allCalendar.value.find(item => item.raced === 1));
 let startOfNewSeason = ref(false);
 console.log(endOfSeason.value);
 
@@ -634,6 +635,12 @@ function giveavatar(num) {
 function formatMoney(num) {
   if (num === undefined || num === null) return '0';
   return (String(num).split(/(?=(?:\d{3})+(?!\d))/)).join(' ');
+}
+
+function startNewSeasonFunc() {
+  endOfSeason.value = false;
+  startOfNewSeason.value = false;
+  refreshManager();
 }
 
 function cirtype(num) {
@@ -955,7 +962,7 @@ async function tryReplaceContract() {
         leadboard.value = await $fetch("/api/leadboard/listLeadboard");
         
         driverAccepted.value = true;
-        driverTeam.value = driverTeam.value.filter(driverId => driverId !== selectedDriverForReplace.value.ID);
+        manTeamExp.value = manTeamExp.value.filter(driverId => driverId !== selectedDriverForReplace.value.ID);
       }
     } catch (error) {
       console.error("Error replacing driver:", error);
