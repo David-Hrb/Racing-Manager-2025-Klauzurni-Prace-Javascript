@@ -658,7 +658,7 @@ function startIntervalLoop() {
 
 // ------------------------------ TIMER, ODČÍTÁNÍ ČASU, POČÍTÁNÍ ČASU JEZDCŮ, OVLÁDÁ POZICE JEZDCŮ NA TRATI, VOLÁ PO AKTUALIZACI ČASŮ ------------------------------
 
-const totalSeconds = ref(900) 
+const totalSeconds = ref(600) 
 const milliseconds = ref(0)
 const isRunning = ref(false)
 let timer = null
