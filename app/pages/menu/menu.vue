@@ -597,7 +597,7 @@ const ManagerNationality = useNationality(manager.value[0].nationality);
 console.log(ManagerNationality)
 
 console.log(allCalendar.value)
-let endOfSeason = ref(true);//ref(allCalendar.value.every(item => item.raced === 1));
+let endOfSeason = ref(allCalendar.value.every(item => item.raced === 1));
 let startOfNewSeason = ref(false);
 console.log(endOfSeason.value);
 
