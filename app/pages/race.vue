@@ -756,10 +756,6 @@ function everyLap() {
   infotextlap.value = currentLap.value;
   displayedLaptimes.value.forEach((driver, i, arr) => {
     if(driver.id == teamdrivers.value[0].ID || driver.id == teamdrivers.value[1].ID) {
-      /*if((tyreLife.value[driver.currenttyre.toString()] + driver.driverdeg) >= 100) {
-        toggleTimer();
-        //choosetyre.value = true;
-      }*/
       if(driver.driverdeg > 100) {
         console.log("true driver from our team retire");
         driver.dnf = true;
