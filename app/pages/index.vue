@@ -18,11 +18,6 @@
       <button @click="author" class="menu-button primary">
         Author Notes
       </button>
-      <!--
-      <button @click="submit sound.play()" class="menu-button primary">
-        Submit (del)
-      </button>
-      -->
     </div>
   </div>
 </template>
