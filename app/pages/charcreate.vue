@@ -305,7 +305,6 @@ const men = ref([
   {road: "/images/icons/men/03.svg", type: 3},
   {road: "/images/icons/men/04.svg", type: 4},
   {road: "/images/icons/men/05.svg", type: 5}
-  //{road: "/images/icons/men/06.svg", type: 6}
 ])
 
 const women = ref([
