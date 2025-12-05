@@ -408,7 +408,13 @@
           <button @click="openReplaceDriver(driver)">Vyměnit Jezdce</button>
         </div>
       </div>
-      <button v-if="driverTeamExpires.length == 0" @click="startNewSeasonFunc()">Pokračujte na novou sezónu</button>
+      <button 
+        v-if="driverTeamExpires.length == 0" 
+        @click="startNewSeasonFunc()"
+        :disabled="isProcessingEndOfSeason"
+      >
+        {{ isProcessingEndOfSeason ? 'Zpracovávám...' : 'Pokračujte na novou sezónu' }}
+      </button>
     </div>
   </div>
 
@@ -579,6 +585,7 @@ const { currentcircuit } = await useGetNextRace()
 console.log(currentcircuit)
 let currentteam = manager.value[0].team;
 
+
 const { setupRace } = useRaceSetup();
 const { teamDrivers, teamAllDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace({
   drivers: drivers.value,
@@ -599,6 +606,7 @@ console.log(ManagerNationality)
 console.log(allCalendar.value)
 let endOfSeason = ref(allCalendar.value.every(item => item.raced === 1));
 let startOfNewSeason = ref(false);
+const isProcessingEndOfSeason = ref(false);
 console.log(endOfSeason.value);
 
 const extendNegotiation = ref(false);
@@ -986,7 +994,12 @@ async function nextSeason() {
   sound.play()
   endOfSeason.value = false;
   startOfNewSeason.value = true;
-  await triggerEndOfSeason();
+  isProcessingEndOfSeason.value = true;  
+  try {
+    await triggerEndOfSeason();
+  } finally {
+    isProcessingEndOfSeason.value = false;  
+  }
 }
 
 const switchLayout = inject('switchLayout')
@@ -1003,3 +1016,10 @@ definePageMeta({
   layout: 'menu'
 })
 </script>
+
+<style scoped>
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
