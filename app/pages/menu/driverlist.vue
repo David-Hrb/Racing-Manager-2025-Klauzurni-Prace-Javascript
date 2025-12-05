@@ -353,7 +353,6 @@ function tryNegonation() {
 }
 
 function driverAcceptedOffer(replaceDriverID) {
-  //
   console.log("replacing driver ID:", replaceDriverID);
   let newTeamID = currentteam.value;
   let TeamWithoutDriverTeamID = drivers.value[currentdriver.value].currentteam;
@@ -501,7 +500,6 @@ const updateDriverFunc = async (driverID, newData) => {
   }
 };
 
-// Filtering and sorting logic
 const filteredAndSortedDrivers = computed(() => {
   let result = [...drivers.value];
   
