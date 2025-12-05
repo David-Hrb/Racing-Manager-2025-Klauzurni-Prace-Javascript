@@ -868,13 +868,6 @@ function everyLap() {
         driver.time = Number(driver.time) + 0.01 * timeadd;
         arr[j].time = Number(arr[j].time) + 0.01 * timeadd;
         if(randomvalue > sigmoidChance) {
-          /*if(arr[j].position == 1) {
-            const leadevent = createEvent('leading', {
-              driver1Name: driver.name,
-              driver1Team: driver.teamname
-            })
-            allEvents.push(leadevent)
-          }*/
           const overtakeEvent = createEvent('overtake', {
             driver1Name: driver.name,
             driver1Team: driver.teamname,
@@ -1034,7 +1027,6 @@ async function raceEnd() {
         await wait(500);
       }
       
-      // Podium updates
       await retryUpdate(async () => {
         const newPodiums = currentDriver.podiums + 1;
         await updateDriver(driver.id, { podiums: newPodiums });
