@@ -232,15 +232,15 @@
           <select id="lastwork" v-model="lastwork" name="lastwork" required>
               <option value="nothing">-- Vyberte zkušenosti --</option>
               <option value="none">Žádné</option>
-              <option value="manager">Manažer</option>
+              <option value="manažer">Manažer</option>
               <option value="mechanik">Mechanik</option>
-              <option value="zavodnik">Závodník</option>
-              <option value="inzenyr">Závodní inženýr</option>
-              <option value="strategr">Stratég týmu</option>
+              <option value="závodník">Závodník</option>
+              <option value="inženýr">Závodní inženýr</option>
+              <option value="stratég">Stratég týmu</option>
               <option value="analytik">Datový analytik</option>
-              <option value="pitcrew">Člen pit stop týmu</option>
+              <option value="člen pit stop týmu">Člen pit stop týmu</option>
               <option value="pr">PR / Média manažer</option>
-              <option value="scout">Talent scout</option>
+              <option value="skout">Talent scout</option>
               <option value="trenér">Trenér jezdců</option>
           </select>
         </div>
