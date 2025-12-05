@@ -144,7 +144,6 @@
           </div>
         </div>
 
-        <!-- Control Panel -->
         <div class="control-panel">
           <button 
             @click="saveChanges" 
@@ -177,7 +176,6 @@ const { logoroad } = await useLogos(manteam - 1)
 const { updateTeam } = useTeamsApi()
 const { setupRace } = useRaceSetup()
 
-// Data loading
 const drivers = ref([])
 const teams = ref([])
 const leadboard = ref([])
@@ -223,7 +221,6 @@ const loadData = async () => {
 }
 
 await loadData()
-// Computed property to check if there are unsaved changes
 const canSave = computed(() => {
   if (!currentTeamDrivers.value.driver1 || 
       !currentTeamDrivers.value.driver2 || 
@@ -240,12 +237,10 @@ function giveavatar(num) {
   return avatars[num.toString()] 
 }
 
-// Get driver points from leadboard<
 function getDriverPoints(driverId) {
   return leadboard.value.find(entry => entry.driverID === driverId)?.points || 0
 }
 
-// Calculate driver rating
 function calculateRating(driver) {
   return driver.concentration + driver.overtaking + driver.experience + driver.quickness + driver.stamina
 }
