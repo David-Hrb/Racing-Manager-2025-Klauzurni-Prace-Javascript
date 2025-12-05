@@ -7,16 +7,16 @@
     
     <div class="menu-options">
       <button @click="loaddata" class="menu-button primary">
-        Load Game
+        Načíst Hru
       </button>
       <button @click="newgame" class="menu-button primary">
-        New Game
+        Nová hra
       </button>
       <button @click="toggle" class="menu-button primary">
-        Settings
+        Nastavení
       </button>
       <button @click="author" class="menu-button primary">
-        Author Notes
+        Autorovi poznámky
       </button>
     </div>
   </div>
