@@ -255,7 +255,7 @@
             <div v-if="currentLapInfo.other && currentLapInfo.other.length > 0">
               <h3>OUT OF THE RACE</h3>
               <span v-for="(otherinfo, index) in currentLapInfo.other" :key="index">
-                {{ Array.isArray(craotherinfosh) ? otherinfo.join(" ") : otherinfo  }}
+                {{ Array.isArray(otherinfo) ? otherinfo.join(" ") : otherinfo  }}
               </span>
             </div>
           </div>       

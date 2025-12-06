@@ -22,7 +22,7 @@
             </div>
             <div class="stat-row">
               <span class="label">Pořadí:</span>
-              <span class="value">{{ driver.championshipplace }}</span>
+              <span class="value">{{ getDriverChampionshipPlace(driver.ID) }}</span>
             </div>
             <div class="stat-row">
               <span class="label">Popularity:</span>
@@ -60,7 +60,7 @@
               </div>
               <div class="team-meta">
                 <span>Založeno: {{ currentTeamInfo.creationyear }}</span>
-                <span>Pořadí: {{ currentTeamInfo.championshipplace }}</span>
+                <span>Pořadí: {{ getTeamChampionshipPlace  }}</span>
               </div>
             </div>
           </div>
@@ -664,6 +664,29 @@ function cirtype(num) {
   }
 }
 
+const getDriverChampionshipPlace = (driverId) => {
+  const sortedLeaderboard = [... leadboard.value].sort((a, b) => (b.points || 0) - (a.points || 0));
+  const position = sortedLeaderboard.findIndex(entry => Number(entry.driverID) === Number(driverId));
+  return position !== -1 ? position + 1 : '-';
+};
+
+
+const getTeamChampionshipPlace = computed(() => {
+  const teamPoints = teams.value. slice(0, 10).map(team => {
+    const driver1Entry = leadboard.value.find(entry => Number(entry. driverID) === Number(team.driver1));
+    const driver2Entry = leadboard.value.find(entry => Number(entry.driverID) === Number(team.driver2));
+    const driver3Entry = leadboard.value.find(entry => Number(entry.driverID) === Number(team. testdriver));
+    
+    return {
+      teamId: team.ID,
+      points: (driver1Entry?.points || 0) + (driver2Entry?. points || 0) + (driver3Entry?.points || 0)
+    };
+  }). sort((a, b) => b.points - a.points);
+  
+  const position = teamPoints.findIndex(t => t.teamId === currentTeamInfo.ID);
+  return position !== -1 ?  position + 1 : '-';
+});
+
 const currentCalendarIndex = ref(0);
 
 const currentCalendarEntry = computed(() => {
@@ -981,6 +1004,8 @@ async function tryReplaceContract() {
   
   closeNewDriverNegotiation();
 }
+
+
 
 function resetNegotiationValues() {
   yearsOfContract.value = 1;
