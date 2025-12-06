@@ -3,7 +3,7 @@
     <div class="pos-absolute-inside">
       <h1 v-if="firstopen">VYBERTE GUMY PRO VÁŠ TÝM</h1>
       <h1 v-else>PIT STOP</h1>
-      <button @click="loadgame()" class="letout-button">CONTINUE</button>  
+      <button @click="loadgame()" class="letout-button">Pokračovat</button>  
       <!-- DRIVER 1-->
       <div 
           v-if="teamdrivers"
@@ -387,17 +387,6 @@ let boxTrue = ref(false);
 let newTyreSelection = ref(0);
 
 let cardriverinfo = ref([])
-let driverslap = ref({});
-let driverslastlap = ref({});
-let driversdeg = ref({});
-let driversinlap = ref({});
-let driverscurrtyre = ref({})
-let timeontrack = ref({});
-let driverTime = ref({});
-
-
-let text = ref([]);
-
 
 const { displayedLaptimes } = useKvalification();
 let tyreLife = ref({
@@ -416,12 +405,7 @@ const totalLaps = ref(currentCircuitInfo.lapslength);
 const currentLap = ref(0)       
 const isRunning = ref(false)   
 const lapSpeed = ref(3000)       
-let currenttime = ref(0);
-let timedelay = ref({})
-
 let timer = null 
-
-// 
 
 const infotext = ref({});
 const infotextlap = ref(0);
@@ -690,7 +674,6 @@ function startgame() {
 startgame()
 
 function loadgame() {
-  console.log("here in loadgame")
   choosetyre.value = false;
   firstopen.value = false;
 }
