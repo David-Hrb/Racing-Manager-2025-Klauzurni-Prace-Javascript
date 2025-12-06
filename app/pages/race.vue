@@ -841,12 +841,12 @@ function everyLap() {
       while(j >= 0 && driver.time < arr[j].time) {       
         let difference = driver.time - arr[j].time;
         const normalDifference = Math.min(Math.abs(difference), 100) / 100;
-        const sigmoidChance = (1 / (1 + Math.exp(-10 * (normalDifference - 0.5)))) * 100;
+        const sigmoidChance = (1 / (1 + Math.exp(-3 * (normalDifference - 0.5)))) * 100;
         const randomvalue = getRandomInteger(0, 100);
         const timeadd = getRandomInteger(0, 100);         
         driver.time = Number(driver.time) + 0.01 * timeadd;
         arr[j].time = Number(arr[j].time) + 0.01 * timeadd;
-        if(randomvalue > sigmoidChance) {
+        if(randomvalue < sigmoidChance) {
           const overtakeEvent = createEvent('overtake', {
             driver1Name: driver.name,
             driver1Team: driver.teamname,
@@ -962,7 +962,7 @@ async function raceEnd() {
         await retryUpdate(async () => {
           const newWins = currentDriver.wins + 1;
           await updateDriver(driver.id, { wins: newWins });
-          console.log("✅ Driver wins updated:", currentDriver.name, newWins);
+          console.log("Driver wins updated:", currentDriver.name, newWins);
         });
         
         await wait(500);
@@ -970,7 +970,7 @@ async function raceEnd() {
         await retryUpdate(async () => {
           const newTeamWins = currentTeam.historywins + 1;
           await updateTeam(currentTeam.ID, { historywins: newTeamWins });
-          console.log("✅ Team wins updated:", currentTeam.name, newTeamWins);
+          console.log("Team wins updated:", currentTeam.name, newTeamWins);
         });
         
         await wait(500);
@@ -980,7 +980,7 @@ async function raceEnd() {
             winner: currentDriver.ID,
             winnerteam: currentTeam.ID
           });
-          console.log("✅ Calendar winner updated");
+          console.log("Calendar winner updated");
         });
         
         await wait(500);
@@ -991,7 +991,7 @@ async function raceEnd() {
             secondplace: currentDriver.ID,
             secondteam: currentTeam.ID
           });
-          console.log("✅ Calendar 2nd place updated");
+          console.log("Calendar 2nd place updated");
         });
         await wait(500);
       }
@@ -1001,7 +1001,7 @@ async function raceEnd() {
             thirdplace: currentDriver.ID,
             thirdteam: currentTeam.ID
           });
-          console.log("✅ Calendar 3rd place updated");
+          console.log("Calendar 3rd place updated");
         });
         await wait(500);
       }
@@ -1009,7 +1009,7 @@ async function raceEnd() {
       await retryUpdate(async () => {
         const newPodiums = currentDriver.podiums + 1;
         await updateDriver(driver.id, { podiums: newPodiums });
-        console.log("✅ Driver podiums updated:", currentDriver.name, newPodiums);
+        console.log("Driver podiums updated:", currentDriver.name, newPodiums);
       });
       
       await wait(500);
@@ -1018,7 +1018,7 @@ async function raceEnd() {
         const newTeamPodiums = currentTeam.historypodiums + 1;
         await updateTeam(currentTeam.ID, { historypodiums: newTeamPodiums });
         teams.value = await $fetch("/api/listTeam");
-        console.log("✅ Team podiums updated:", currentTeam.name, newTeamPodiums);
+        console.log("Team podiums updated:", currentTeam.name, newTeamPodiums);
       });
       
       await wait(500);
@@ -1034,11 +1034,11 @@ async function raceEnd() {
         await retryUpdate(async () => {
           const newPoints = currentLeadboard.points + pointsEarned;
           await updateLeadboard(driver.id, { ...currentLeadboard, points: newPoints });
-          console.log(`✅ ${driver.name} gained ${pointsEarned} points (total: ${newPoints})`);
+          console.log(`${driver.name} gained ${pointsEarned} points (total: ${newPoints})`);
         });
         await wait(500);
       } else {
-        console.error(`❌ Leadboard record for driver ${driver.id} not found`);
+        console.error(`Leadboard record for driver ${driver.id} not found`);
       }
     }
     
@@ -1047,14 +1047,14 @@ async function raceEnd() {
   
   await retryUpdate(async () => {
     await updateCalendar(currentCircuitPositionID, { raced: 1 });
-    console.log("✅ Calendar marked as raced");
+    console.log("Calendar marked as raced");
   });
   
   await wait(200);
   
   await retryUpdate(async () => {
     await upgradeLimit(1);
-    console.log("✅ Limit upgraded");
+    console.log("Limit upgraded");
   });
   
   leadboard.value = await $fetch('/api/leadboard/listLeadboard');
@@ -1062,7 +1062,7 @@ async function raceEnd() {
   drivers.value = await $fetch("/api/listDriver");
   
   isProcessingRaceEnd.value = false;
-  console.log("🏁 Race end processing completed");
+  console.log("Race end processing completed");
 }
 
 const { updateTeam } = useTeamsApi();
