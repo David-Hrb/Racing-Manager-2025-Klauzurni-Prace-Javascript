@@ -2,12 +2,12 @@
   <div class="maincont">
     <div class="career">
       <div class="career-drivers">
-        <h2 class="title">Best Teams
+        <h2 class="title">Nejlepší Týmy
           <div class="toggle-buttons">
             <button 
               :class="{ active: teamShowType === 'championship' }" 
               @click="teamShowType = 'championship'; sound2.play()">
-              championáty
+              Šampionáty
             </button>
             <button 
               :class="{ active: teamShowType === 'wins' }" 
@@ -31,7 +31,7 @@
                 <th>Národnost</th>
                 <th>Datum Založení</th>
                 <th>Název týmu</th>
-                <th>{{ teamShowType === 'championship' ? 'Championáty' : teamShowType === 'wins' ? 'Vítězství' : 'Pódia' }}</th>
+                <th>{{ teamShowType === 'championship' ? 'Šampionáty' : teamShowType === 'wins' ? 'Vítězství' : 'Pódia' }}</th>
               </tr>
             </thead>
             <tbody>
@@ -60,12 +60,12 @@
       </div>
 
       <div class="career-drivers">
-        <h2 class="title">Career Statistics
+        <h2 class="title">Statistiky Kariéry Jezdců
           <div class="toggle-buttons">
             <button 
               :class="{ active: driverShowType === 'championship' }" 
               @click="driverShowType = 'championship'; sound2.play()">
-              championáty
+              Šampionáty
             </button>
             <button 
               :class="{ active: driverShowType === 'wins' }" 
@@ -90,7 +90,7 @@
                 <th>Národnost</th>
                 <th>Datum Narození</th>
                 <th>Aktuální tým</th>
-                <th>{{ driverShowType === 'championship' ? 'Championáty' : driverShowType === 'wins' ? 'Vítězství' : 'Pódia' }}</th>
+                <th>{{ driverShowType === 'championship' ? 'Šampionáty' : driverShowType === 'wins' ? 'Vítězství' : 'Pódia' }}</th>
               </tr>
             </thead>
             <tbody>

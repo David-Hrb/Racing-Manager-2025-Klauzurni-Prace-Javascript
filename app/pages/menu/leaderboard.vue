@@ -2,7 +2,7 @@
   <div class="maincont">
     <div class="container-leaderboard">
       <h1 class="title">
-        Driver Leaderboard
+        Pořadí jezdců a týmů
         <div class="toggle-buttons">
           <button 
             :class="{ active: driverstable }" 
