@@ -3,7 +3,7 @@
     <div class="pos-absolute-inside">
       <h1 v-if="firstopen">VYBERTE GUMY PRO VÁŠ TÝM</h1>
       <h1 v-else>PIT STOP</h1>
-      <button @click="loadgame()" class="letout-button">Pokračovat</button>  
+      <button @click="loadgame()" class="letout-button-b" >Pokračovat</button>  
       <!-- DRIVER 1-->
       <div 
           v-if="teamdrivers"
