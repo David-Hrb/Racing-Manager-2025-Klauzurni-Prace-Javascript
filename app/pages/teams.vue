@@ -192,7 +192,7 @@
             </div>
             <h3 class="textinfo"><div class="underline"></div> INFORMACE </h3>
             <div class="information">
-              <div class="money">Rozpočet: {{ currentteaminfo.money }} €</div>
+              <div class="money">Rozpočet: {{  String(currentteaminfo.money).split(/(?=(?:\d{3})+(?!\d))/).join(' ')}} €</div>
               <div class="nationality">Národnost: <span class="fi" :class="`fi-${findteamNationality()}`" aria-hidden="true"></span> {{ findteamFullNationality(currentteaminfo.nationality) }}</div>
               <h4>Jezdci:
                 <div class="driver driver1"><span class="fi" :class="`fi-${getdriver(4)}`" aria-hidden="true"></span>  {{ getdriver(1) }} <div v-html="getdriver(7)"></div></div>
@@ -201,9 +201,9 @@
               </h4>
               <div class="driverpolitics">Jezdecká politika: {{ driverpol(currentteaminfo.driverpolitics) }}</div>
               <h4>sponzoři:
-                <div class="sponzor sp1"><span class="fi" :class="`fi-${findsponzornationality(currentteaminfo.sponzor1) }`" aria-hidden="true"></span> {{ findsponzor(currentteaminfo.sponzor1) }} <span>{{ findsponzormoney(currentteaminfo.sponzor1) }} €</span></div>
-                <div class="sponzor sp2"><span class="fi" :class="`fi-${findsponzornationality(currentteaminfo.sponzor2) }`" aria-hidden="true"></span> {{ findsponzor(currentteaminfo.sponzor2) }} <span>{{ findsponzormoney(currentteaminfo.sponzor2) }} €</span></div>
-                <div class="sponzor sp3"><span class="fi" :class="`fi-${findsponzornationality(currentteaminfo.sponzor3) }`" aria-hidden="true"></span> {{ findsponzor(currentteaminfo.sponzor3) }} <span>{{ findsponzormoney(currentteaminfo.sponzor3) }} €</span></div>
+                <div class="sponzor sp1"><span class="fi" :class="`fi-${findsponzornationality(currentteaminfo.sponzor1) }`" aria-hidden="true"></span> {{ findsponzor(currentteaminfo.sponzor1) }} <span>{{  String(findsponzormoney(currentteaminfo.sponzor1)).split(/(?=(?:\d{3})+(?!\d))/).join(' ') }} €</span></div>
+                <div class="sponzor sp2"><span class="fi" :class="`fi-${findsponzornationality(currentteaminfo.sponzor2) }`" aria-hidden="true"></span> {{ findsponzor(currentteaminfo.sponzor2) }} <span>{{  String(findsponzormoney(currentteaminfo.sponzor2)).split(/(?=(?:\d{3})+(?!\d))/).join(' ') }} €</span></div>
+                <div class="sponzor sp3"><span class="fi" :class="`fi-${findsponzornationality(currentteaminfo.sponzor3) }`" aria-hidden="true"></span> {{ findsponzor(currentteaminfo.sponzor3) }} <span>{{  String(findsponzormoney(currentteaminfo.sponzor3)).split(/(?=(?:\d{3})+(?!\d))/).join(' ') }} €</span></div>
               </h4>
              
               

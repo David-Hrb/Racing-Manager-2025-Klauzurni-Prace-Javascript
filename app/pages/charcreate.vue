@@ -245,7 +245,7 @@
           </select>
         </div>
         <div class="inputsright">
-          <h3>Avatar</h3>
+          <h3>Pohlaví</h3>
            <select id="gender" name="gender" v-model="selectedGender" required>
             <option value="nothing">-- Vyberte pohlaví --</option>
             <option value="men">Muž</option>

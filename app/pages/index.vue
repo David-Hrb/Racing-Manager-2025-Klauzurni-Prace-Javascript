@@ -12,7 +12,7 @@
       <button @click="newgame" class="menu-button primary">
         Nová hra
       </button>
-      <button @click="toggle" class="menu-button primary">
+      <button @click="toggle(); sound.play()" class="menu-button primary">
         Nastavení
       </button>
       <button @click="author" class="menu-button primary">
