@@ -9,6 +9,12 @@
         <div class="loader"></div>
       </div>
     </Transition>
+
+
+    <div v-if="money" class="loading-overlay endseason-overlay" >
+      <div>Dostali jste se do záporu, bohužel vaše hra skončila.</div>
+      <NuxtLink to="/" @click="switchToDefault" class="menu-button">Pokračovat na menu</NuxtLink>
+    </div>
   </div>
 </template>
 
@@ -29,6 +35,34 @@ const loading = ref(false)
 nuxtApp.hook("page:start", () => { loading.value = true })
 nuxtApp.hook("page:finish", () => { loading.value = false })
 
+const { updateTeam } = useTeamsApi();
+let money = ref(false);
+let teams = ref([]);
+let manager = ref([]);
+
+teams.value = await $fetch("/api/listTeam");
+manager.value = await $fetch("/api/manager/listManager");
+let currentTeamId = manager.value[0].team;
+watch(teams, (newVal) => {
+  console.log("Teams data updated:", newVal);
+  teams.value = newVal;
+  money = ref(teams.value.some(item => item.money < 0));
+  console.log("Money status:", money.value);
+}, { immediate: true });
+
+function switchToDefault() {
+  currentLayout.value = 'default';
+  money.value = false;
+  updateCurrentTeam({ money: 1000000 });
+}
+
+const updateCurrentTeam = async (newData) => {
+  try {
+    await updateTeam(currentTeamId, newData);
+  } catch (error) {
+    console.error("Error updating team:", error);
+  }
+};
 </script>
 
 <style scoped>
@@ -69,7 +103,7 @@ nuxtApp.hook("page:finish", () => { loading.value = false })
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
