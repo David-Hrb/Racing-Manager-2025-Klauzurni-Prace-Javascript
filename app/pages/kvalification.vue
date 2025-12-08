@@ -227,7 +227,7 @@ const { teamDrivers, currentTeamInfo, currentCircuitInfo, isValid } = setupRace(
 
 // Převod na ref pro reaktivitu v template
 let teamdrivers = ref(teamDrivers);
-console.log(teamDrivers);
+//console.log(teamDrivers);
 let currentcircuitinfo = ref(currentCircuitInfo ? [currentCircuitInfo] : []);
 
 let bestlapdriver1 = ref(1000);
@@ -381,7 +381,7 @@ function countlaptime(basetime, racestart, concentration, overtaking, experience
     driverslap.value[num] = laptime;
   }
   driverslastlap.value[num] = laptime;
-  //console.log("basespeed: ", basespeed , "cornerspeed", cornerspeed, "straightspeed", straightspeed, "mistakmult", mistakemultiplier, "mistake", mistake,"pneudegrad", pneudegradation/100, "laptime", laptime );
+  ////console.log("basespeed: ", basespeed , "cornerspeed", cornerspeed, "straightspeed", straightspeed, "mistakmult", mistakemultiplier, "mistake", mistake,"pneudegrad", pneudegradation/100, "laptime", laptime );
   if(driverslap.value[num] < 999) {
     return laptimecounter(driverslastlap.value[num]) 
   } else {
@@ -398,7 +398,7 @@ function offtrack(num) {
 }
 
 function whereontack(num){
-  //console.log(num)
+  ////console.log(num)
   let tracknum = driversinlap.value[num]
   switch(tracknum){
     case 1: 
@@ -406,7 +406,7 @@ function whereontack(num){
     case 2:
       return "hotlap"
     case 3:
-      //console.log(driverslastlap.value[num], "kolo")
+      ////console.log(driverslastlap.value[num], "kolo")
       return laptimecounter(driverslastlap.value[num]) + " - inlap"
     default:
       return "není na trati"
@@ -488,7 +488,7 @@ function loaddriver() {
 loaddriver()
 
 
-console.log(cardriverinfo)
+//console.log(cardriverinfo)
 
 
 // ------------------------------ UPDATE ČASŮ ------------------------------
@@ -589,7 +589,7 @@ onMounted(() => {
   }
   skip1 = teamdrivercheck(0);
   skip2 = teamdrivercheck(1);
-  console.log("skip1", skip1, "skip2", skip2);
+  //console.log("skip1", skip1, "skip2", skip2);
   
   function teamdrivercheck(num) {
     let number = 0;
@@ -615,12 +615,12 @@ onMounted(() => {
     }
     updateDriverLaptime(i)
   }
-  console.log("initial drivers on track", timeontrack);
+  //console.log("initial drivers on track", timeontrack);
   startIntervalLoop();
 });
 
 
-console.log(teamdrivers, "teamdrivers", cardriverinfo, "cardriverinfo", activeDrivers, "activeDrivers", displayedLaptimes, "displayedLaptimes");
+//console.log(teamdrivers, "teamdrivers", cardriverinfo, "cardriverinfo", activeDrivers, "activeDrivers", displayedLaptimes, "displayedLaptimes");
 
 
 onUnmounted(() => {
@@ -638,7 +638,7 @@ function startIntervalLoop() {
     let driversontrack = getRandomInteger(1, 5);
     for(let i=0; i < driversontrack; i++) {
       const randomnum = getRandomInteger(0, 19);
-      //console.log("randomnum", randomnum);       
+      ////console.log("randomnum", randomnum);       
       if(driversinlap.value[randomnum] == 0){
         let shouldSkip = false;
         
@@ -667,7 +667,7 @@ let timefastness = ref(100);
 
 function changefastness(value) {
   timefastness.value = value;
-  console.log(timefastness, "timefastness");
+  //console.log(timefastness, "timefastness");
   if (isRunning.value) {
     clearInterval(timer);
     timer = setInterval(countdown, timefastness.value);
@@ -706,7 +706,7 @@ const countdown = () => {
         switch (state) {
           case 1:
             driverinlap(driverNum);
-            //console.log(driverslastlap.value[driverNum], "driverlastlap + number", driverNum);
+            ////console.log(driverslastlap.value[driverNum], "driverlastlap + number", driverNum);
             let driver = cardriverinfo.value.find(d => d.num === driverNum);
             countlaptime(
               driver.normallaptime, driver.racestart, driver.concentration,
@@ -721,17 +721,17 @@ const countdown = () => {
           case 2:
             driveroutlap(driverNum);
             if (driverNum === skip1 || driverNum === skip2) {
-              console.log(driverNum);
+              //console.log(driverNum);
               
               if (driverNum === currdrivernum0) {
-                console.log("true", driverNum, cardriverinfo.value[driverNum].name, cardriverinfo.value[driverNum].num, currdrivernum0);
+                //console.log("true", driverNum, cardriverinfo.value[driverNum].name, cardriverinfo.value[driverNum].num, currdrivernum0);
                 if(driverslastlap.value[driverNum] < bestlapdriver1.value) {
                   bestlapdriver1.value = driverslastlap.value[currdrivernum0];
                 }
               }
               
               if (driverNum === currdrivernum1) {
-                console.log("true", driverNum, cardriverinfo.value[driverNum].name, cardriverinfo.value[driverNum].num, currdrivernum1);
+                //console.log("true", driverNum, cardriverinfo.value[driverNum].name, cardriverinfo.value[driverNum].num, currdrivernum1);
                 if(driverslastlap.value[driverNum] < bestlapdriver2.value) {
                   bestlapdriver2.value = driverslastlap.value[currdrivernum1];
                 }
@@ -793,8 +793,8 @@ const switchToRace = () => {
 
 const currdrivernum0 = drivernum(0);
 const currdrivernum1 = drivernum(1);
-console.log(currdrivernum0, "currdrivernum0", currdrivernum1, "currdrivernum1")
+//console.log(currdrivernum0, "currdrivernum0", currdrivernum1, "currdrivernum1")
 
-//console.log(cardriverinfo) 
+////console.log(cardriverinfo) 
 //countlaptime(currentcircuitinfo.value[0].normallaptime, drivers.value[0].racestart, drivers.value[0].concentration, drivers.value[0].overtaking, drivers.value[0].experience, drivers.value[0].quickness, drivers.value[0].stamina, curentteams.value[0].aerodynamics, curentteams.value[0].gearbox, curentteams.value[0].brakes, curentteams.value[0].rearwing, curentteams.value[0].frontwing, curentteams.value[0].reliability, currentcircuitinfo.value[0].numberofturns, currentcircuitinfo.value[0].DRSzones)
 </script>
