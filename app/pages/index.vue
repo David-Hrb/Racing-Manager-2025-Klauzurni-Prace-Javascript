@@ -38,7 +38,6 @@ const newgame = () => {
   navigateTo('charcreate')
 }
 
-
 async function loaddata() {
   sound.play()
   try {

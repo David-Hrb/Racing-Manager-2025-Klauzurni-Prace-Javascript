@@ -279,6 +279,7 @@
 </template>
 
 <script setup>
+import backup from '~/assets/json/backup.json'
 const sound = useClickSound(); 
 const name = ref('');
 const surname = ref('');
@@ -329,13 +330,25 @@ watch(selectedGender, () => {
 })
 
 
-
+async function loadBackup() {
+  try {
+    await $fetch('/api/port/import', {
+      method: 'POST',
+      body: backup
+    });
+    console.log('Data úspěšně načtena z backup.json');
+  } catch (error) {
+    console.error('Chyba při načítání:', error);
+    alert('Nepodařilo se načíst data');
+  }
+}
 
 
 const switchLayout = inject('switchLayout')
 
 onMounted(() => {
   switchLayout('charcreate')
+  loadBackup()
 })
 
 const switchToTeams = () => { 
@@ -363,4 +376,6 @@ const switchToTeams = () => {
   
   navigateTo('teams')
 }
+
+
 </script>
