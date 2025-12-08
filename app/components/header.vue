@@ -70,6 +70,7 @@ const { manager, currentday, refreshManager } = useManagerDay();
 await refreshManager();
 const { daycount } = useDayCount()
 
+// Funkce která uživatelovi stáhne jeho databáze jako JSON soubor
 async function downloadData() {
   sound.play()
   try {
@@ -95,6 +96,8 @@ async function downloadData() {
 
 let managerMoney = useState('managerMoney', () => 0);
 let money = useState('money', () => false);
+
+// Sleduje změny v týmech a aktualizujeme peníze manažera
 watch(
   () => teams.value,
   (newValue, oldValue) => {

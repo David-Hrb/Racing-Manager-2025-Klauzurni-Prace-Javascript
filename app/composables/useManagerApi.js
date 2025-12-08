@@ -1,5 +1,6 @@
 export const useManagerApi = () => {
     let id = 1;
+    // Funkce pro aktualizaci informací o manažerovi
     const updateManager = async (data) => {
         try {
         console.log('ID:', id);

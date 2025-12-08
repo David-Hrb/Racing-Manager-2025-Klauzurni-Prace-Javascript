@@ -1,3 +1,4 @@
+// funkce pro vytvoření náhodného kalendáře
 export const useCreateCalendar = () => {
     let calendar = ref([]);
     let date = 0;

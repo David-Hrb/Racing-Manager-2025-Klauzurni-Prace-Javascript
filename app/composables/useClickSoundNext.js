@@ -1,5 +1,6 @@
 import { Howl } from 'howler';
 let clickSound = null;
+// funkce pro přehrání zvuku dalšího kroku
 export const useClickSoundNext = () => {
   //const volume = useState('settings-volume', () => 0.5);
   if (!clickSound) {

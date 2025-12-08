@@ -1,3 +1,4 @@
+// Composable pro vytváření zpráv o závodních událostech
 export function useRaceEvents() {
   function createEvent(eventType, data) {
     const raceinfo = {

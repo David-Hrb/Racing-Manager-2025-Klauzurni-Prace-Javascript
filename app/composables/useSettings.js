@@ -2,7 +2,7 @@ const STORAGE_KEY = 'audio-settings';
 
 const volume = ref(100);
 let initialized = false;
-
+// Composable pro správu nastavení zvuku
 export function useSettings() {
   
   if (process.client && !initialized) {

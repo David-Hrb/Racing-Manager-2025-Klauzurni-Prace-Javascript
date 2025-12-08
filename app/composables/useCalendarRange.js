@@ -1,3 +1,4 @@
+// funkce pro získání rozsahu kalendáře
 export const useCalendarRange = async () => {
     const calendar = ref([])
     calendar.value = await $fetch("/api/calendar/listCalendar");

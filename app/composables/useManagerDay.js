@@ -1,3 +1,4 @@
+// Composable pro správu dne manažera
 export const useManagerDay = () => {
   const manager = useState('manager', () => []);
   const currentday = useState('currentday', () => 0);

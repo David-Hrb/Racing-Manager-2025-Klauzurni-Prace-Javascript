@@ -1,5 +1,6 @@
+// Composable pro nastavení závodu na základě týmu a okruhu
 export const useRaceSetup = () => {
-
+  // funkce pro získání jezdců týmu podle teamId
   const getTeamDrivers = (drivers, teams, teamId) => {
     const team = teams.find(team => Number(team.ID) === Number(teamId));
     if (!team) return [];
@@ -11,7 +12,7 @@ export const useRaceSetup = () => {
       drivers.find(driver => Number(driver.ID) === Number(driverId))
     ).filter(driver => driver != null);
   };
-
+  // funkce pro získání všech jezdců týmu podle teamId (včetně testovacího jezdce)
   const getTeamAllDrivers = (drivers, teams, teamId) => {
     const team = teams.find(team => Number(team.ID) === Number(teamId));
     if (!team) return [];
@@ -23,15 +24,15 @@ export const useRaceSetup = () => {
       drivers.find(driver => Number(driver.ID) === Number(driverId))
     ).filter(driver => driver != null);
   };
-
+  // funkce pro získání informací o aktuálním týmu podle teamId
   const getCurrentTeam = (teams, teamId) => {
     return teams.find(team => Number(team.ID) === Number(teamId)) || null;
   };
-
+  // funkce pro získání informací o aktuálním okruhu podle circuitId
   const getCurrentCircuit = (circuits, circuitId) => {
     return circuits.find(circuit => Number(circuit.ID) === Number(circuitId)) || null;
   };
-
+  // hlavní funkce pro nastavení závodu
   const setupRace = ({ drivers, teams, circuits, teamId, circuitId }) => {
     const teamDrivers = getTeamDrivers(drivers, teams, teamId);
     const teamAllDrivers = getTeamAllDrivers(drivers, teams, teamId);

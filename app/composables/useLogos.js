@@ -1,3 +1,4 @@
+// Composable pro získání loga podle ID
 export const useLogos = async (id) => {
     const logos = ref([])
     logos.value = await $fetch("/api/listlogo")

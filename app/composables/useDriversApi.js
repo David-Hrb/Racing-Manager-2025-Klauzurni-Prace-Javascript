@@ -1,4 +1,5 @@
 export const useDriversApi = () => {
+  // funkce úrp získání jednoho záznamu o jezdci podle id
   const getDriver = async (id) => {
     try {
       return await $fetch(`/api/driver/${id}`);
@@ -7,7 +8,7 @@ export const useDriversApi = () => {
       throw error;
     }
   };
-
+  // funkce pro aktualizaci záznamu o jezdci podle id
   const updateDriver = async (id, data) => {
     console.log('Updating driver with id:', id, 'and data:', data);
     try {

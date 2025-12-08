@@ -1,4 +1,6 @@
+// Composable pro komunikaci s API leadboardu
 export const useLeadBoardsApi = () => {
+  // Funkce pro aktualizaci leadboardu týmu podle jeho ID
   const updateLeadboard = async (id, data) => {
     try {
         console.log(id, data)

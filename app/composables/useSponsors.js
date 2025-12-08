@@ -1,7 +1,7 @@
 import sponsors from '~/assets/json/sponzors.json'
 import sponsorsmoney from '~/assets/json/sponzorsmoney.json'
 import sponsorsnationality from '~/assets/json/sponzorsnation.json'
-
+// Composable pro získání informací o sponzorech podle jejich čísla
 export const useSponsors = () => {
 
   const getSponsor = (num) => {

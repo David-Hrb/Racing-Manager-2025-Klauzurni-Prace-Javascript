@@ -1,3 +1,4 @@
+// Composable pro získání informací o manažerovi
 export const useManager = async () => {
     const manager = ref([])
     manager.value = await $fetch("/api/manager/listManager")

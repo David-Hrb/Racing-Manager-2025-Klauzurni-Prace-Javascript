@@ -1,3 +1,4 @@
+// Composable pro výpočet času kola na základě statistik jezdce a podmínek závodu
 export const useLapTime = () => {
 
   

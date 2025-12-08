@@ -1,3 +1,4 @@
+// Composable pro získání další závodní tratě z kalendáře
 export const useGetNextRace = async () => {
     const calendar = ref([])
     calendar.value = await $fetch("/api/calendar/listCalendar");

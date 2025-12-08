@@ -7,7 +7,7 @@ export const useEndOfSeason = () => {
     const changeRules = ["aerodynamics", "gearbox", "brakes", "frontwing", "rearwing", "reliability"];
     const changes = ref([]);
     let manTeamExp = ref([]);
-
+    // funkce pro kontrolu týmů, zda některá hodnota jejich atributů nepřesahuje 100
     async function checkTeamsOverLimit() {
         let teamsList = await $fetch('/api/listTeam');
         let updates = [];
@@ -40,14 +40,14 @@ export const useEndOfSeason = () => {
         
         return await $fetch('/api/listTeam');
     }
-
+    // funkce pro kontrolu vypršení smluv jezdců a jejich případnou výměnu, najímání nových jezdců a najití jezdcům manažera, kterým skončila smlouva
     async function checkDriverContractExp() {
         const [drivers, manager, teams] = await Promise.all([
             $fetch('/api/listDriver'),
             $fetch('/api/manager/listManager'),
             $fetch('/api/listTeam')
         ]);
-        
+        // funkce pro výpočet hodnocení týmu
         function calculateTeamRating(team) {
             const teamRatings = [
                 team.aerodynamics,
@@ -59,7 +59,7 @@ export const useEndOfSeason = () => {
             ];
             return teamRatings.reduce((sum, rating) => sum + rating, 0) / teamRatings.length;
         }
-        
+        // funkce pro výpočet hodnocení jezdce
         function calculateDriverRating(driver) {
             const driverRatings = [
                 driver.concentration,
@@ -70,7 +70,7 @@ export const useEndOfSeason = () => {
             ];
             return driverRatings.reduce((sum, rating) => sum + rating, 0) / driverRatings.length;
         }
-        
+        // funkce pro nalezení vhodného kandidáta na výměnu jezdce s přihlédnutím k hodnocení týmu
         function findSuitableCandidateRandom(teamRating, excludeDriverId, allDrivers, usedDriverIds) {
        
             const tolerance = 15;
@@ -105,7 +105,7 @@ export const useEndOfSeason = () => {
         }
         
         const usedDriverIds = new Set();
-        
+        // hlavní logika kontroly a výměny jezdců
         for (const driver of drivers) {
             if (driver.contractexp <= manager[0].season) {
                 const [drivers, manager, teams] = await Promise.all([
@@ -202,6 +202,7 @@ export const useEndOfSeason = () => {
             }
         }
     }
+    // funkce pro spuštění konce sezóny
     async function triggerEndOfSeason() {
         const [leadboard, manager, teams, drivers] = await Promise.all([
             $fetch('/api/leadboard/listLeadboard'),
@@ -229,21 +230,15 @@ export const useEndOfSeason = () => {
             teamDriverIds.add(Number(team.testdriver));
             }
         });
-
-        // Filtruj jezdce, kteří jsou v týmech
         const fullLeaderboard = drivers.filter(driver => 
         teamDriverIds.has(Number(driver.ID))
         );
-
-        // Spoj data z leadboardu s daty jezdců
         const driverLeaderboard = leadboard
         .map(entry => {
         const driver = fullLeaderboard.find(d => Number(d.ID) === Number(entry.driverID));
         return driver ? { ...entry, driver } : null;
         })
         .filter(entry => entry !== null);
-
-        // Vytvoř leadboard týmů se součtem bodů jejich jezdců
         const teamLeaderboard = teams.slice(0, 10).map(team => {
         const driver1Points = driverLeaderboard.find(
             entry => Number(entry.driverID) === Number(team.driver1)

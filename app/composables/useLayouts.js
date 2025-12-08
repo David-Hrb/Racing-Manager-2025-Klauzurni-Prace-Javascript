@@ -1,3 +1,4 @@
+// Composable pro správu a přepínání layoutů aplikace
 export const useLayout = () => {
   const currentLayout = useState('app.layout', () => 'default')
   

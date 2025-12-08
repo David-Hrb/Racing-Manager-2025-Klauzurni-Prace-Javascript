@@ -1,7 +1,7 @@
 const manager = ref([]);
 manager.value = await $fetch('/api/manager/listManager');
 const year = manager.value[0].season;
-
+// funkce pro převod dne v roce na datum
 export const useDayCount = () => {
     function Daytodatum(denVRoce) {
         

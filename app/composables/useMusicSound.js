@@ -14,7 +14,7 @@ const musicTracks = [
 
 let musicSound = null;
 let currentTrackIndex = 0;
-
+// Composable pro přehrávání hudby na pozadí
 export const useMusicSound = () => {
     const isPlaying = useState('music-is-playing', () => false);
     const initSound = () => {

@@ -1,5 +1,6 @@
 import { Howl } from 'howler';
 let clickSound = null;
+// funkce pro přehrání zvuku kliknutí
 export const useClickSound = () => {
   //const volume = useState('settings-volume', () => 0.5);
   if (!clickSound) {

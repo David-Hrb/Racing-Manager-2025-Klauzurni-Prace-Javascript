@@ -12,9 +12,11 @@
 </template>
 
 <script setup>
+
 const currentIndex = ref(0)
 let intervalId = null
 
+// Funkce pro přepínání obrázků
 const showSlides = () => {
   currentIndex.value = (currentIndex.value + 1) % 29
 }

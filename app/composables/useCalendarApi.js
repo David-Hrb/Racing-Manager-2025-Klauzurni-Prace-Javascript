@@ -1,4 +1,5 @@
 export const useCalendarApi = () => {
+  //získání jednoho záznamu z kalendáře podle id
   const getCalendar = async (id) => {
     try {
       return await $fetch(`/api/calendar/${id}`);
@@ -7,7 +8,7 @@ export const useCalendarApi = () => {
       throw error;
     }
   };
-
+  // aktualizace záznamu v kalendáři podle id
   const updateCalendar = async (id, data) => {
     console.log('Updating calendar with id:', id, 'and data:', data);
     try {

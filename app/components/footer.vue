@@ -82,7 +82,7 @@ onMounted(() => {
   switchLayout('menu') 
   checkRacingDay(currentday.value);
 })
-
+// Funkce pro přechod na další den
 const nextday = async (newDay) => {
   sound.play();
  
@@ -101,6 +101,7 @@ const nextday = async (newDay) => {
   }
 }
 
+// Funkce pro kontrolu, zda je daný den závodním dnem
 function checkRacingDay(day) {
   const racingDays = calendar.value
     .filter(event => event.raced === 0)
