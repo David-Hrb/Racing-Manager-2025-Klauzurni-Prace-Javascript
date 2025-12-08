@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id');
     const method = event.method;
     
-    console.log('Method TEAMS:', method, 'ID:', id);
+    //console.log('Method TEAMS:', method, 'ID:', id);
     
     const db = useDatabase("myDB");
 

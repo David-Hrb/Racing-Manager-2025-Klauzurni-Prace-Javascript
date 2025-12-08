@@ -10,7 +10,7 @@ export const useDriversApi = () => {
   };
   // funkce pro aktualizaci záznamu o jezdci podle id
   const updateDriver = async (id, data) => {
-    console.log('Updating driver with id:', id, 'and data:', data);
+    //console.log('Updating driver with id:', id, 'and data:', data);
     try {
       return await $fetch(`/api/driver/${id}`, {
         method: 'PATCH',

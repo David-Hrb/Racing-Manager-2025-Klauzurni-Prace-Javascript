@@ -237,8 +237,8 @@ import sponzorsnationality from '~/assets/json/sponzorsnation.json'
 import nationality from '~/assets/json/nationality.json'
 let currentteaminfo = computed(() => teams.value[currentteamindex.value] || {});
 
-console.log(drivers)
-console.log(teams.value[0].gearbox);
+//console.log(drivers)
+//console.log(teams.value[0].gearbox);
 // Funkce
 
 // vrací cestu loga podle ID týmu
@@ -305,7 +305,7 @@ function getdriver(num) {
           } else {
             html += '<div class="css-star empty"></div>'
           }
-          console.log(scaledRating)
+          //console.log(scaledRating)
           scaledRating -=2;
         }
         return html;

@@ -6,11 +6,11 @@ export const useDayCount = () => {
     function Daytodatum(denVRoce) {
         
      
-        console.log(denVRoce, year);
+        //console.log(denVRoce, year);
         const yearStart = new Date(year, 2, 1);
         const vyslednyDatum = new Date(yearStart);
         vyslednyDatum.setDate(vyslednyDatum.getDate() + denVRoce - 1);
-        console.log(vyslednyDatum);
+        //console.log(vyslednyDatum);
         return vyslednyDatum.toLocaleDateString('cs-CZ', { 
             day: 'numeric', 
             month: 'short'

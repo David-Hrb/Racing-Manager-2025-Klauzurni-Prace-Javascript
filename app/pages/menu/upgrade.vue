@@ -249,7 +249,7 @@ function openUpgrade(num) {
       priceUpgrade.value = price[team.value.reliability];
       break;
     default:
-      console.log("Neplatné číslo vylepšení");
+      //console.log("Neplatné číslo vylepšení");
   }
 }
 // Zavře nabídku na vylepšení
@@ -260,7 +260,7 @@ function closeUpgrade() {
 function upgradeCentral(num, pick, price) {
   upgradeChooser.value = false;
   finalprice.value = price;
-  console.log(finalprice.value);
+  //console.log(finalprice.value);
   let passValue = getRandomInteger(0, 100);
   switch (pick) {
     case 0:
@@ -273,7 +273,7 @@ function upgradeCentral(num, pick, price) {
       if (passValue >= 20) return upgradeFail.value = true, upgradeFailed();   
       break;
     default:
-      console.log("Neplatné číslo výběru");
+      //console.log("Neplatné číslo výběru");
   }
   upgradeSuccess.value = true;
 
@@ -297,7 +297,7 @@ function upgradeCentral(num, pick, price) {
       reliability();
       break;
     default:
-      console.log("Neplatné číslo vylepšení");
+      //console.log("Neplatné číslo vylepšení");
   }
 }
 // Aktualizuje tým s novými daty
@@ -313,12 +313,12 @@ const updateCurrentTeam = async (newData) => {
 };
 // Funkce pro jednotlivé typy vylepšení
 const aerodynamics = async () => {
-  console.log(team.value.aerodynamics + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), team.value.aerodynamics, risklevel.value);
+  //console.log(team.value.aerodynamics + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), team.value.aerodynamics, risklevel.value);
   const newData = {
     aerodynamics: team.value.aerodynamics + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), 
     money: team.value.money - finalprice.value,
   };
-  console.log(team.value);
+  //console.log(team.value);
   await updateCurrentTeam(newData);
 };
 

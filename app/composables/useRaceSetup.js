@@ -6,7 +6,7 @@ export const useRaceSetup = () => {
     if (!team) return [];
     
     const driverIds = [team.driver1, team.driver2].filter(id => id != null);
-    console.log(driverIds);
+    //console.log(driverIds);
     
     return driverIds.map(driverId => 
       drivers.find(driver => Number(driver.ID) === Number(driverId))
@@ -18,7 +18,7 @@ export const useRaceSetup = () => {
     if (!team) return [];
     
     const driverIds = [team.driver1, team.driver2, team.testdriver].filter(id => id != null);
-    console.log(driverIds);
+    //console.log(driverIds);
     
     return driverIds.map(driverId => 
       drivers.find(driver => Number(driver.ID) === Number(driverId))
@@ -38,7 +38,7 @@ export const useRaceSetup = () => {
     const teamAllDrivers = getTeamAllDrivers(drivers, teams, teamId);
     const currentTeamInfo = getCurrentTeam(teams, teamId);
     const currentCircuitInfo = getCurrentCircuit(circuits, circuitId);
-    console.log(teamDrivers)
+    //console.log(teamDrivers)
     return {
       teamDrivers,
       teamAllDrivers,

@@ -86,7 +86,7 @@ onMounted(() => {
 const nextday = async (newDay) => {
   sound.play();
  
-  console.log("Next day:", newDay);
+  //console.log("Next day:", newDay);
   try {
     await $fetch("/api/manager/updateNextDay", {
       method: "PUT",
@@ -106,8 +106,8 @@ function checkRacingDay(day) {
   const racingDays = calendar.value
     .filter(event => event.raced === 0)
     .map(event => event.date);  
-  console.log("Racing Days:", racingDays);
-  console.log("Is Racing Day:", racingDays.includes(day));
+  //console.log("Racing Days:", racingDays);
+  //console.log("Is Racing Day:", racingDays.includes(day));
   if (racingDays.includes(day)) return racingday.value = true;
   else return racingday.value = false;
 }

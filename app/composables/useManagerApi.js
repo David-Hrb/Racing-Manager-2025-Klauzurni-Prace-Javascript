@@ -3,7 +3,7 @@ export const useManagerApi = () => {
     // Funkce pro aktualizaci informací o manažerovi
     const updateManager = async (data) => {
         try {
-        console.log('ID:', id);
+        //console.log('ID:', id);
         return await $fetch(`/api/manager/man`, {
             method: 'PATCH',
             body: data

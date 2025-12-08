@@ -79,7 +79,7 @@ export const useLapTime = () => {
     } else {
       mistakemultiplier = getRandomFloat(5, 10);
       const crashchance = getRandomInteger(0, 100);
-      console.log(crashchance);
+      //console.log(crashchance);
       if (crashchance < 10) {crash = true};
     }
 
@@ -107,7 +107,7 @@ export const useLapTime = () => {
       }
     };
   };
-  console.log(calculateLapTime, "composables");
+  //console.log(calculateLapTime, "composables");
   return {
     calculateLapTime
   };

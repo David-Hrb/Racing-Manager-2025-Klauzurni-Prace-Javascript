@@ -185,7 +185,7 @@ watch(
 // konečné seřazení jezdců a týmů podle bodů
 const sortedDriverLeaderboard = driverLeaderboard.sort((a, b) => b.points - a.points);
 const sortedTeamLeaderboard = teamLeaderboard.sort((a, b) => b.points - a.points);
-console.log(sortedTeamLeaderboard);
+//console.log(sortedTeamLeaderboard);
 
 function giveavatar(num) {
   return avatars[num.toString()] 

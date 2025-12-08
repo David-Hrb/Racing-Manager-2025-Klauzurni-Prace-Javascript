@@ -249,8 +249,8 @@ const { teamAllDrivers } = setupRace({
   teamId: currentteam.value,
   circuitId: 0
 });
-console.log(teamAllDrivers);
-console.log(drivers);
+//console.log(teamAllDrivers);
+//console.log(drivers);
 // vrátí avatara
 function giveavatar(num) {
   return avatars[num.toString()] 
@@ -297,24 +297,24 @@ const openNegonation = () => {
 function negonationLogic(driverID) {
   let negonationdriver = drivers.value.find(driver => driver.ID === driverID);
   let driverTeam = teams.value.find(team => team.ID === negonationdriver.currentteam);
-  console.log(negonationdriver, "negonation driver");
-  console.log(negonationdriver.currentteam, currentteam.value);
+  //console.log(negonationdriver, "negonation driver");
+  //console.log(negonationdriver.currentteam, currentteam.value);
   let priceFactor = (negonationdriver.prmanagement + negonationdriver.ego) / 200;
   if(negonationdriver.currentteam == currentteam.value) return driverDeclined.value = true, negonation.value = false;
   if(negonationdriver.currentteam == null  || negonationdriver.currentteam == undefined) {
-    console.log("driver without team or different team");
+    //console.log("driver without team or different team");
     wantToTeam.value = true;
   } else {
     buyoutIdeal.value = Math.floor((getRandomInteger(1000000, 5000000) * priceFactor) / 1000) * 1000;
     let wantToTeam = ref(false);
-    console.log(teams.value[currentteam.value], "current team stats", teams.value[currentteam.value].aerodynamics, teams.value[currentteam.value].gearbox, teams.value[currentteam.value].brakes, teams.value[currentteam.value].rearwing, teams.value[currentteam.value].frontwing, teams.value[currentteam.value].reliability );
-    console.log(driverTeam, "driver team stats", driverTeam.aerodynamics, driverTeam.gearbox, driverTeam.brakes, driverTeam.rearwing, driverTeam.frontwing, driverTeam.reliability);
+    //console.log(teams.value[currentteam.value], "current team stats", teams.value[currentteam.value].aerodynamics, teams.value[currentteam.value].gearbox, teams.value[currentteam.value].brakes, teams.value[currentteam.value].rearwing, teams.value[currentteam.value].frontwing, teams.value[currentteam.value].reliability );
+    //console.log(driverTeam, "driver team stats", driverTeam.aerodynamics, driverTeam.gearbox, driverTeam.brakes, driverTeam.rearwing, driverTeam.frontwing, driverTeam.reliability);
     let currTeamStats = teams.value[currentteam.value].aerodynamics + teams.value[currentteam.value].gearbox + teams.value[currentteam.value].brakes + teams.value[currentteam.value].rearwing + teams.value[currentteam.value].frontwing + teams.value[currentteam.value].reliability ;
     let driverTeamStats = driverTeam.aerodynamics + driverTeam.gearbox + driverTeam.brakes + driverTeam.rearwing + driverTeam.frontwing + driverTeam.reliability ;
-    console.log(currTeamStats, "current team stats");
-    console.log(driverTeamStats, "driver team stats");
+    //console.log(currTeamStats, "current team stats");
+    //console.log(driverTeamStats, "driver team stats");
     let teamDifference =  currTeamStats - driverTeamStats;
-    console.log(teamDifference, "team difference");
+    //console.log(teamDifference, "team difference");
     if(teamDifference > -8) {
       wantToTeam.value = true;
     } else {
@@ -334,26 +334,26 @@ function negonationLogic(driverID) {
     Math.round(salaryIdeal.value * 1.3),
     Math.round(salaryIdeal.value * 1.4)
   ];
-  console.log(salaryIdeal.value, salaryPrices.value);
+  //console.log(salaryIdeal.value, salaryPrices.value);
 }
 // Funkce pro vyzkoušení jestli jezdec přijme nabídku
 function tryNegonation() {
-  console.log(currentSalaryIndex.value, "current salary index");
+  //console.log(currentSalaryIndex.value, "current salary index");
   let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
-  console.log("offered salary:", offeredSalary, "ideal salary:", salaryIdeal.value, "wants to team:", wantToTeam.value);
+  //console.log("offered salary:", offeredSalary, "ideal salary:", salaryIdeal.value, "wants to team:", wantToTeam.value);
   if(offeredSalary >= salaryIdeal.value) {
     driverAccepted.value = true;
     negonation.value = false;
-    console.log("driver accepted the offer");  
+    //console.log("driver accepted the offer");  
   } else {
     driverDeclined.value = true;
     negonation.value = false;
-    console.log("driver declined the offer");
+    //console.log("driver declined the offer");
   }
 }
 // Funkce pro přijetí nabídky jezdce
 function driverAcceptedOffer(replaceDriverID) {
-  console.log("replacing driver ID:", replaceDriverID);
+  //console.log("replacing driver ID:", replaceDriverID);
   let newTeamID = currentteam.value;
   let TeamWithoutDriverTeamID = drivers.value[currentdriver.value].currentteam;
   
@@ -373,7 +373,7 @@ function driverAcceptedOffer(replaceDriverID) {
       const updatedTeamData = { [fieldToUpdate]: changeDriverID, money: team.money - (salaryPrices.value[currentSalaryIndex.value] + replaceDriver.fee) };  
       const pointsToTransfer = leadboard.value.find(entry => entry.driverID === replaceDriverID)?.points || 0;
       const newPointsForChangedDriver = (leadboard.value.find(entry => entry.driverID === changeDriverID)?.points || 0);
-      console.log(pointsToTransfer, "points to transfer", newPointsForChangedDriver , "new points for changed driver");
+      //console.log(pointsToTransfer, "points to transfer", newPointsForChangedDriver , "new points for changed driver");
       editLeadboard(changeDriverID, pointsToTransfer);
       editLeadboard(replaceDriverID, newPointsForChangedDriver);
       updateTeamFunc(newTeamID, updatedTeamData);
@@ -385,11 +385,11 @@ function driverAcceptedOffer(replaceDriverID) {
         currentteam: null,
         contractexp: null
       });
-      console.log(TeamWithoutDriverTeamID, "TeamWithoutDriverTeamID");
-      console.log(currentteam.value, "current team ID");
-      console.log(changeDriverID, "change driver ID");
-      console.log(replaceDriverID, "replace driver ID");
-      console.log(driverPosition, "driver position in team");
+      //console.log(TeamWithoutDriverTeamID, "TeamWithoutDriverTeamID");
+      //console.log(currentteam.value, "current team ID");
+      //console.log(changeDriverID, "change driver ID");
+      //console.log(replaceDriverID, "replace driver ID");
+      //console.log(driverPosition, "driver position in team");
     return driverAccepted.value = false;
   }
  
@@ -397,21 +397,21 @@ function driverAcceptedOffer(replaceDriverID) {
   let newDriverID = findNewDriver(teamWithoutDriver);
   let newDriver = drivers.value.find(driver => driver.ID === newDriverID);
   let newDriverFee = Math.floor((newDriver.concentration + newDriver.overtaking + newDriver.experience + newDriver.quickness + newDriver.stamina) / 5 * 10000);
-  console.log(TeamWithoutDriverTeamID, "TeamWithoutDriverTeamID");
-  console.log(currentteam.value, "current team ID");
-  console.log(changeDriverID, "change driver ID");
-  console.log(replaceDriverID, "replace driver ID");
-  console.log(driverPosition, "driver position in team");
-  console.log(newDriverID, "new driver ID to fill the empty spot");
-  console.log(newDriverFee, "new driver fee");
+  //console.log(TeamWithoutDriverTeamID, "TeamWithoutDriverTeamID");
+  //console.log(currentteam.value, "current team ID");
+  //console.log(changeDriverID, "change driver ID");
+  //console.log(replaceDriverID, "replace driver ID");
+  //console.log(driverPosition, "driver position in team");
+  //console.log(newDriverID, "new driver ID to fill the empty spot");
+  //console.log(newDriverFee, "new driver fee");
   
 
   if(newDriverID !== null) {
     if (driverPosition !== -1) {
       const fieldToUpdate = driverFields[driverPosition];
       const currentDriverFieldToUpdate = driverFields[currentDriverPosition];
-      console.log({ [fieldToUpdate]: changeDriverID }, "field to update in team");
-      console.log({ [currentDriverFieldToUpdate]: newDriverID }, "current driver field to update in team");
+      //console.log({ [fieldToUpdate]: changeDriverID }, "field to update in team");
+      //console.log({ [currentDriverFieldToUpdate]: newDriverID }, "current driver field to update in team");
       const updatedTeamData = { [fieldToUpdate]: changeDriverID, money: team.money - (salaryPrices.value[currentSalaryIndex.value] + replaceDriver.fee) };
       const currentTeamData = { [currentDriverFieldToUpdate]: newDriverID };
 
@@ -464,16 +464,16 @@ const updateCurrentLeadboard = async (id, newData) => {
 // najde nového jezdce pro tým který přišel o jezdce
 function findNewDriver(teamWithoutDriver) {
   let availableDrivers = drivers.value.filter(driver => driver.currentteam == null);
-  console.log(availableDrivers, "available drivers");
-  console.log(teamWithoutDriver, "team without driver");
-  console.log(teamWithoutDriver.aerodynamics, teamWithoutDriver.gearbox, teamWithoutDriver.brakes, teamWithoutDriver.rearwing, teamWithoutDriver.frontwing, teamWithoutDriver.reliability );
+  //console.log(availableDrivers, "available drivers");
+  //console.log(teamWithoutDriver, "team without driver");
+  //console.log(teamWithoutDriver.aerodynamics, teamWithoutDriver.gearbox, teamWithoutDriver.brakes, teamWithoutDriver.rearwing, teamWithoutDriver.frontwing, teamWithoutDriver.reliability );
   if(availableDrivers.length > 0) {
     let randomIndex = getRandomInteger(0, availableDrivers.length - 1);
     let newDriver = drivers.value.find(driver => driver.ID === availableDrivers[randomIndex].ID);
     let teamStats = teamWithoutDriver.aerodynamics + teamWithoutDriver.gearbox + teamWithoutDriver.brakes + teamWithoutDriver.rearwing + teamWithoutDriver.frontwing + teamWithoutDriver.reliability;
     let driverStats = newDriver.concentration + newDriver.overtaking + newDriver.experience + newDriver.quickness + newDriver.stamina;
     if(driverStats >= (teamStats / 6) * 5) {
-      console.log("found suitable new driver:", newDriver);
+      //console.log("found suitable new driver:", newDriver);
       return newDriver.ID;
     } else {
       return findNewDriver(teamWithoutDriver);

@@ -336,7 +336,7 @@ async function loadBackup() {
       method: 'POST',
       body: backup
     });
-    console.log('Data úspěšně načtena z backup.json');
+    //console.log('Data úspěšně načtena z backup.json');
   } catch (error) {
     console.error('Chyba při načítání:', error);
     alert('Nepodařilo se načíst data');

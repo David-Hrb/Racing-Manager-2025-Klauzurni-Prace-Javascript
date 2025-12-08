@@ -262,9 +262,9 @@ export const useEndOfSeason = () => {
         const sortedTeamLeaderboard = teamLeaderboard.sort((a, b) => b.points - a.points);
 
         if (leadboard.length > 0) {
-            console.log("Champion Driver:", sortedDriverLeaderboard[0]);
+            //console.log("Champion Driver:", sortedDriverLeaderboard[0]);
             championDriverID = sortedDriverLeaderboard[0].driver.ID;
-            console.log("Champion DRIVER IDDDDDDDDD:", championDriverID);
+            //console.log("Champion DRIVER IDDDDDDDDD:", championDriverID);
             championTeamId = sortedTeamLeaderboard[0].ID;
         }
 

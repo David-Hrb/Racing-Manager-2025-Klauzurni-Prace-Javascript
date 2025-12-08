@@ -28,7 +28,7 @@ export const useMusicSound = () => {
             html5: true,
             onend: () => {
                 isPlaying.value = false;
-                console.log("Hudba dohrála, přehrávám další stopu: ", musicTracks[currentTrackIndex]);
+                //console.log("Hudba dohrála, přehrávám další stopu: ", musicTracks[currentTrackIndex]);
                 currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
                 initSound();
                 musicSound.play();
@@ -42,13 +42,13 @@ export const useMusicSound = () => {
             initSound();
         }
         
-        console.log("Přehrávám hudbu");
+        //console.log("Přehrávám hudbu");
         isPlaying.value = true;
         musicSound?.play();
     };
 
     const stop = () => {
-        console.log("Zastavuji hudbu");
+        //console.log("Zastavuji hudbu");
         isPlaying.value = false;
         musicSound?.stop();
     };

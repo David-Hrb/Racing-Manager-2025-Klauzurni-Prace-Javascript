@@ -23,7 +23,7 @@
 const currentLayout = useState('currentLayout', () => 'default')
 
 const switchLayout = (layoutName) => {
-  console.log('Switching to layout:', layoutName)
+  //console.log('Switching to layout:', layoutName)
   currentLayout.value = layoutName
 }
 

@@ -6,7 +6,7 @@ export const useCalendarRange = async () => {
     const calendarrangefirst = 1
     const calendarrangesecond = calendar.value.length
     
-    console.log(calendarrangefirst, calendarrangesecond)
+    //console.log(calendarrangefirst, calendarrangesecond)
     
     let calendarreturn = []
     for (let i = calendarrangefirst; i <= calendarrangesecond; i++) {

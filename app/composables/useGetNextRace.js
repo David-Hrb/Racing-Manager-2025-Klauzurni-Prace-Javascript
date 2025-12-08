@@ -12,6 +12,6 @@ export const useGetNextRace = async () => {
         }
        
     }
-    console.log(currentTrack.value, "current track")
+    //console.log(currentTrack.value, "current track")
     return { currentcircuit: currentTrack.value }
 }

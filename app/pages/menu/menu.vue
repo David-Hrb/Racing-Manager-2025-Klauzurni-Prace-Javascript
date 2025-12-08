@@ -582,7 +582,7 @@ leadboard.value = await $fetch("/api/leadboard/listLeadboard") || [];
 
 const gender = ref(manager.value[0].SelectedGender);
 const { currentcircuit } = await useGetNextRace()
-console.log(currentcircuit)
+//console.log(currentcircuit)
 let currentteam = manager.value[0].team;
 
 
@@ -601,13 +601,13 @@ const { getSponsor } = useSponsors();
 const { manteam } = await useManager();
 const { logoroad } = await useLogos(manteam - 1);
 const ManagerNationality = useNationality(manager.value[0].nationality);
-console.log(ManagerNationality)
+//console.log(ManagerNationality)
 
-console.log(allCalendar.value)
+//console.log(allCalendar.value)
 let endOfSeason = ref(allCalendar.value.every(item => item.raced === 1));
 let startOfNewSeason = ref(false);
 const isProcessingEndOfSeason = ref(false);
-console.log(endOfSeason.value);
+//console.log(endOfSeason.value);
 
 const extendNegotiation = ref(false);
 const replaceDriverModal = ref(false);
@@ -838,14 +838,14 @@ const currentTeamList = computed(() => {
 // Vrátí jezdce, kterým končí smlouva
 const driverTeamExpires = computed(() => {
   const driverTeam = ref([]);
-  console.log(manTeamExp.value);
-  console.log(teamAllDrivers.value)
+  //console.log(manTeamExp.value);
+  //console.log(teamAllDrivers.value)
   drivers.value.forEach(driver => {
     if (manTeamExp.value.includes(driver.ID)) {
       driverTeam.value.push(driver);
     }
   });
-  console.log(driverTeam);
+  //console.log(driverTeam);
   return driverTeam.value;
 });
 // Otevře nabídku na prodloužení smlouvy

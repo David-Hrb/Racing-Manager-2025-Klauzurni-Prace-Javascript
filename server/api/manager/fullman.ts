@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
     const id = 1; 
     const method = event.method;
     
-    console.log('Method:', method, 'ID:', id);
+    //console.log('Method:', method, 'ID:', id);
     
     const db = useDatabase("myDB");
     

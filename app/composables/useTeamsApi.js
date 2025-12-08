@@ -10,7 +10,7 @@ export const useTeamsApi = () => {
   };
   // funkce pro aktualizaci informací o týmu podle jeho ID
   const updateTeam = async (id, data) => {
-    console.log('Updating team with id:', id, 'and data:', data);
+    //console.log('Updating team with id:', id, 'and data:', data);
     try {
       return await $fetch(`/api/teams/${id}`, {
         method: 'PATCH',

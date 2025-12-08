@@ -116,7 +116,7 @@ watch(
 
 function settingsbutton() {
   sound.play()
-  console.log("Toogle")
+  //console.log("Toogle")
   toggle()
 }
 definePageMeta({

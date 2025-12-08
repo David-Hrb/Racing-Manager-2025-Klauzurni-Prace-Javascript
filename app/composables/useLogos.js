@@ -6,7 +6,7 @@ export const useLogos = async (id) => {
         return logos.value[id]?.road || ''
     })
     let logoroad = logo.value
-    console.log(logoroad)
+    //console.log(logoroad)
     return { logoroad }
   
 }

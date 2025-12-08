@@ -86,7 +86,7 @@
 const circuits = ref([]);
 circuits.value = await $fetch("/api/listCircuit");
 const { calendarreturn } = await useCalendarRange()
-console.log(calendarreturn)
+//console.log(calendarreturn)
 const { daycount } = useDayCount()
 
 
@@ -96,7 +96,7 @@ const teams = ref([])
 
 drivers.value = await $fetch('/api/listDriver')
 teams.value = await $fetch('/api/listTeam')
-console.log(circuits)
+//console.log(circuits)
 const manager = ref([]);
 manager.value = await $fetch("/api/manager/listManager");
 let managerMoney = useState('managerMoney', () => 0);

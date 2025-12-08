@@ -10,7 +10,7 @@ export const useCalendarApi = () => {
   };
   // aktualizace záznamu v kalendáři podle id
   const updateCalendar = async (id, data) => {
-    console.log('Updating calendar with id:', id, 'and data:', data);
+    //console.log('Updating calendar with id:', id, 'and data:', data);
     try {
       return await $fetch(`/api/calendar/${id}`, {
         method: 'PATCH',

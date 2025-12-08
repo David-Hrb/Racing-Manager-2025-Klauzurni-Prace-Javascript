@@ -15,7 +15,7 @@
 const bgmusic = useMusicSound();
 // Funkce pro přepínání stavu hudby
 function toggleMusic() {
-    console.log('Aktuální stav:', bgmusic.isPlaying.value);
+    //console.log('Aktuální stav:', bgmusic.isPlaying.value);
     if (bgmusic.isPlaying.value) {
         bgmusic.stop();
     } else {

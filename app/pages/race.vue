@@ -411,12 +411,12 @@ const infotext = ref({});
 const infotextlap = ref(0);
 
 
-console.log(totalLaps.value)
+//console.log(totalLaps.value)
 for (let i = 0; i < totalLaps.value; i++) {
   infotext.value[i] = [];
 }
 
-console.log("info",infotext.value);
+//console.log("info",infotext.value);
 // Odečte kolo
 const minuslap = () => {
   if (infotextlap.value > 1) {
@@ -505,14 +505,14 @@ function gettyrescolor(num) {
 
 // změní pneumatiky
 function changetyres(num, index) {
-  console.log("true");
-  console.log(index);
-  console.log(num);
+  //console.log("true");
+  //console.log(index);
+  //console.log(num);
   const driverIndex = displayedLaptimes.value.findIndex(driver => driver.id === index);
   
   if (driverIndex !== -1) {
     displayedLaptimes.value[driverIndex].currenttyre = num;
-    console.log("Tyre changed for:", displayedLaptimes.value[driverIndex].name);
+    //console.log("Tyre changed for:", displayedLaptimes.value[driverIndex].name);
   } else {
     console.error("Driver not found:", index);
   }
@@ -555,7 +555,7 @@ function confirmPitStop() {
     const randomDelay = getRandomFloat(0, 2)
     driver.time = Number(driver.time) + pitStopTime + randomDelay
     
-    console.log(`${driver.name} dokončil pit stop - nové pneumatiky: ${gettyres(newTyreSelection.value, true)}`)
+    //console.log(`${driver.name} dokončil pit stop - nové pneumatiky: ${gettyres(newTyreSelection.value, true)}`)
   }
   
   boxTrue.value = false
@@ -676,7 +676,7 @@ function startgame() {
     i++
   });
   
-  console.log(displayedLaptimes.value);
+  //console.log(displayedLaptimes.value);
 }
 
 startgame()
@@ -701,7 +701,7 @@ const formattedTotalLaps = computed(() => {
 // změní rychlost kola
 function changeLapSpeed(value) {
   lapSpeed.value = value
-  console.log('Lap speed changed to:', lapSpeed.value, 'ms')
+  //console.log('Lap speed changed to:', lapSpeed.value, 'ms')
   
   if (isRunning.value) {
     clearInterval(timer)
@@ -714,14 +714,14 @@ function processLap() {
   if (currentLap.value < totalLaps.value) {
     currentLap.value++;
     everyLap();
-    console.log(`Lap ${currentLap.value}/${totalLaps.value}`);
+    //console.log(`Lap ${currentLap.value}/${totalLaps.value}`);
   } else {
     clearInterval(timer);
     isRunning.value = false;
     raceEnded.value = true;
     isProcessingRaceEnd.value = true;
     raceEnd();
-    console.log('Race finished!');
+    //console.log('Race finished!');
   }
 }
 
@@ -731,12 +731,12 @@ function toggleTimer() {
     if (currentLap.value < totalLaps.value) {
       isRunning.value = true;
       timer = setInterval(processLap, lapSpeed.value);
-      console.log('Timer started.');
+      //console.log('Timer started.');
     }
   } else {
     clearInterval(timer);
     isRunning.value = false;
-    console.log('Timer paused.');
+    //console.log('Timer paused.');
   }
 }
 
@@ -754,7 +754,7 @@ function everyLap() {
   displayedLaptimes.value.forEach((driver, i, arr) => {
     if(driver.id == teamdrivers.value[0].ID || driver.id == teamdrivers.value[1].ID) {
       if(driver.driverdeg > 100) {
-        console.log("true driver from our team retire");
+        //console.log("true driver from our team retire");
         driver.dnf = true;
         driver.time = 1000000000000 + currentLap.value;
       }
@@ -776,7 +776,7 @@ function everyLap() {
           let timelostinpit = getRandomFloat(0, 2);
           driver.time = Number(driver.time) + currentCircuitInfo.pitstoptime + timelostinpit;
           driver.driverdeg = 0;
-          console.log(driver.name, "pit stop na kole", currentLap.value)
+          //console.log(driver.name, "pit stop na kole", currentLap.value)
           let drivereventtyre = gettyres(driver.currenttyre, true)
           const pitstopEvent = createEvent('pitstop', {
             driver1Name: driver.name,
@@ -787,7 +787,7 @@ function everyLap() {
         }
       });  
     }
-   // console.log("PITSOP",driver.name, driver.position)
+   // //console.log("PITSOP",driver.name, driver.position)
   });
 
   displayedLaptimes.value = displayedLaptimes.value.sort((a, b) => {
@@ -838,7 +838,7 @@ function everyLap() {
       driver.gaptonext = 0;
       driver.time = 1000000000000 + currentLap.value;
       driver.dnf = true;
-      console.log(driver.name, "crash");
+      //console.log(driver.name, "crash");
       const crashEvent = createEvent('retirement_crash', {
         driver1Name: driver.name,
         driver1Team: driver.teamname
@@ -890,11 +890,11 @@ function everyLap() {
               driver2Team: overtakenDriver.teamname
             });
             allOvertakes.push(overtakeEvent);
-            console.log(`✓ ${driver.name} předjel ${overtakenDriver.name}`);
+            //console.log(`✓ ${driver.name} předjel ${overtakenDriver.name}`);
             
           } else {
             driver.time = Number(overtakenDriver.time) + 0.1 + (getRandomInteger(1, 50) * 0.01);
-            console.log(`✗ ${driver.name} se nepodařilo předjet ${overtakenDriver.name}`);
+            //console.log(`✗ ${driver.name} se nepodařilo předjet ${overtakenDriver.name}`);
           }
         }
       }
@@ -909,7 +909,7 @@ function everyLap() {
     "pitstop": allPitstops,
     "other": allEvents
   };
-  console.log(infotext.value[currentLap.value]);
+  //console.log(infotext.value[currentLap.value]);
 
   displayedLaptimes.value = displayedLaptimes.value.sort((a, b) => {
     // DNF jezdci vždy na konec
@@ -994,14 +994,14 @@ async function raceEnd() {
       continue;
     }
     
-    console.log("Processing:", currentDriver.name, "Position:", i + 1, "DNF:", driver.dnf);
+    //console.log("Processing:", currentDriver.name, "Position:", i + 1, "DNF:", driver.dnf);
     
     if (!driver.dnf && i < 3) {
       if (i === 0) {
         await retryUpdate(async () => {
           const newWins = currentDriver.wins + 1;
           await updateDriver(driver.id, { wins: newWins });
-          console.log("Driver wins updated:", currentDriver.name, newWins);
+          //console.log("Driver wins updated:", currentDriver.name, newWins);
         });
         
         await wait(500);
@@ -1009,7 +1009,7 @@ async function raceEnd() {
         await retryUpdate(async () => {
           const newTeamWins = currentTeam.historywins + 1;
           await updateTeam(currentTeam.ID, { historywins: newTeamWins });
-          console.log("Team wins updated:", currentTeam.name, newTeamWins);
+          //console.log("Team wins updated:", currentTeam.name, newTeamWins);
         });
         
         await wait(500);
@@ -1019,7 +1019,7 @@ async function raceEnd() {
             winner: currentDriver.ID,
             winnerteam: currentTeam.ID
           });
-          console.log("Calendar winner updated");
+          //console.log("Calendar winner updated");
         });
         
         await wait(500);
@@ -1030,7 +1030,7 @@ async function raceEnd() {
             secondplace: currentDriver.ID,
             secondteam: currentTeam.ID
           });
-          console.log("Calendar 2nd place updated");
+          //console.log("Calendar 2nd place updated");
         });
         await wait(500);
       }
@@ -1040,7 +1040,7 @@ async function raceEnd() {
             thirdplace: currentDriver.ID,
             thirdteam: currentTeam.ID
           });
-          console.log("Calendar 3rd place updated");
+          //console.log("Calendar 3rd place updated");
         });
         await wait(500);
       }
@@ -1048,7 +1048,7 @@ async function raceEnd() {
       await retryUpdate(async () => {
         const newPodiums = currentDriver.podiums + 1;
         await updateDriver(driver.id, { podiums: newPodiums });
-        console.log("Driver podiums updated:", currentDriver.name, newPodiums);
+        //console.log("Driver podiums updated:", currentDriver.name, newPodiums);
       });
       
       await wait(500);
@@ -1057,7 +1057,7 @@ async function raceEnd() {
         const newTeamPodiums = currentTeam.historypodiums + 1;
         await updateTeam(currentTeam.ID, { historypodiums: newTeamPodiums });
         teams.value = await $fetch("/api/listTeam");
-        console.log("Team podiums updated:", currentTeam.name, newTeamPodiums);
+        //console.log("Team podiums updated:", currentTeam.name, newTeamPodiums);
       });
       
       await wait(500);
@@ -1073,7 +1073,7 @@ async function raceEnd() {
         await retryUpdate(async () => {
           const newPoints = currentLeadboard.points + pointsEarned;
           await updateLeadboard(driver.id, { ...currentLeadboard, points: newPoints });
-          console.log(`${driver.name} gained ${pointsEarned} points (total: ${newPoints})`);
+          //console.log(`${driver.name} gained ${pointsEarned} points (total: ${newPoints})`);
         });
         await wait(500);
       } else {
@@ -1086,14 +1086,14 @@ async function raceEnd() {
   
   await retryUpdate(async () => {
     await updateCalendar(currentCircuitPositionID, { raced: 1 });
-    console.log("Calendar marked as raced");
+    //console.log("Calendar marked as raced");
   });
   
   await wait(200);
   
   await retryUpdate(async () => {
     await upgradeLimit(1);
-    console.log("Limit upgraded");
+    //console.log("Limit upgraded");
   });
   
   leadboard.value = await $fetch('/api/leadboard/listLeadboard');
@@ -1101,7 +1101,7 @@ async function raceEnd() {
   drivers.value = await $fetch("/api/listDriver");
   
   isProcessingRaceEnd.value = false;
-  console.log("Race end processing completed");
+  //console.log("Race end processing completed");
 }
 
 const { updateTeam } = useTeamsApi();
@@ -1146,14 +1146,14 @@ const updateCalendarFunc = async (calendarID, newData) => {
 
 onUnmounted(() => {
   clearInterval(timer)
-  console.log('Timer cleared on unmount.')
+  //console.log('Timer cleared on unmount.')
 })
 
 const switchLayout = inject('switchLayout')
 
 const switchToMenu = () => {
   if (isProcessingRaceEnd.value) {
-    console.log('Nelze přejít do menu - probíhá ukládání výsledků závodu');
+    //console.log('Nelze přejít do menu - probíhá ukládání výsledků závodu');
     return;
   }
   navigateTo('menu/menu')
