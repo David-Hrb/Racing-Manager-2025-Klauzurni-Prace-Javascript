@@ -93,7 +93,7 @@
   <div class="pos-absolute" v-if="boxTrue">
     <div class="pos-absolute-inside">
       <h1 v-if="selectedDriver">PIT STOP - {{ selectedDriver ? selectedDriver.name : '' }}</h1>
-      <button @click="confirmPitStop()" class="letout-button">POTVRDIT A POKRAČOVAT</button>  
+      <button @click="confirmPitStop()" class="letout-button-b">POTVRDIT A POKRAČOVAT</button>  
       
       <!-- SINGLE DRIVER -->
       <div 
