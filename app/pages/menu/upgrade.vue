@@ -218,7 +218,7 @@ let priceUpgrade = ref(0);
 let upgradeSuccess = ref(false);
 let upgradeFail = ref(false);
 var finalprice = ref(0);
-
+// Otevře nabídku na vylepšení
 function openUpgrade(num) {
   sound.play();
   upgradeChooser.value = true;
@@ -252,11 +252,11 @@ function openUpgrade(num) {
       console.log("Neplatné číslo vylepšení");
   }
 }
-
+// Zavře nabídku na vylepšení
 function closeUpgrade() {
   upgradeChooser.value = false;
 }
-
+// Hlavní funkce pro zpracování vylepšení
 function upgradeCentral(num, pick, price) {
   upgradeChooser.value = false;
   finalprice.value = price;
@@ -300,6 +300,7 @@ function upgradeCentral(num, pick, price) {
       console.log("Neplatné číslo vylepšení");
   }
 }
+// Aktualizuje tým s novými daty
 const updateCurrentTeam = async (newData) => {
   try {
     await updateTeam(currentTeamId, newData);
@@ -310,7 +311,7 @@ const updateCurrentTeam = async (newData) => {
     console.error("Error updating team:", error);
   }
 };
-
+// Funkce pro jednotlivé typy vylepšení
 const aerodynamics = async () => {
   console.log(team.value.aerodynamics + (risklevel.value === 0 ? 0.5 : risklevel.value === 1 ? 1 : 2), team.value.aerodynamics, risklevel.value);
   const newData = {

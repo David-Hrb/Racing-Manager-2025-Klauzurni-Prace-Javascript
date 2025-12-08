@@ -101,6 +101,7 @@ const manager = ref([]);
 manager.value = await $fetch("/api/manager/listManager");
 let managerMoney = useState('managerMoney', () => 0);
 let money = useState('money', () => false);
+// Sleduje změny v týmech a aktualizuje peníze manažera
 watch(
   () => teams.value,
   (newValue, oldValue) => {
@@ -115,7 +116,7 @@ watch(
   },
   { deep: true, immediate: true }
 );
-
+// funkce pro získání informací o okruhu podle jeho ID
 const getCircuit = (trackId) => {
   return circuits.value.find(circuit => circuit.ID === trackId)
 }

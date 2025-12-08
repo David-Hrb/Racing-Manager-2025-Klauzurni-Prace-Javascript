@@ -247,6 +247,7 @@ const { displayedLaptimes } = useKvalification()
 function giveavatar(num) {
   return avatars[num.toString()] 
 }
+
 function givetimeontrack(num) {
   if(isNaN(timeontrack.value[num])) {
     return "trať";

@@ -251,11 +251,11 @@ const { teamAllDrivers } = setupRace({
 });
 console.log(teamAllDrivers);
 console.log(drivers);
-
+// vrátí avatara
 function giveavatar(num) {
   return avatars[num.toString()] 
 }
-
+// vrátí hvězdičky podle hodnocení
 function stars(rating) {
   rating = Math.floor(rating / 50) * 0.5;
   
@@ -276,24 +276,24 @@ function stars(rating) {
   
   return stars;
 }
-
+// vypočítá rating jezdce
 function calculateRating(driver) {
   return driver.concentration + driver.overtaking + driver.experience + driver.quickness + driver.stamina;
 }
-
+// zjistí zda jsou nějaké filtry použité
 const hasActiveFilters = computed(() => {
   return searchFilter.value || teamFilter.value || payedFilter.value || sortBy.value;
 });
-
+// zavře okno jednání
 const closeNegonation = () => {
   negonation.value = false;
 }
-
+// otevře okno jednání
 const openNegonation = () => {
   negonation.value = true;
   negonationLogic(drivers.value[currentdriver.value].ID);
 }
-
+// logika jednání s jezdcem
 function negonationLogic(driverID) {
   let negonationdriver = drivers.value.find(driver => driver.ID === driverID);
   let driverTeam = teams.value.find(team => team.ID === negonationdriver.currentteam);
@@ -336,7 +336,7 @@ function negonationLogic(driverID) {
   ];
   console.log(salaryIdeal.value, salaryPrices.value);
 }
-
+// Funkce pro vyzkoušení jestli jezdec přijme nabídku
 function tryNegonation() {
   console.log(currentSalaryIndex.value, "current salary index");
   let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
@@ -351,7 +351,7 @@ function tryNegonation() {
     console.log("driver declined the offer");
   }
 }
-
+// Funkce pro přijetí nabídky jezdce
 function driverAcceptedOffer(replaceDriverID) {
   console.log("replacing driver ID:", replaceDriverID);
   let newTeamID = currentteam.value;
@@ -460,6 +460,8 @@ const updateCurrentLeadboard = async (id, newData) => {
     console.error("Error updating team:", error);
   }
 };
+
+// najde nového jezdce pro tým který přišel o jezdce
 function findNewDriver(teamWithoutDriver) {
   let availableDrivers = drivers.value.filter(driver => driver.currentteam == null);
   console.log(availableDrivers, "available drivers");
@@ -499,7 +501,7 @@ const updateDriverFunc = async (driverID, newData) => {
     console.error("Error updating team:", error);
   }
 };
-
+// filtrovaní a řazení jezdců
 const filteredAndSortedDrivers = computed(() => {
   let result = [...drivers.value];
   
@@ -580,10 +582,12 @@ watch(
   },
   { deep: true, immediate: true }
 );
-
+// změní pořadí řazení vzestupně nebo sestupně
 function toggleSortOrder() {
   sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
 }
+
+// vyčistí filtry
 function clearFilters() {
   searchFilter.value = '';
   teamFilter.value = '';

@@ -45,6 +45,7 @@ manager.value = await $fetch("/api/manager/listManager");
 let currentTeamId = manager.value[0].team;
 let managerMoney = useState('managerMoney', () => 0);
 let money = useState('money', () => false);
+// Sleduje změny v týmech a aktualizuje peníze manažera
 watch(
   () => teams.value,
   (newValue, oldValue) => {

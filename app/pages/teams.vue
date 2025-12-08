@@ -239,32 +239,39 @@ let currentteaminfo = computed(() => teams.value[currentteamindex.value] || {});
 
 console.log(drivers)
 console.log(teams.value[0].gearbox);
+// Funkce
+
+// vrací cestu loga podle ID týmu
 function getRoadById(id)  {
   return logos.value[id].road;
 }
-
+// najde sponzora podle čísla
 function findsponzor(num) {
    return sponzors[num.toString()] 
 }
-
+// najde peníze sponzora podle čísla
 function findsponzormoney(num) {
   return sponzorsmoney[num.toString()] 
 }
-
+// najde národnost sponzora podle čísla
 function findsponzornationality(num) {
    return (sponzorsnationality[num.toString()] || '').toLowerCase();
 }
+
+// vypočítá skóre na základě šesti čísel
 function score(num1, num2, num3, num4, num5, num6) {
    return Math.round(((num1 + num2 + num3 + num4 + num5 + num6) / 600) * 100)
 }
+// najde národnost týmu
 function findteamNationality() {
     return currentteaminfo.value.nationality;
   }
+  // najde plnou národnost týmu
 function findteamFullNationality(nationalityCode) {
   const upperCode = nationalityCode ? nationalityCode.toUpperCase() : '';
   return nationality[upperCode] || "Neznámá národnost";
 }
-
+// najde jméno řidiče podle čísla
 function getdriver(num) { 
    const findDriverById = (driverId) => {
     for(let i = 0; i < drivers.value.length; i++) {
@@ -331,7 +338,7 @@ function getdriver(num) {
   }
  
 }
-
+// vrací text jezdecké politiky podle čísla
 function driverpol(num) {
   if(num == 1) {
     return "Jasná jednička"
@@ -340,7 +347,7 @@ function driverpol(num) {
   }
 }
 
-
+// levé kliknutí  
 function leftclick() {
   sound2.play()
   if(currentteamindex.value <= 0) {
@@ -349,7 +356,7 @@ function leftclick() {
     currentteamindex.value -= 1;
   }
 }
-
+// pravé kliknutí
 function rightclick() {
   sound2.play()
   if(currentteamindex.value >= 10- 1) {

@@ -417,13 +417,13 @@ for (let i = 0; i < totalLaps.value; i++) {
 }
 
 console.log("info",infotext.value);
-
+// Odečte kolo
 const minuslap = () => {
   if (infotextlap.value > 1) {
     infotextlap.value--;
   }
 };
-
+// přičte kolo
 const addlap = () => {
   if (infotextlap.value < totalLaps.value) {
     infotextlap.value++;
@@ -435,6 +435,8 @@ const currentLapInfo = computed(() => {
 });
 
 // FUNKCE INGAME
+
+// formátování času
 function laptimereturn(num) {
   if(num === 1000) {
     return "Žádný čas"
@@ -454,16 +456,22 @@ function laptimereturn(num) {
   } 
 }
 
+// Vrátí avatar podle čísla
 function giveavatar(num) {
   return avatars[num.toString()] 
 }
+
+// první jezdec hráče
 const driver1 = computed(() => {
   return displayedLaptimes.value.find(d => d.id === teamdrivers.value[0].ID);
 });
 
+// druhý jezdec hráče
 const driver2 = computed(() => {
   return displayedLaptimes.value.find(d => d.id === teamdrivers.value[1].ID);
 });
+
+// získá pneumatiky
 function gettyres(num, fullname) {
   switch(num) {
     case 0:
@@ -479,6 +487,7 @@ function gettyres(num, fullname) {
   }
 }
 
+// získá barvu pneumatik
 function gettyrescolor(num) {
   switch(num) {
     case 0:
@@ -493,6 +502,8 @@ function gettyrescolor(num) {
       return tyres[4].color
   }
 }
+
+// změní pneumatiky
 function changetyres(num, index) {
   console.log("true");
   console.log(index);
@@ -507,7 +518,7 @@ function changetyres(num, index) {
   }
 }
 
-
+// odešle jezdce do boxů
 function sentdriver(driverIndex) {
   if (isRunning.value) {
     toggleTimer()
@@ -525,12 +536,12 @@ function sentdriver(driverIndex) {
   boxTrue.value = true
   choosetyre.value = false
 }
-
+// vybere nové pneumatiky
 function selectNewTyre(tyreId) {
   newTyreSelection.value = tyreId;
 }
 
-
+// potvrdí pit stop
 function confirmPitStop() {
   const driverIndex = displayedLaptimes.value.findIndex(
     driver => driver.id === pitStopDriverId.value
@@ -614,10 +625,7 @@ function loaddriver() {
 
 loaddriver()
 
-/**
- * Function to start the game and set up all the drivers with their start positions,
- * tyre strategies and lap times.
- */
+// start hry
 function startgame() {
   let i = 0;
   displayedLaptimes.value.forEach(driver => {
@@ -673,6 +681,7 @@ function startgame() {
 
 startgame()
 
+// začáčíná hru
 function loadgame() {
   choosetyre.value = false;
   firstopen.value = false;
@@ -680,13 +689,16 @@ function loadgame() {
 
 // TIMER                
 
+// formátování zobrazení kola
 const formattedCurrentLap = computed(() => {
   return currentLap.value
 })
-
+// formátování zobrazení celkových kol
 const formattedTotalLaps = computed(() => {
   return totalLaps.value
 })
+
+// změní rychlost kola
 function changeLapSpeed(value) {
   lapSpeed.value = value
   console.log('Lap speed changed to:', lapSpeed.value, 'ms')
@@ -697,6 +709,7 @@ function changeLapSpeed(value) {
   }
 }
 
+// zpracování kola
 function processLap() {
   if (currentLap.value < totalLaps.value) {
     currentLap.value++;
@@ -712,6 +725,7 @@ function processLap() {
   }
 }
 
+// přepínání timeru
 function toggleTimer() {
   if (!isRunning.value) {
     if (currentLap.value < totalLaps.value) {
@@ -735,7 +749,7 @@ function everyLap() {
   let allCrashes = [];
   let allEvents = [];
   
-  //PLAYERS ACTIONS
+  // AKCE HRÁČŮ
   infotextlap.value = currentLap.value;
   displayedLaptimes.value.forEach((driver, i, arr) => {
     if(driver.id == teamdrivers.value[0].ID || driver.id == teamdrivers.value[1].ID) {
@@ -750,11 +764,11 @@ function everyLap() {
   displayedLaptimes.value.forEach((driver) => {
     if(driver.dnf) return;
     
-    // Přidat degradaci z minulého kola
+    // Přidá degradaci z minulého kola
     driver.driverdeg += tyres[driver.currenttyre.toString()].degradation_per_lap;
     driver.driverdeg = Number(driver.driverdeg.toFixed(4));
     
-    // Zkontrolovat pitstop strategii
+    // Zkontroluje pitstop strategii
     if(driver.id != teamdrivers.value[0].ID && driver.id != teamdrivers.value[1].ID) {
       driver.strategy.forEach(strategy => {
         if(strategy.lap == currentLap.value) {
@@ -920,7 +934,7 @@ const editLeadboard = async (id, points) => {
   await updateCurrentLeadboard(id, newData);
 };
 
-
+// KONEC ZÁVODU FUNKCE
 async function raceEnd() {
   const pointsDistribution = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));

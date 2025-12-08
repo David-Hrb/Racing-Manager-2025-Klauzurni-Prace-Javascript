@@ -329,7 +329,7 @@ watch(selectedGender, () => {
   selectedAvatar.value = ''
 })
 
-
+// Načítá záložní data z backup.json
 async function loadBackup() {
   try {
     await $fetch('/api/port/import', {
@@ -350,7 +350,7 @@ onMounted(() => {
   switchLayout('charcreate')
   loadBackup()
 })
-
+// Přepne na stránku výběru týmu po kontrole vyplnění všech polí
 const switchToTeams = () => { 
   sound.play()
   if(name.value === '' || surname.value === '' || nationality.value === 'nothing' || date.value === '' ||  lastwork.value === 'nothing' || selectedGender.value === 'nothing' || avatar.value === '') {

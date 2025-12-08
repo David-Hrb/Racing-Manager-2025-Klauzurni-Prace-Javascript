@@ -632,25 +632,25 @@ const { updateLeadboard } = useLeadBoardsApi();
 const { sponsorsname: sponsor1, sponsormoney: sponsormoney1, sponsornationality: sponsornationality1 } = getSponsor(currentTeamInfo.sponzor1);
 const { sponsorsname: sponsor2, sponsormoney: sponsormoney2, sponsornationality: sponsornationality2 } = getSponsor(currentTeamInfo.sponzor2);
 const { sponsorsname: sponsor3, sponsormoney: sponsormoney3, sponsornationality: sponsornationality3 } = getSponsor(currentTeamInfo.sponzor3);
-
+// vrací avatara
 function giveavatar(num) {
   if (num === undefined || num === null) {
     return 'default' 
   }
   return avatars[num.toString()] 
 }
-
+// formátování peněz
 function formatMoney(num) {
   if (num === undefined || num === null) return '0';
   return (String(num).split(/(?=(?:\d{3})+(?!\d))/)).join(' ');
 }
-
+// začne novou sezónu
 function startNewSeasonFunc() {
   endOfSeason.value = false;
   startOfNewSeason.value = false;
   refreshManager();
 }
-
+// vrací typ okruhu
 function cirtype(num) {
   switch(num) {
     case 0:
@@ -663,14 +663,14 @@ function cirtype(num) {
       return "error"
   }
 }
-
+// získá pozici jezdce v šampionátu
 const getDriverChampionshipPlace = (driverId) => {
   const sortedLeaderboard = [... leadboard.value].sort((a, b) => (b.points || 0) - (a.points || 0));
   const position = sortedLeaderboard.findIndex(entry => Number(entry.driverID) === Number(driverId));
   return position !== -1 ? position + 1 : '-';
 };
 
-
+// získá pozici týmu v šampionátu
 const getTeamChampionshipPlace = computed(() => {
   const teamPoints = teams.value. slice(0, 10).map(team => {
     const driver1Entry = leadboard.value.find(entry => Number(entry. driverID) === Number(team.driver1));
@@ -688,12 +688,12 @@ const getTeamChampionshipPlace = computed(() => {
 });
 
 const currentCalendarIndex = ref(0);
-
+// aktuální závod v kalendáři
 const currentCalendarEntry = computed(() => {
   if (! allCalendar.value || ! allCalendar.value.length) return null;
   return allCalendar.value[currentCalendarIndex.value] || null;
 });
-
+// název okruhu aktuálního závodu
 const currentCalendarCircuitName = computed(() => {
   if (!currentCalendarEntry.value || !circuits.value?.length) {
     return 'Žádné závody';
@@ -703,18 +703,19 @@ const currentCalendarCircuitName = computed(() => {
   )?.name || 'Unknown Track';
 });
 
+// je první závod v kalendáři
 const isFirstCalendarEntry = computed(() => currentCalendarIndex.value === 0);
 const isLastCalendarEntry = computed(() => {
   if (!allCalendar.value?.length) return true;
   return currentCalendarIndex.value === allCalendar.value.length - 1;
 });
-
+// přechod na další závod v kalendáři
 const nextCalendarEntry = () => {
   if (allCalendar.value && currentCalendarIndex.value < allCalendar.value.length - 1) {
     currentCalendarIndex.value++;
   }
 };
-
+// přechod na předchozí závod v kalendáři
 const previousCalendarEntry = () => {
   if (currentCalendarIndex.value > 0) {
     currentCalendarIndex.value--;
@@ -732,17 +733,17 @@ const statLabel = computed(() => {
     default: return 'Body';
   }
 });
-
+// získá název týmu podle ID
 function getTeamName(teamId) {
   if (teamId == null) return 'bez týmu';
   return teams.value.find(team => team.ID === teamId)?.name || 'bez týmu';
 }
-
+// získá jméno jezdce podle ID
 function getDriverName(driverId) {
   if (driverId == null) return '-';
   return drivers.value.find(driver => driver.ID === driverId)?.name || '-';
 }
-
+// získá ID jezdců v týmu
 const teamDriverIds = computed(() => {
   const ids = new Set();
   teams.value.slice(0, 10).forEach(team => { 
@@ -754,11 +755,11 @@ const teamDriverIds = computed(() => {
   });
   return ids;
 });
-
+// kompletní seznam jezdců v týmech
 const fullLeaderboard = computed(() => {
   return drivers.value.filter(driver => teamDriverIds.value.has(Number(driver.ID)));
 });
-
+// seznam jezdců v šampionátu s jejich daty
 const driverLeaderboard = computed(() => {
   return leadboard.value
     .map(entry => {
@@ -767,7 +768,7 @@ const driverLeaderboard = computed(() => {
     })
     .filter(entry => entry !== null);
 });
-
+// seznam týmů s jejich body a statistikami
 const teamLeaderboard = computed(() => {
   return teams.value.slice(0, 10).map(team => {
     const driver1Entry = driverLeaderboard.value.find(
@@ -788,7 +789,7 @@ const teamLeaderboard = computed(() => {
     };
   });
 });
-
+// získá hodnotu statistiky jezdce podle zvoleného typu
 function getDriverStatValue(entry) {
   switch (statType.value) {
     case 'points': return `${entry.points || 0} pts`;
@@ -797,7 +798,7 @@ function getDriverStatValue(entry) {
     default: return entry.points || 0;
   }
 }
-
+// získá hodnotu statistiky týmu podle zvoleného typu
 function getTeamStatValue(team) {
   switch (statType.value) {
     case 'points': return `${team.points || 0} pts`;
@@ -806,7 +807,7 @@ function getTeamStatValue(team) {
     default: return team.points || 0;
   }
 }
-
+// seřadí seznam jezdců podle zvoleného typu statistiky
 const currentDriverList = computed(() => {
   const list = [...driverLeaderboard.value];
   switch (statType.value) {
@@ -820,7 +821,7 @@ const currentDriverList = computed(() => {
       return list;
   }
 });
-
+// seřadí seznam týmů podle zvoleného typu statistiky
 const currentTeamList = computed(() => {
   const list = [...teamLeaderboard.value];
   switch (statType.value) {
@@ -834,7 +835,7 @@ const currentTeamList = computed(() => {
       return list;
   }
 });
-
+// Vrátí jezdce, kterým končí smlouva
 const driverTeamExpires = computed(() => {
   const driverTeam = ref([]);
   console.log(manTeamExp.value);
@@ -847,19 +848,19 @@ const driverTeamExpires = computed(() => {
   console.log(driverTeam);
   return driverTeam.value;
 });
-
+// Otevře nabídku na prodloužení smlouvy
 function openExtendNegotiation(driver) {
   selectedDriverForExtend.value = driver;
   calculateSalaryPrices(driver);
   extendNegotiation.value = true;
 }
-
+// zavře nabídku na prodloužení smlouvy
 function closeExtendNegotiation() {
   extendNegotiation.value = false;
   selectedDriverForExtend.value = null;
   resetNegotiationValues();
 }
-
+// spočítá ideální plat a nabídky platu pro jezdce
 function calculateSalaryPrices(driver) {
   let priceFactor = (driver.prmanagement + driver.ego) / 200;
   salaryIdeal.value = Math.floor((getRandomInteger(500000, 2000000) * priceFactor) / 1000) * 10000;
@@ -876,7 +877,7 @@ function calculateSalaryPrices(driver) {
   ];
   currentSalaryIndex.value = 0; 
 }
-
+// pokus o prodloužení smlouvy s jezdcem
 async function tryExtendContract() {
   let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
   
@@ -903,22 +904,25 @@ async function tryExtendContract() {
   closeExtendNegotiation();
 }
 
+// otevře nabídku na nahrazení jezdce
 function openReplaceDriver(driver) {
   selectedDriverForReplace.value = driver;
   replaceDriverModal.value = true;
 }
-
+// zavře nabídku na nahrazení jezdce
 function closeReplaceDriver() {
   replaceDriverModal.value = false;
   selectedDriverForReplace.value = null;
 }
 
+// dostupní jezdci pro nahrazení
 const availableDriversForReplace = computed(() => {
   return drivers.value.filter(driver => {
     return driver.currentteam === null || driver.currentteam !== currentteam;
   });
 });
 
+// vybraní nového jezdce pro nahrazení
 function selectNewDriver(driver) {
   selectedNewDriver.value = driver;
   replaceDriverModal.value = false;
@@ -934,12 +938,14 @@ function selectNewDriver(driver) {
   newDriverNegotiation.value = true;
 }
 
+// zavře nabídku na vyjednávání s novým jezdcem
 function closeNewDriverNegotiation() {
   newDriverNegotiation.value = false;
   selectedNewDriver.value = null;
   resetNegotiationValues();
 }
 
+// pokus o nahrazení jezdce
 async function tryReplaceContract() {
   let offeredSalary = salaryPrices.value[currentSalaryIndex.value];
   
@@ -1006,7 +1012,7 @@ async function tryReplaceContract() {
 }
 
 
-
+// resetuje hodnoty vyjednávání
 function resetNegotiationValues() {
   yearsOfContract.value = 1;
   salaryIdeal.value = 0;
@@ -1014,7 +1020,7 @@ function resetNegotiationValues() {
   currentSalaryIndex.value = 0;
   buyoutPrice.value = 0;
 }
-
+// přechod na další sezónu
 async function nextSeason() {
   sound.play()
   endOfSeason.value = false;

@@ -194,7 +194,7 @@ const isDragging = ref(false)
 const isSaving = ref(false)
 const saveMessage = ref('')
 const saveMessageType = ref('')
-
+// Funkce pro načtení dat o jezdcích, týmech a žebříčku
 const loadData = async () => {
   drivers.value = await $fetch("/api/listDriver")
   teams.value = await $fetch("/api/listTeam")
@@ -221,6 +221,7 @@ const loadData = async () => {
 }
 
 await loadData()
+// Výpočet, zda lze uložit změny
 const canSave = computed(() => {
   if (!currentTeamDrivers.value.driver1 || 
       !currentTeamDrivers.value.driver2 || 
@@ -232,19 +233,19 @@ const canSave = computed(() => {
          currentTeamDrivers.value.driver2.ID !== originalTeamDrivers.value.driver2?.ID ||
          currentTeamDrivers.value.testdriver.ID !== originalTeamDrivers.value.testdriver?.ID
 })
-
+// Funkce pro získání avataru jezdce podle jeho čísla
 function giveavatar(num) {
   return avatars[num.toString()] 
 }
-
+// Funkce pro získání bodů jezdce podle jeho ID
 function getDriverPoints(driverId) {
   return leadboard.value.find(entry => entry.driverID === driverId)?.points || 0
 }
-
+// Funkce pro výpočet hodnocení jezdce
 function calculateRating(driver) {
   return driver.concentration + driver.overtaking + driver.experience + driver.quickness + driver.stamina
 }
-
+// Funkce pro získání hvězdiček podle hodnocení
 function stars(rating) {
   rating = Math.floor(rating / 50) * 0.5
   
@@ -265,7 +266,7 @@ function stars(rating) {
   
   return stars
 }
-
+// Drag and Drop Handlers
 function handleDragStart(event, driver, source) {
   draggedDriver.value = driver
   draggedFromSlot.value = source
@@ -273,7 +274,7 @@ function handleDragStart(event, driver, source) {
   event.dataTransfer.effectAllowed = 'move'
   event.target.style.opacity = '0.5'
 }
-
+// Funkce pro ukončení drag and drop
 function handleDragEnd(event) {
   event.target.style.opacity = '1'
   isDragging.value = false
@@ -281,18 +282,18 @@ function handleDragEnd(event) {
   draggedFromSlot.value = null
   dragOverSlot.value = null
 }
-
+// Funkce pro zpracování přetažení nad slotem
 function handleDragOver(event, slot) {
   event.preventDefault()
   dragOverSlot.value = slot
 }
-
+// Funkce pro zpracování opuštění slotu během přetažení
 function handleDragLeave(event) {
   if (event.target.classList.contains('team-slot')) {
     dragOverSlot.value = null
   }
 }
-
+// Funkce pro zpracování upuštění jezdce do slotu
 function handleDrop(event, targetSlot) {
   event.preventDefault()
   dragOverSlot.value = null
@@ -305,7 +306,7 @@ function handleDrop(event, targetSlot) {
     currentTeamDrivers.value[draggedFromSlot.value] = temp
   }
 }
-
+// Funkce pro uložení změn v týmu
 async function saveChanges() {
   if (!canSave.value) return
   
@@ -345,6 +346,8 @@ const manager = ref([]);
 manager.value = await $fetch("/api/manager/listManager");
 let managerMoney = useState('managerMoney', () => 0);
 let money = useState('money', () => false);
+
+// Sleduje změny v týmech a aktualizujeme peníze manažera
 watch(
   () => teams.value,
   (newValue, oldValue) => {
@@ -361,7 +364,7 @@ watch(
 );
 
 
-
+// Funkce pro resetování změn 
 function resetChanges() {
   currentTeamDrivers.value = JSON.parse(JSON.stringify(originalTeamDrivers.value))
   saveMessage.value = ''

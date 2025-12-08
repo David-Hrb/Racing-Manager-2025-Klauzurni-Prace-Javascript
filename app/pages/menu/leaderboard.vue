@@ -119,6 +119,7 @@ const toggleTables = (isDriverTable) => {
     teamstable.value = true;
   }
 };
+
 // Vytvoř množinu ID jezdců, kteří jsou v týmech
 const teamDriverIds = new Set();
 
@@ -130,12 +131,12 @@ teams.value.slice(0, 10).forEach(team => {
     }
   });
 
-// Filtruj jezdce, kteří jsou v týmech
+// Filtruje jezdce, kteří jsou v týmech
 const fullLeaderboard = drivers.value.filter(driver => 
   teamDriverIds.has(Number(driver.ID))
 );
 
-// Spoj data z leadboardu s daty jezdců
+// Spojí data z leadboardu s daty jezdců
 const driverLeaderboard = leadboard.value
 .map(entry => {
   const driver = fullLeaderboard.find(d => Number(d.ID) === Number(entry.driverID));
@@ -143,7 +144,7 @@ const driverLeaderboard = leadboard.value
 })
 .filter(entry => entry !== null);
 
-// Vytvoř leadboard týmů se součtem bodů jejich jezdců
+// Vytvoří leadboard týmů se součtem bodů jejich jezdců
 const teamLeaderboard = teams.value.slice(0, 10).map(team => {
   const driver1Points = driverLeaderboard.find(
     entry => Number(entry.driverID) === Number(team.driver1)
@@ -181,7 +182,7 @@ watch(
   { deep: true, immediate: true }
 );
 
-
+// konečné seřazení jezdců a týmů podle bodů
 const sortedDriverLeaderboard = driverLeaderboard.sort((a, b) => b.points - a.points);
 const sortedTeamLeaderboard = teamLeaderboard.sort((a, b) => b.points - a.points);
 console.log(sortedTeamLeaderboard);

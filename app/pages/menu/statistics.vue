@@ -139,7 +139,7 @@ function giveavatar(num) {
 
 const teamShowType = ref('championship');
 const driverShowType = ref('championship');
-
+// filtruje týmy podle zvoleného typu
 const currentTeamList = computed(() => {
   const type = teamShowType.value;
   if (type === 'championship') {
@@ -151,6 +151,7 @@ const currentTeamList = computed(() => {
   }
 });
 
+// filtruje jezdce podle zvoleného typu
 const currentDriverList = computed(() => {
   const type = driverShowType.value;
   if (type === 'championship') {
