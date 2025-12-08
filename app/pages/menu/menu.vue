@@ -1027,6 +1027,23 @@ async function nextSeason() {
   }
 }
 
+
+let managerMoney = useState('managerMoney', () => 0);
+let money = useState('money', () => false);
+watch(
+  () => teams.value,
+  (newValue, oldValue) => {
+    const teamIdx = (manager.value[0]?.team ?? 1) - 1; 
+    const teamMoney = newValue?.[teamIdx]?.money;
+
+    if (teamMoney !== undefined) {
+      const prev = oldValue?.[teamIdx]?.money;
+      managerMoney.value = teamMoney;         
+      money.value = teamMoney < 0;    
+    }
+  },
+  { deep: true, immediate: true }
+);
 const switchLayout = inject('switchLayout')
 
 onMounted(() => {

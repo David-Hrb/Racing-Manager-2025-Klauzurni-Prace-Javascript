@@ -162,6 +162,25 @@ const teamLeaderboard = teams.value.slice(0, 10).map(team => {
     points: driver1Points + driver2Points + driver3Points
   };
 });
+const manager = ref([]);
+manager.value = await $fetch("/api/manager/listManager");
+let managerMoney = useState('managerMoney', () => 0);
+let money = useState('money', () => false);
+watch(
+  () => teams.value,
+  (newValue, oldValue) => {
+    const teamIdx = (manager.value[0]?.team ?? 1) - 1; 
+    const teamMoney = newValue?.[teamIdx]?.money;
+
+    if (teamMoney !== undefined) {
+      const prev = oldValue?.[teamIdx]?.money;
+      managerMoney.value = teamMoney;         
+      money.value = teamMoney < 0;    
+    }
+  },
+  { deep: true, immediate: true }
+);
+
 
 const sortedDriverLeaderboard = driverLeaderboard.sort((a, b) => b.points - a.points);
 const sortedTeamLeaderboard = teamLeaderboard.sort((a, b) => b.points - a.points);

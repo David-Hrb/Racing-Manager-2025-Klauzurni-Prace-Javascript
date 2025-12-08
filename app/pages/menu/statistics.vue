@@ -161,6 +161,24 @@ const currentDriverList = computed(() => {
     return drivers.value.filter(driver => driver.podiums > 0).sort((a, b) => b.podiums - a.podiums);
   }
 });
+const manager = ref([]);
+manager.value = await $fetch("/api/manager/listManager");
+let managerMoney = useState('managerMoney', () => 0);
+let money = useState('money', () => false);
+watch(
+  () => teams.value,
+  (newValue, oldValue) => {
+    const teamIdx = (manager.value[0]?.team ?? 1) - 1; 
+    const teamMoney = newValue?.[teamIdx]?.money;
+
+    if (teamMoney !== undefined) {
+      const prev = oldValue?.[teamIdx]?.money;
+      managerMoney.value = teamMoney;         
+      money.value = teamMoney < 0;    
+    }
+  },
+  { deep: true, immediate: true }
+);
 
 const switchLayout = inject('switchLayout')
 

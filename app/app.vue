@@ -36,19 +36,29 @@ nuxtApp.hook("page:start", () => { loading.value = true })
 nuxtApp.hook("page:finish", () => { loading.value = false })
 
 const { updateTeam } = useTeamsApi();
-let money = ref(false);
+
 let teams = ref([]);
 let manager = ref([]);
 
 teams.value = await $fetch("/api/listTeam");
 manager.value = await $fetch("/api/manager/listManager");
 let currentTeamId = manager.value[0].team;
-watch(teams, (newVal) => {
-  console.log("Teams data updated:", newVal);
-  teams.value = newVal;
-  money = ref(teams.value.some(item => item.money < 0));
-  console.log("Money status:", money.value);
-}, { immediate: true });
+let managerMoney = useState('managerMoney', () => 0);
+let money = useState('money', () => false);
+watch(
+  () => teams.value,
+  (newValue, oldValue) => {
+    const teamIdx = (manager.value[0]?.team ?? 1) - 1; 
+    const teamMoney = newValue?.[teamIdx]?.money;
+
+    if (teamMoney !== undefined) {
+      const prev = oldValue?.[teamIdx]?.money;
+      managerMoney.value = teamMoney;         
+      money.value = teamMoney < 0;    
+    }
+  },
+  { deep: true, immediate: true }
+);
 
 function switchToDefault() {
   currentLayout.value = 'default';
