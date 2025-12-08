@@ -802,17 +802,13 @@ function everyLap() {
 
   
 
-  // Uložení starých časů pro porovnání
-  const oldTimes = {};
-  displayedLaptimes.value.forEach(driver => {
-    oldTimes[driver.id] = Number(driver.time);
-  });
-
-  // Výpočet časů kola
-  displayedLaptimes.value.forEach((driver) => {
-    if(driver.dnf) return;
+  displayedLaptimes.value.forEach((driver, i, arr) => {
+    if(driver.dnf) {
+      return;
+    }
     
-    const driverstats = cardriverinfo.value.find(d => d.id === driver.id);
+    // ------------------------------ DRIVER LAP TIME ------------------------------   
+    const driverstats = cardriverinfo.value.find(driverstats => driverstats.id === driver.id)  
     const stats = {
       quickness: driverstats.quickness,
       concentration: driverstats.concentration,
@@ -828,7 +824,7 @@ function everyLap() {
       experience: driverstats.experience,
       basetime: currentCircuitInfo.normallaptime,
       tyretype: driver.currenttyre
-    };
+    }
 
     let result = calculateLapTime(stats);
     let laptime = result.laptime;
@@ -838,7 +834,7 @@ function everyLap() {
       driver.gaptonext = 0;
       driver.time = 1000000000000 + currentLap.value;
       driver.dnf = true;
-      //console.log(driver.name, "crash");
+      //console.log(driver.name, "crash")
       const crashEvent = createEvent('retirement_crash', {
         driver1Name: driver.name,
         driver1Team: driver.teamname
@@ -852,55 +848,39 @@ function everyLap() {
     }
     
     driver.time = Number(driver.time) + Number(laptime);
-  });
-
-  // ------------------------------ DETEKCE A ROZHODOVÁNÍ O PŘEDJÍŽDĚNÍ ------------------------------
-  
-  const potentialOrder = [...displayedLaptimes.value]
-    .filter(d => ! d.dnf)
-    .sort((a, b) => a.time - b.time);
-  
-  displayedLaptimes.value.forEach((driver) => {
-    if(driver.dnf) return;
     
-    const oldPosition = driver.lastposition;
-    const newPotentialPosition = potentialOrder.findIndex(d => d.id === driver.id) + 1;
-    if(oldPosition > newPotentialPosition) {
-      for(let targetPos = newPotentialPosition; targetPos < oldPosition; targetPos++) {
-        const overtakenDriver = displayedLaptimes.value.find(
-          d => d.lastposition === targetPos && d.id !== driver.id && ! d.dnf
-        );
-        
-        if(overtakenDriver) {
-          let difference = Math.abs(driver.time - overtakenDriver.time);
-          const normalDifference = Math.min(difference, 100) / 100;
-          const sigmoidChance = (1 / (1 + Math.exp(-3 * (normalDifference - 0.5)))) * 100;
-          const randomvalue = getRandomInteger(0, 100);
-          
-          const timeAddDriver = getRandomInteger(0, 30);
-          const timeAddOvertaken = getRandomInteger(0, 30);
-          driver.time = Number(driver.time) + 0.01 * timeAddDriver;
-          overtakenDriver.time = Number(overtakenDriver.time) + 0.01 * timeAddOvertaken;
-          
-          if(randomvalue < sigmoidChance) {
-            const overtakeEvent = createEvent('overtake', {
-              driver1Name: driver.name,
-              driver1Team: driver.teamname,
-              driver2Name: overtakenDriver.name,
-              driver2Team: overtakenDriver.teamname
-            });
-            allOvertakes.push(overtakeEvent);
-            //console.log(`✓ ${driver.name} předjel ${overtakenDriver.name}`);
-            
-          } else {
-            driver.time = Number(overtakenDriver.time) + 0.1 + (getRandomInteger(1, 50) * 0.01);
-            //console.log(`✗ ${driver.name} se nepodařilo předjet ${overtakenDriver.name}`);
-          }
-        }
+    // ------------------------------ DRIVER OVERTAKING ------------------------------
+    if(i > 0) {
+      let j = i - 1;
+      while(j >= 0 && driver.time < arr[j].time) {       
+        let difference = arr[j].time - driver.time;
+        const normalDifference = Math.min(Math.abs(difference), 100) / 100;
+        const sigmoidChance = (1 / (1 + Math.exp(-3 * (normalDifference - 0.5)))) * 100;
+        const roll = getRandomInteger(0, 100);
+
+        if (roll < sigmoidChance) {
+          driver.time += 0.01 * getRandomInteger(0, 100);
+          arr[j].time += 0.01 * getRandomInteger(0, 100);
+
+          const overtakeEvent = createEvent('overtake', {
+            driver1Name: driver.name,
+            driver1Team: driver.teamname,
+            driver2Name: arr[j].name,
+            driver2Team: arr[j].teamname
+          });
+          allOvertakes.push(overtakeEvent);
+
+          driver.gaptonext = Math.abs(Number(driver.time) - Number(arr[j].time));
+          j--;
+        } else {
+    
+          driver.time = arr[j].time + 0.001;
+          break;
+        }         
+        j--;
       }
     }
   });
-
   
   // Zapsat všechny overtakes najednou na konci
   infotext.value[currentLap.value] = {
