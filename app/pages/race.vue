@@ -857,11 +857,9 @@ function everyLap() {
         const normalDifference = Math.min(Math.abs(difference), 100) / 100;
         const sigmoidChance = (1 / (1 + Math.exp(-3 * (normalDifference - 0.5)))) * 100;
         const roll = getRandomInteger(0, 100);
-
         if (roll < sigmoidChance) {
-          driver.time += 0.01 * getRandomInteger(0, 100);
-          arr[j].time += 0.01 * getRandomInteger(0, 100);
-
+          driver.time += 0.01 * getRandomInteger(0, 50);
+          arr[j].time += 0.01 * getRandomInteger(50, 100);
           const overtakeEvent = createEvent('overtake', {
             driver1Name: driver.name,
             driver1Team: driver.teamname,
@@ -873,8 +871,7 @@ function everyLap() {
           driver.gaptonext = Math.abs(Number(driver.time) - Number(arr[j].time));
           j--;
         } else {
-    
-          driver.time = arr[j].time + 0.001;
+          driver.time = arr[j].time + getRandomFloat(0.001, 0.5);
           break;
         }         
         j--;
